@@ -1,0 +1,12 @@
+*.tar.xz
+*.zip
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache/
+config.*
+config/
+configure
+metadata.json
+schemas/*.compiled
+schemas/*.valid

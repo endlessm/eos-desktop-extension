@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="desktop-extension">
+  <schema path="/org/gnome/shell/" id="com.endlessm.desktop-extension">
+    <key name="migration-version" type="u">
+      <default>0</default>
+      <summary>Version of the current migration path</summary>
+      <description>
+        This key specifies the version of the current migration path.
+      </description>
+    </key>
+  </schema>
+</schemalist>

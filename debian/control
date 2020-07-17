@@ -1,0 +1,21 @@
+Source: eos-desktop-extension
+Section: gnome
+Priority: optional
+Maintainer: Georges Basile Stavracas Neto <georges@endlessm.com>
+Uploaders: Georges Basile Stavracas Neto <georges@endlessm.com>
+Build-Depends:
+ debhelper-compat (= 12),
+ meson (>= 0.40.0)
+Standards-Version: 4.4.0
+Homepage: https://github.com/endlessm/eos-desktop-extension
+Vcs-Browser: https://github.com/endlessm/eos-desktop-extension
+Vcs-Git: https://github.com/endlessm/eos-desktop-extension.git
+
+Package: eos-desktop-extension
+Architecture: all
+Depends:
+ gnome-shell (>= 3.35),
+ gnome-shell (>= 3.37.3),
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: Endless OS desktop extension for GNOME Shell

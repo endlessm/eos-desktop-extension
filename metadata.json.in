@@ -1,0 +1,8 @@
+{
+"uuid": "@uuid@",
+"name": "Endless Desktop",
+"description": "Endless OS signature desktop",
+"settings-schema": "@settings_schema@",
+"shell-version": ["@shell_version@"],
+"url": "https://github.com/endlessm/eos-desktop-extension"
+}

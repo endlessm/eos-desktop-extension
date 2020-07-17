@@ -1,0 +1,5 @@
+eos-desktop-extension (0.1) eos; urgency=medium
+
+  * Initial release of the Endless OS Desktop extension
+
+ -- Georges Basile Stavracas Neto <georges@endlessm.com>  Wed, 16 Jul 2020 18:09:00 -0300

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="gnome-shell">
+  <schema path="/org/gnome/shell/" id="org.gnome.shell">
+    <key name="icon-grid-layout" type="a{sas}">
+      <default>{}</default>
+      <summary>Layout of application launcher icons in the grid</summary>
+      <description>
+        This key specifies the exact order of the icons shown in the applications launcher view.
+      </description>
+    </key>
+  </schema>
+</schemalist>
