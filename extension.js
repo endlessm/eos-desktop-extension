@@ -20,6 +20,7 @@ const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
 const AppDisplay = DesktopExtension.imports.ui.appDisplay;
 const Dash = DesktopExtension.imports.ui.dash;
+const ViewSelector = DesktopExtension.imports.ui.viewSelector;
 const WorkspaceMonitor = DesktopExtension.imports.ui.workspaceMonitor;
 
 class Extension {
@@ -31,12 +32,14 @@ class Extension {
         this._workspaceMonitor.enable();
         AppDisplay.enable();
         Dash.enable();
+        ViewSelector.enable();
     }
 
     disable() {
         this._workspaceMonitor.disable();
         AppDisplay.disable();
         Dash.disable();
+        ViewSelector.disable();
     }
 }
 
