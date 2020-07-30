@@ -62,17 +62,11 @@ class WorkspaceMonitor extends GObject.Object {
             return;
 
         const visibleApps = this._getVisibleApps();
-        if (visibleApps.length === 0) {
-            // Even if no apps are visible, if there is an app starting up, we
-            // do not show the overview as it's likely that a window will be
-            // shown. This avoids problems of windows being mapped while the
-            // overview is being shown.
-            if (!this._appSystem.has_starting_apps())
-                Main.overview.show();
-        } else if (this._inFullscreen) {
+        if (visibleApps.length === 0)
+            Main.overview.show();
+        else if (this._inFullscreen)
             // Hide in fullscreen mode
             Main.overview.hide();
-        }
     }
 
     _windowDisappeared() {
