@@ -17,6 +17,8 @@
  */
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
+
+const AppDisplay = DesktopExtension.imports.ui.appDisplay;
 const WorkspaceMonitor = DesktopExtension.imports.ui.workspaceMonitor;
 
 class Extension {
@@ -26,10 +28,12 @@ class Extension {
 
     enable() {
         this._workspaceMonitor.enable();
+        AppDisplay.enable();
     }
 
     disable() {
         this._workspaceMonitor.disable();
+        AppDisplay.disable();
     }
 }
 
