@@ -20,6 +20,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
 const AppDisplay = imports.ui.appDisplay;
+const IconGrid = imports.ui.iconGrid;
 const Main = imports.ui.main;
 const ViewSelector = imports.ui.viewSelector;
 const Utils = DesktopExtension.imports.utils;
@@ -43,8 +44,14 @@ function enable() {
 
         return filteredApps;
     });
+
+    Utils.override(IconGrid.IconGrid, 'animateSpring', function() {
+        // Skip the entire spring animation
+        this._animationDone();
+    });
 }
 
 function disable() {
     Utils.restore(AppDisplay.AppDisplay);
+    Utils.restore(IconGrid.IconGrid);
 }

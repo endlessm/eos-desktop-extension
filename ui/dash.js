@@ -1,4 +1,4 @@
-/* exported init */
+/* exported enable, disable */
 /*
  * Copyright 2020 Endless, Inc
  *
@@ -15,31 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
+
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
-const AppDisplay = DesktopExtension.imports.ui.appDisplay;
-const Dash = DesktopExtension.imports.ui.dash;
-const WorkspaceMonitor = DesktopExtension.imports.ui.workspaceMonitor;
+const Main = imports.ui.main;
 
-class Extension {
-    constructor() {
-        this._workspaceMonitor = new WorkspaceMonitor.WorkspaceMonitor();
-    }
-
-    enable() {
-        this._workspaceMonitor.enable();
-        AppDisplay.enable();
-        Dash.enable();
-    }
-
-    disable() {
-        this._workspaceMonitor.disable();
-        AppDisplay.disable();
-        Dash.disable();
-    }
+function enable() {
+    Main.overview.dash.hide();
 }
 
-function init() {
-    return new Extension();
+function disable() {
+    Main.overview.dash.show();
 }
