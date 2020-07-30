@@ -4,7 +4,8 @@ project('eos-desktop-extension',
 )
 
 sources = [
-  'extension.js'
+  'extension.js',
+  'utils.js',
 ]
 extra_sources = ['COPYING']
 
@@ -43,6 +44,8 @@ meta = [
 install_data(sources + extra_sources + meta,
   install_dir: join_paths(extensiondir, uuid)
 )
+
+install_subdir('ui', install_dir: join_paths(extensiondir, uuid))
 
 foreach s : schemas
   install_data('schemas/@0@.gschema.xml'.format(s),

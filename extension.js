@@ -21,7 +21,7 @@ const WorkspaceMonitor = DesktopExtension.imports.ui.workspaceMonitor;
 
 class Extension {
     constructor() {
-        this._workspaceMonitor = new WorkspaceMonitor();
+        this._workspaceMonitor = new WorkspaceMonitor.WorkspaceMonitor();
     }
 
     enable() {

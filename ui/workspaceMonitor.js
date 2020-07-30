@@ -13,9 +13,7 @@ class WorkspaceMonitor extends GObject.Object {
 
         this._shellwm = global.window_manager;
         this._shellwm.connect('minimize', this._windowDisappearing.bind(this));
-        this._shellwm.connect('minimize-completed', this._windowDisappeared.bind(this));
         this._shellwm.connect('destroy', this._windowDisappearing.bind(this));
-        this._shellwm.connect('destroy-completed', this._windowDisappeared.bind(this));
 
         this._windowTracker = Shell.WindowTracker.get_default();
         this._windowTracker.connect('tracked-windows-changed', this._trackedWindowsChanged.bind(this));
@@ -56,7 +54,7 @@ class WorkspaceMonitor extends GObject.Object {
 
         const visibleApps = this._getVisibleApps();
         if (_isLastWindow(visibleApps, actor.meta_window))
-            Main.layoutManager.prepareToEnterOverview();
+            Main.layoutManager.showOverview();
     }
 
     _updateOverview() {
@@ -70,7 +68,7 @@ class WorkspaceMonitor extends GObject.Object {
             // shown. This avoids problems of windows being mapped while the
             // overview is being shown.
             if (!this._appSystem.has_starting_apps())
-                Main.overview.showApps();
+                Main.overview.show();
         } else if (this._inFullscreen) {
             // Hide in fullscreen mode
             Main.overview.hide();
