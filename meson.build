@@ -5,6 +5,7 @@ project('eos-desktop-extension',
 
 sources = [
   'extension.js',
+  'settings.js',
   'utils.js',
 ]
 extra_sources = ['COPYING']

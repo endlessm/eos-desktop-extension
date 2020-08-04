@@ -22,6 +22,7 @@ const AppDisplay = DesktopExtension.imports.ui.appDisplay;
 const Dash = DesktopExtension.imports.ui.dash;
 const Layout = DesktopExtension.imports.ui.layout;
 const Overview = DesktopExtension.imports.ui.overview;
+const Settings = DesktopExtension.imports.settings;
 const ViewSelector = DesktopExtension.imports.ui.viewSelector;
 const Search = DesktopExtension.imports.ui.search;
 const WorkspaceMonitor = DesktopExtension.imports.ui.workspaceMonitor;
@@ -32,9 +33,11 @@ class Extension {
         this._enabled = false;
     }
 
-    enable() {
+    async enable() {
         if (this._enabled)
             return;
+
+        await Settings.migrate();
 
         this._workspaceMonitor.enable();
         AppDisplay.enable();

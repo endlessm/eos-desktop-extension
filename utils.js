@@ -1,52 +1,8 @@
-/* exported getSettings, override, overrideProperty,
-   restore, original, tryMigrateSettings */
-
-const { Gio } = imports.gi;
+/* exported override, restore, original, overrideProperty,
+   isExtensionEnabled */
 
 const ExtensionUtils = imports.misc.extensionUtils;
-const Extension = ExtensionUtils.getCurrentExtension();
-
 const Main = imports.ui.main;
-
-function getMigrationSettings() {
-    const dir = Extension.dir.get_child('migration').get_path();
-    const source = Gio.SettingsSchemaSource.new_from_directory(dir,
-        Gio.SettingsSchemaSource.get_default(), false);
-
-    if (!source)
-        throw new Error('Error Initializing the thingy.');
-
-    const settingsSchema =
-      source.lookup('org.gnome.shell', false);
-
-    if (!settingsSchema)
-        throw new Error('Schema missing.');
-
-    return new Gio.Settings({ settingsSchema });
-}
-
-function getSettings() {
-    const dir = Extension.dir.get_child('schemas').get_path();
-    const source = Gio.SettingsSchemaSource.new_from_directory(dir,
-        Gio.SettingsSchemaSource.get_default(), false);
-
-    if (!source)
-        throw new Error('Error Initializing the thingy.');
-
-    const settingsSchema =
-      source.lookup('com.endlessm.desktop-extension', false);
-
-    if (!settingsSchema)
-        throw new Error('Schema missing.');
-
-    return new Gio.Settings({ settingsSchema });
-}
-
-function tryMigrateSettings() {
-    const oldSettings = getMigrationSettings();
-
-    log(`To be implemented: ${oldSettings}`);
-}
 
 function override(object, methodName, callback) {
     if (!object._desktopFnOverrides)
