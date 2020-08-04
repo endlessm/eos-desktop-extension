@@ -22,7 +22,7 @@ endif
 
 datadir = get_option('datadir')
 extensiondir = join_paths(datadir, 'gnome-shell', 'extensions')
-schemadir = join_paths(datadir, 'glib-2.0', 'schemas')
+schemadir = join_paths(extensiondir, uuid, 'schemas')
 
 have_schemas = schemas.length() > 0
 
@@ -52,6 +52,15 @@ foreach s : schemas
     install_dir: schemadir
   )
 endforeach
+
+# Compile schemas manually
+glib_compile = find_program('glib-compile-schemas', required: true)
+
+run_command([glib_compile, 'schemas'])
+install_data('schemas/gschemas.compiled', install_dir: schemadir)
+
+run_command([glib_compile, 'migration'])
+install_subdir('migration', install_dir: join_paths(extensiondir, uuid))
 
 if have_schemas
   meson.add_install_script('meson-postinstall.sh')

@@ -6,6 +6,8 @@
       <summary>Layout of application launcher icons in the grid</summary>
       <description>
         This key specifies the exact order of the icons shown in the applications launcher view.
+
+        This key is legacy, and must not be used in new code.
       </description>
     </key>
   </schema>
