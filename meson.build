@@ -41,6 +41,23 @@ meta = [
   )
 ]
 
+# Config dirs
+
+prefix = get_option('prefix')
+localstatedir = join_paths(prefix, get_option('localstatedir'))
+
+dirs = configuration_data()
+dirs.set('datadir', join_paths(prefix, datadir))
+dirs.set('localstatedir', localstatedir)
+
+dirs_js = configure_file(
+  input: 'dirs.js.in',
+  output: 'dirs.js',
+  configuration: dirs,
+)
+
+sources += [ dirs_js ]
+
 install_data(sources + extra_sources + meta,
   install_dir: join_paths(extensiondir, uuid)
 )
