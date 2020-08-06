@@ -148,12 +148,17 @@ function enable() {
         this._animationDone();
     });
 
+    Utils.override(PageIndicators.PageIndicators, 'animateIndicators', function() {
+        // Empty function to avoid overriding AppDisplay.animate()
+    });
+
     changeAppGridOrientation(Clutter.Orientation.HORIZONTAL);
 }
 
 function disable() {
     Utils.restore(AppDisplay.AppDisplay);
     Utils.restore(IconGrid.IconGrid);
+    Utils.restore(PageIndicators.PageIndicators);
 
     changeAppGridOrientation(Clutter.Orientation.VERTICAL);
 }
