@@ -61,3 +61,101 @@ StEntry.search-entry {
     padding-right: 0px;
   }
 }
+
+// Search Results
+
+%search-label-main {
+  font-size: 11pt;
+  font-weight: bold;
+}
+
+%search-label-color {
+  color: #444444;
+}
+
+%search-result-hover { background-color: rgba(226,226,226,0.9); }
+%search-result-selected { background-color: rgba(208,208,208,0.9); }
+%search-result-active { background-color: rgba(192,192,192,0.9); }
+
+.search-display {
+  background-color: rgba(255,255,255,0.92);
+  border-radius: 4px;
+  padding: 10px;
+  spacing: 0px;
+  max-width: 875px;
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-bottom: 10px;
+
+  & > StBoxLayout { padding: 0; }
+
+  // The fade effect looks broken, disable it
+  -st-hfade-offset: 0;
+  -st-vfade-offset: 0;
+
+  .grid-search-results .app-well-app {
+    .overview-icon.overview-icon-with-label {
+      @extend %search-label-main;
+      @extend %search-label-color;
+      text-shadow: none;
+    }
+
+    &:hover .overview-icon.overview-icon-with-label {
+      @extend %search-result-hover;
+    }
+    &:focus .overview-icon.overview-icon-with-label,
+    &:selected .overview-icon.overview-icon-with-label {
+      @extend %search-result-selected;
+    }
+    &:active .overview-icon.overview-icon-with-label {
+      @extend %search-result-active;
+    }
+
+  }
+
+  .search-section-content {
+    background-color: white;
+    padding: 8px;
+    spacing: 18px; /* space between provider icon and results container */
+
+    .search-provider-icon {
+      &:hover { @extend %search-result-hover; }
+      &:focus, &:selected { @extend %search-result-selected; }
+      &:active { @extend %search-result-active; }
+
+      .list-search-provider-details {
+        @extend %search-label-main;
+        @extend %search-label-color;
+      }
+    }
+
+    .list-search-results {
+      spacing: 0px;
+
+      .list-search-result {
+        padding: 6px;
+        transition-duration: 100ms;
+
+        &:hover { @extend %search-result-hover; }
+        &:focus, &:selected { @extend %search-result-selected; }
+        &:active { @extend %search-result-active; }
+
+        .list-search-result-content {
+          spacing: 10px;
+          padding: 0px;
+          min-height: 32px;
+
+          .list-search-result-title {
+            @extend %search-label-main;
+            @extend %search-label-color;
+            font-size: 13pt;
+          }
+
+          .list-search-result-description {
+              @extend %search-label-color;
+          }
+        }
+      }
+    }
+  }
+}
