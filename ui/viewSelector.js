@@ -48,8 +48,11 @@ function enable() {
         if (!this._workspacesDisplay.activeWorkspaceHasMaximizedWindows())
             Main.overview.fadeInDesktop();
     });
+
+    Main.overview.searchEntry.primary_icon.add_style_class_name('primary');
 }
 
 function disable() {
     Utils.restore(ViewSelector.ViewSelector);
+    Main.overview.searchEntry.primary_icon.remove_style_class_name('primary');
 }
