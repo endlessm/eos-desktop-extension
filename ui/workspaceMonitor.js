@@ -78,14 +78,15 @@ class WorkspaceMonitor extends GObject.Object {
             return;
 
         const visibleApps = this._getVisibleApps();
+        const overview = Main.overview;
         const isShowingAppsGrid =
-            Main.overview.visible &&
-            Main.overview.getActivePage() === ViewSelector.ViewPage.APPS;
+            overview.visible &&
+            overview.viewSelector.getActivePage() === ViewSelector.ViewPage.APPS;
 
         if (visibleApps.length > 0 && isShowingAppsGrid) {
             // Make sure to hide the apps grid so that running apps whose
             // windows are becoming visible are shown to the user.
-            Main.overview.hide();
+            overview.hide();
         } else {
             // Fallback to the default logic used for dissapearing windows.
             this._updateOverview();
