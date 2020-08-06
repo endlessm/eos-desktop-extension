@@ -57,6 +57,18 @@ if have_schemas
   meson.add_install_script('meson-postinstall.sh')
 endif
 
+sassc = find_program('sassc', required: true)
+sassc_opts = [ '-a', '-M', '-t', 'compact' ]
+styles = custom_target(
+  'styles',
+  input: 'stylesheet.scss',
+  output: 'stylesheet.css',
+  command: [ sassc, sassc_opts, '@INPUT@', '@OUTPUT@' ],
+  depend_files: 'stylesheet.scss',
+  install: true,
+  install_dir: join_paths(extensiondir, uuid),
+  build_by_default: true)
+
 extension_tool = find_program('gnome-extensions', required: false)
 if extension_tool.found()
   builddir = meson.current_build_dir()

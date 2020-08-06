@@ -5,7 +5,8 @@ Maintainer: Georges Basile Stavracas Neto <georges@endlessm.com>
 Uploaders: Georges Basile Stavracas Neto <georges@endlessm.com>
 Build-Depends:
  debhelper-compat (= 12),
- meson (>= 0.40.0)
+ meson (>= 0.40.0),
+ sassc (>= 3.5.0)
 Standards-Version: 4.4.0
 Homepage: https://github.com/endlessm/eos-desktop-extension
 Vcs-Browser: https://github.com/endlessm/eos-desktop-extension
