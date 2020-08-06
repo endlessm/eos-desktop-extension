@@ -10,3 +10,5 @@ configure
 metadata.json
 schemas/*.compiled
 schemas/*.valid
+_build/
+*.css
