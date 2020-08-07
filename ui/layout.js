@@ -33,7 +33,9 @@ let startupPreparedId = 0;
 var OverviewClone = GObject.registerClass(
 class OverviewClone extends St.BoxLayout {
     _init() {
-        super._init();
+        super._init({
+            reactive: true,
+        });
 
         const box = new St.BoxLayout({
             name: 'overview',
@@ -82,6 +84,13 @@ class OverviewClone extends St.BoxLayout {
             factor: 1.0,
         });
         box.add_effect(this._desaturateEffect);
+
+        // 'Go To Overview' click action
+        const clickAction = new Clutter.ClickAction();
+        clickAction.connect('clicked', () => {
+            Main.overview.show();
+        });
+        this.add_action(clickAction);
     }
 });
 
