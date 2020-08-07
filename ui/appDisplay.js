@@ -59,8 +59,9 @@ function _createPageIndicators(appDisplay, orientation) {
     return pageIndicators;
 }
 
-function changeAppGridOrientation(orientation) {
-    const appDisplay = Main.overview.viewSelector.appDisplay;
+function changeAppGridOrientation(orientation, appDisplay = null) {
+    if (!appDisplay)
+        appDisplay = Main.overview.viewSelector.appDisplay;
 
     if (appDisplay._orientation === orientation)
         return;

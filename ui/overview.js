@@ -25,6 +25,7 @@ const Utils = DesktopExtension.imports.utils;
 
 function enable() {
     Utils.override(Overview.Overview, '_shadeBackgrounds', function() {});
+    Utils.override(Overview.Overview, '_unshadeBackgrounds', function() {});
 
     // Force unshade when enabled
     for (const background of Main.overview._backgroundGroup) {
