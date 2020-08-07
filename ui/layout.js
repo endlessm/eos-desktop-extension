@@ -34,12 +34,17 @@ var OverviewClone = GObject.registerClass(
 class OverviewClone extends St.BoxLayout {
     _init() {
         super._init({
+            reactive: true,
+        });
+
+        const box = new St.BoxLayout({
             name: 'overview',
             opacity: EOS_INACTIVE_GRID_OPACITY,
             vertical: true,
         });
+        this.add_child(box);
 
-        Shell.util_set_hidden_from_pick(this, true);
+        Shell.util_set_hidden_from_pick(box, true);
 
         this.add_constraint(new LayoutManager.MonitorConstraint({ primary: true }));
 
@@ -50,19 +55,19 @@ class OverviewClone extends St.BoxLayout {
             reactive: false,
             opacity: 0,
         });
-        this.add_child(panelGhost);
+        box.add_child(panelGhost);
 
         const searchEntryClone = new Clutter.Clone({
             source: Main.overview.searchEntry.get_parent(),
             x_align: Clutter.ActorAlign.CENTER,
         });
-        this.add_actor(searchEntryClone);
+        box.add_actor(searchEntryClone);
 
         const appDisplayClone = new AppDisplay.AppDisplay();
         AppDisplayOverrides.changeAppGridOrientation(
             Clutter.Orientation.HORIZONTAL,
             appDisplayClone);
-        this.add_child(appDisplayClone);
+        box.add_child(appDisplayClone);
 
         // Bind adjustments
         const { appDisplay } = Main.overview.viewSelector;
@@ -78,7 +83,14 @@ class OverviewClone extends St.BoxLayout {
             name: 'endless-desaturate',
             factor: 1.0,
         });
-        this.add_effect(this._desaturateEffect);
+        box.add_effect(this._desaturateEffect);
+
+        // 'Go To Overview' click action
+        const clickAction = new Clutter.ClickAction();
+        clickAction.connect('clicked', () => {
+            Main.overview.show();
+        });
+        this.add_action(clickAction);
     }
 });
 

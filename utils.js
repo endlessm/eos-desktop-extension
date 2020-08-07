@@ -45,25 +45,25 @@ function tryMigrateSettings() {
 }
 
 function override(object, methodName, callback) {
-    if (!object._fnOverrides)
-        object._fnOverrides = {};
+    if (!object._desktopFnOverrides)
+        object._desktopFnOverrides = {};
 
     const baseObject = object.prototype || object;
     const originalMethod = baseObject[methodName];
-    object._fnOverrides[methodName] = originalMethod;
+    object._desktopFnOverrides[methodName] = originalMethod;
     baseObject[methodName] = callback;
 }
 
 function restore(object) {
     const baseObject = object.prototype || object;
-    if (object._fnOverrides) {
-        Object.keys(object._fnOverrides).forEach(k => {
-            baseObject[k] = object._fnOverrides[k];
+    if (object._desktopFnOverrides) {
+        Object.keys(object._desktopFnOverrides).forEach(k => {
+            baseObject[k] = object._desktopFnOverrides[k];
         });
-        delete object._fnOverrides;
+        delete object._desktopFnOverrides;
     }
 }
 
 function original(object, methodName) {
-    return object._fnOverrides[methodName];
+    return object._desktopFnOverrides[methodName];
 }
