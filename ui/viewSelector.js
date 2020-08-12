@@ -27,9 +27,9 @@ function enable() {
     Utils.override(ViewSelector.ViewSelector, 'animateToOverview', function() {
         this.show();
         this.reset();
+        this._showAppsButton.checked = true;
         this._workspacesDisplay.animateToOverview(this._showAppsButton.checked);
         this._activePage = null;
-        this._showAppsButton.checked = true;
         this._showPage(this._appsPage);
 
         if (!this._workspacesDisplay.activeWorkspaceHasMaximizedWindows())
