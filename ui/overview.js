@@ -81,12 +81,7 @@ function updateGhostPanelPosition(overviewActor = Main.overview._overview) {
     moveGhostPanel(eosPanelEnabled ? 2 : 0, overviewActor);
 }
 
-let extensionStateChangedId = 0;
-
-function enable() {
-    Utils.override(Overview.Overview, '_shadeBackgrounds', function() {});
-    Utils.override(Overview.Overview, '_unshadeBackgrounds', function() {});
-
+function _unshadeBackgrounds() {
     // Force unshade when enabled
     for (const background of Main.overview._backgroundGroup) {
         if (!background.content)
@@ -94,6 +89,15 @@ function enable() {
         background.content.brightness = 1.0;
         background.content.vignette_sharpness = 0.0;
     }
+}
+
+let extensionStateChangedId = 0;
+
+function enable() {
+    Utils.override(Overview.Overview, '_shadeBackgrounds', _unshadeBackgrounds);
+    Utils.override(Overview.Overview, '_unshadeBackgrounds', _unshadeBackgrounds);
+
+    _unshadeBackgrounds();
 
     addBackgroundMenu();
 
