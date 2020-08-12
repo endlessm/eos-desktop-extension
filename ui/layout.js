@@ -25,6 +25,7 @@ const AppDisplay = imports.ui.appDisplay;
 const AppDisplayOverrides = DesktopExtension.imports.ui.appDisplay;
 const LayoutManager = imports.ui.layout;
 const Main = imports.ui.main;
+const OverviewOverrides = DesktopExtension.imports.ui.overview;
 
 const EOS_INACTIVE_GRID_OPACITY = 96;
 
@@ -91,6 +92,20 @@ class OverviewClone extends St.BoxLayout {
             Main.overview.show();
         });
         this.add_action(clickAction);
+
+        this._extensionStateChangedId =
+        Main.extensionManager.connect('extension-state-changed',
+            () => OverviewOverrides.updateGhostPanelPosition(box));
+        OverviewOverrides.updateGhostPanelPosition(box);
+
+        this.connect('destroy', this._onDestroy.bind(this));
+    }
+
+    _onDestroy() {
+        if (this._extensionStateChangedId > 0) {
+            Main.extensionManager.disconnect(this._extensionStateChangedId);
+            this._extensionStateChangedId = 0;
+        }
     }
 });
 
