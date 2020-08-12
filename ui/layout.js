@@ -26,6 +26,7 @@ const AppDisplayOverrides = DesktopExtension.imports.ui.appDisplay;
 const LayoutManager = imports.ui.layout;
 const Main = imports.ui.main;
 const OverviewOverrides = DesktopExtension.imports.ui.overview;
+const ViewSelector = imports.ui.viewSelector;
 
 const EOS_INACTIVE_GRID_OPACITY = 96;
 
@@ -116,19 +117,63 @@ const bgGroups = [
 
 var OverviewCloneController = class OverviewCloneController {
     constructor() {
+        this._overviewShowingId = 0;
+        this._overviewShownId = 0;
+        this._overviewHidingId = 0;
+        this._overviewHiddenId = 0;
+        this._viewSelectorPageChangedId = 0;
+    }
+
+    _updateClones() {
+        const { visible, animationInProgress } = Main.overview;
+        const activePage = Main.overview.viewSelector.getActivePage();
+        const inWindowsPage = activePage === ViewSelector.ViewPage.WINDOWS;
+
+        const overviewCloneOpacity =
+            animationInProgress || inWindowsPage ? 255 : 0;
+        Main.overview._backgroundGroup._appGridClone.opacity = overviewCloneOpacity;
+
+        const layoutCloneOpacity = visible ? 0 : 255;
+        Main.layoutManager._backgroundGroup._appGridClone.opacity = layoutCloneOpacity;
     }
 
     enable() {
-        bgGroups.forEach(group => group.add_child(new OverviewClone()));
+        bgGroups.forEach(group => {
+            const clone = new OverviewClone();
+
+            group.add_child(clone);
+            group._appGridClone = clone;
+        });
+
+        this._overviewShowingId =
+            Main.overview.connect('showing', () => this._updateClones());
+        this._overviewShownId =
+            Main.overview.connect('shown', () => this._updateClones());
+        this._overviewHidingId =
+            Main.overview.connect('hiding', () => this._updateClones());
+        this._overviewHiddenId =
+            Main.overview.connect('hidden', () => this._updateClones());
+        this._viewSelectorPageChangedId =
+            Main.overview.viewSelector.connect('page-changed',
+                () => this._updateClones());
     }
 
     disable() {
         bgGroups.forEach(actor => {
-            for (const child of actor) {
-                if (child instanceof OverviewClone)
-                    child.destroy();
-            }
+            if (actor._appGridClone)
+                actor._appGridClone.destroy();
         });
+
+        Main.overview.disconnect(this._overviewShowingId);
+        this._overviewShowingId = 0;
+        Main.overview.disconnect(this._overviewHiddenId);
+        this._overviewHiddenId = 0;
+        Main.overview.disconnect(this._overviewShownId);
+        this._overviewShownId = 0;
+        Main.overview.disconnect(this._overviewHidingId);
+        this._overviewHidingId = 0;
+        Main.overview.viewSelector.disconnect(this._viewSelectorPageChangedId);
+        this._viewSelectorPageChangedId = 0;
     }
 };
 
