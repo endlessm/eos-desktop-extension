@@ -114,18 +114,25 @@ const bgGroups = [
     Main.overview._backgroundGroup,
 ];
 
-function addAppGridClone() {
-    bgGroups.forEach(group => group.add_child(new OverviewClone()));
-}
+var OverviewCloneController = class OverviewCloneController {
+    constructor() {
+    }
 
-function removeAppGridClone() {
-    bgGroups.forEach(actor => {
-        for (const child of actor) {
-            if (child instanceof OverviewClone)
-                child.destroy();
-        }
-    });
-}
+    enable() {
+        bgGroups.forEach(group => group.add_child(new OverviewClone()));
+    }
+
+    disable() {
+        bgGroups.forEach(actor => {
+            for (const child of actor) {
+                if (child instanceof OverviewClone)
+                    child.destroy();
+            }
+        });
+    }
+};
+
+const cloneController = new OverviewCloneController();
 
 function enable() {
     if (startupPreparedId === 0) {
@@ -135,7 +142,7 @@ function enable() {
             });
     }
 
-    addAppGridClone();
+    cloneController.enable();
 }
 
 function disable() {
@@ -144,5 +151,5 @@ function disable() {
         startupPreparedId = 0;
     }
 
-    removeAppGridClone();
+    cloneController.disable();
 }
