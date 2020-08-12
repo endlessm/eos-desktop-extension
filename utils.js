@@ -2,7 +2,10 @@
 
 const { Gio } = imports.gi;
 
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
+const ExtensionUtils = imports.misc.extensionUtils;
+const Extension = ExtensionUtils.getCurrentExtension();
+
+const Main = imports.ui.main;
 
 function getMigrationSettings() {
     const dir = Extension.dir.get_child('migration').get_path();
@@ -66,4 +69,11 @@ function restore(object) {
 
 function original(object, methodName) {
     return object._desktopFnOverrides[methodName];
+}
+
+function isExtensionEnabled(uuid) {
+    const extension = Main.extensionManager.lookup(uuid);
+
+    return extension &&
+        extension.state === ExtensionUtils.ExtensionState.ENABLED;
 }

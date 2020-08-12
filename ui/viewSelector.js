@@ -16,6 +16,8 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
+const { Shell } = imports.gi;
+
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
@@ -27,9 +29,9 @@ function enable() {
     Utils.override(ViewSelector.ViewSelector, 'animateToOverview', function() {
         this.show();
         this.reset();
+        this._showAppsButton.checked = true;
         this._workspacesDisplay.animateToOverview(this._showAppsButton.checked);
         this._activePage = null;
-        this._showAppsButton.checked = true;
         this._showPage(this._appsPage);
 
         if (!this._workspacesDisplay.activeWorkspaceHasMaximizedWindows())
@@ -47,6 +49,19 @@ function enable() {
 
         if (!this._workspacesDisplay.activeWorkspaceHasMaximizedWindows())
             Main.overview.fadeInDesktop();
+    });
+
+
+    Utils.override(ViewSelector.ViewSelector, '_showPage', function(page) {
+        const original = Utils.original(ViewSelector.ViewSelector, '_showPage');
+        original.bind(this)(page);
+
+        const searchEntryParent = Main.overview.searchEntry.get_parent();
+        const inWindowsPage = page === this._workspacesPage;
+
+        searchEntryParent.opacity = inWindowsPage ? 0 : 255;
+        Shell.util_set_hidden_from_pick(searchEntryParent, inWindowsPage);
+
     });
 
     Main.overview.searchEntry.primary_icon.add_style_class_name('primary');

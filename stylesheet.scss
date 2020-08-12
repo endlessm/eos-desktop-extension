@@ -1,5 +1,14 @@
 // App Grid
 
+#overview {
+  padding-top: 48px;
+}
+
+.icon-grid {
+  row-spacing: 18px;
+  column-spacing: 18px;
+}
+
 .overview-icon.overview-icon-with-label {
   font-weight: bold;
   text-shadow: black 0px 2px 2px;
