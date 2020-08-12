@@ -69,6 +69,7 @@ class OverviewClone extends St.BoxLayout {
         AppDisplayOverrides.changeAppGridOrientation(
             Clutter.Orientation.HORIZONTAL,
             appDisplayClone);
+        AppDisplayOverrides.setFixedIconSize(64, appDisplayClone);
         box.add_child(appDisplayClone);
 
         // Bind adjustments

@@ -118,6 +118,14 @@ function changeAppGridOrientation(orientation, appDisplay = null) {
     appDisplay._grid.layout_manager.layout_changed();
 }
 
+function setFixedIconSize(iconSize, appDisplay = null) {
+    if (!appDisplay)
+        appDisplay = Main.overview.viewSelector.appDisplay;
+
+    appDisplay._grid.layout_manager.fixed_icon_size = iconSize;
+    appDisplay._grid.layout_manager.layout_changed();
+}
+
 function enable() {
     Utils.override(AppDisplay.AppDisplay, 'adaptToSize', function(width, height) {
         const [, indicatorHeight] = this._pageIndicators.get_preferred_height(-1);
@@ -154,6 +162,7 @@ function enable() {
     });
 
     changeAppGridOrientation(Clutter.Orientation.HORIZONTAL);
+    setFixedIconSize(64);
 }
 
 function disable() {
@@ -162,4 +171,5 @@ function disable() {
     Utils.restore(PageIndicators.PageIndicators);
 
     changeAppGridOrientation(Clutter.Orientation.VERTICAL);
+    setFixedIconSize(-1);
 }
