@@ -54,7 +54,7 @@ class WorkspaceMonitor extends GObject.Object {
 
         const visibleApps = this._getVisibleApps();
         if (_isLastWindow(visibleApps, actor.meta_window))
-            Main.layoutManager.showOverview();
+            Main.overview.show();
     }
 
     _updateOverview() {
