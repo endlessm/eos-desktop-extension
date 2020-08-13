@@ -140,6 +140,9 @@ var OverviewCloneController = class OverviewCloneController {
 
     enable() {
         bgGroups.forEach(group => {
+            if (group._appGridClone)
+                return;
+
             const clone = new OverviewClone();
 
             group.add_child(clone);
