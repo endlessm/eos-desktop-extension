@@ -161,8 +161,10 @@ var OverviewCloneController = class OverviewCloneController {
 
     disable() {
         bgGroups.forEach(actor => {
-            if (actor._appGridClone)
+            if (actor._appGridClone) {
                 actor._appGridClone.destroy();
+                delete actor._appGridClone;
+            }
         });
 
         Main.overview.disconnect(this._overviewShowingId);
