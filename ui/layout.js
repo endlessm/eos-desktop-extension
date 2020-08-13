@@ -65,6 +65,10 @@ class OverviewClone extends St.BoxLayout {
         });
         box.add_actor(searchEntryClone);
 
+        // HACK: invasively find the overview signal id that AppDisplay
+        // will use when connecting to the 'hidden' signal
+        this._overviewHiddenId = Main.overview._nextConnectionId;
+
         const appDisplayClone = new AppDisplay.AppDisplay();
         AppDisplayOverrides.changeAppGridOrientation(
             Clutter.Orientation.HORIZONTAL,
@@ -104,6 +108,11 @@ class OverviewClone extends St.BoxLayout {
     }
 
     _onDestroy() {
+        if (this._overviewHiddenId > 0) {
+            Main.overview.disconnect(this._overviewHiddenId);
+            this._overviewHiddenId = 0;
+        }
+
         if (this._extensionStateChangedId > 0) {
             Main.extensionManager.disconnect(this._extensionStateChangedId);
             this._extensionStateChangedId = 0;
