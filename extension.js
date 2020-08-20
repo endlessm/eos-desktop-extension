@@ -23,6 +23,7 @@ const Dash = DesktopExtension.imports.ui.dash;
 const Layout = DesktopExtension.imports.ui.layout;
 const Overview = DesktopExtension.imports.ui.overview;
 const ViewSelector = DesktopExtension.imports.ui.viewSelector;
+const Search = DesktopExtension.imports.ui.search;
 const WorkspaceMonitor = DesktopExtension.imports.ui.workspaceMonitor;
 
 class Extension {
@@ -37,6 +38,7 @@ class Extension {
         Layout.enable();
         ViewSelector.enable();
         Overview.enable();
+        Search.enable();
     }
 
     disable() {
@@ -46,6 +48,7 @@ class Extension {
         Layout.disable();
         ViewSelector.disable();
         Overview.disable();
+        Search.disable();
     }
 }
 
