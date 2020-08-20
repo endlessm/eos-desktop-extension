@@ -1,7 +1,7 @@
 // -*- mode: js; js-indent-level: 4; indent-tabs-mode: nil -*-
 /* exported WorkspaceMonitor */
 
-const { GObject, Shell } = imports.gi;
+const { GObject, Meta, Shell } = imports.gi;
 
 const Main = imports.ui.main;
 const ViewSelector = imports.ui.viewSelector;
@@ -15,15 +15,14 @@ class WorkspaceMonitor extends GObject.Object {
         this._shellwm.connect('minimize', this._windowDisappearing.bind(this));
         this._shellwm.connect('destroy', this._windowDisappearing.bind(this));
 
-        this._windowTracker = Shell.WindowTracker.get_default();
-        this._windowTracker.connect('tracked-windows-changed', this._trackedWindowsChanged.bind(this));
+        global.window_group.connect('actor-added', this._windowsChanged.bind(this));
+        global.window_group.connect('actor-removed', this._windowsChanged.bind(this));
 
         global.display.connect('in-fullscreen-changed', this._fullscreenChanged.bind(this));
 
         const primaryMonitor = Main.layoutManager.primaryMonitor;
         this._inFullscreen = primaryMonitor && primaryMonitor.inFullscreen;
 
-        this._appSystem = Shell.AppSystem.get_default();
         this._enabled = false;
     }
 
@@ -41,19 +40,8 @@ class WorkspaceMonitor extends GObject.Object {
         if (!this._enabled)
             return;
 
-        function _isLastWindow(apps, win) {
-            if (apps.length === 0)
-                return true;
-
-            if (apps.length > 1)
-                return false;
-
-            const windows = apps[0].get_windows();
-            return windows.length === 1 && windows[0] === win;
-        }
-
-        const visibleApps = this._getVisibleApps();
-        if (_isLastWindow(visibleApps, actor.meta_window))
+        const windows = this._getVisibleWindows();
+        if (windows.length === 1)
             Main.overview.show();
     }
 
@@ -61,8 +49,8 @@ class WorkspaceMonitor extends GObject.Object {
         if (!this._enabled)
             return;
 
-        const visibleApps = this._getVisibleApps();
-        if (visibleApps.length === 0)
+        const windows = this._getVisibleWindows();
+        if (windows.length === 0)
             Main.overview.show();
         else if (this._inFullscreen)
             // Hide in fullscreen mode
@@ -73,17 +61,17 @@ class WorkspaceMonitor extends GObject.Object {
         this._updateOverview();
     }
 
-    _trackedWindowsChanged() {
+    _windowsChanged() {
         if (!this._enabled)
             return;
 
-        const visibleApps = this._getVisibleApps();
+        const windows = this._getVisibleWindows();
         const overview = Main.overview;
         const isShowingAppsGrid =
             overview.visible &&
             overview.viewSelector.getActivePage() === ViewSelector.ViewPage.APPS;
 
-        if (visibleApps.length > 0 && isShowingAppsGrid) {
+        if (windows.length > 0 && isShowingAppsGrid) {
             // Make sure to hide the apps grid so that running apps whose
             // windows are becoming visible are shown to the user.
             overview.hide();
@@ -93,21 +81,13 @@ class WorkspaceMonitor extends GObject.Object {
         }
     }
 
-    _getVisibleApps() {
-        const runningApps = this._appSystem.get_running();
-        return runningApps.filter(app => {
-            for (const window of app.get_windows()) {
-                // We do not count transient windows because of an issue with Audacity
-                // where a transient window was always being counted as visible even
-                // though it was minimized
-                if (window.get_transient_for())
-                    continue;
+    _getVisibleWindows() {
+        return global.window_group.get_children().filter(child => {
+            if (!(child instanceof Meta.WindowActor))
+                return false;
 
-                if (!window.minimized)
-                    return true;
-            }
-
-            return false;
+            const { metaWindow } = child;
+            return !metaWindow.minimized && !metaWindow.get_transient_for();
         });
     }
 
@@ -120,21 +100,12 @@ class WorkspaceMonitor extends GObject.Object {
         this._enabled = false;
     }
 
-    get hasActiveWindows() {
-        // Count anything fullscreen as an extra window
-        if (this._inFullscreen)
-            return true;
-
-        const apps = this._appSystem.get_running();
-        return apps.length > 0;
-    }
-
     get hasVisibleWindows() {
         // Count anything fullscreen as an extra window
         if (this._inFullscreen)
             return true;
 
-        const visibleApps = this._getVisibleApps();
-        return visibleApps.length > 0;
+        const windows = this._getVisibleWindows();
+        return windows.length > 0;
     }
 });
