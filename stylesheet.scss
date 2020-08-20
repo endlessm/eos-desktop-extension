@@ -90,6 +90,12 @@ StEntry.search-entry {
   background-color: rgba(255,255,255,0.92);
   border-radius: 4px;
   max-width: 875px;
+
+  .search-results-close-button StIcon {
+    @extend %search-label-color;
+    icon-size: 14px;
+    padding: 6px 6px 0 0;
+  }
 }
 
 #searchResultsContent {
