@@ -91,6 +91,12 @@ StEntry.search-entry {
   border-radius: 4px;
   max-width: 875px;
 
+  .search-statustext {
+    color: #242424;
+    font-size: 2em;
+    font-weight: bold;
+  }
+
   .search-results-close-button StIcon {
     @extend %search-label-color;
     icon-size: 14px;
