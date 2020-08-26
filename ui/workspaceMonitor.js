@@ -40,8 +40,11 @@ class WorkspaceMonitor extends GObject.Object {
         if (!this._enabled)
             return;
 
+        if (actor.meta_window.get_transient_for())
+            return;
+
         const windows = this._getVisibleWindows();
-        if (windows.length === 1)
+        if (windows.length === 0)
             Main.overview.show();
     }
 
