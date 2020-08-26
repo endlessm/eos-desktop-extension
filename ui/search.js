@@ -21,7 +21,9 @@ const { Clutter, St } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
+const InternetSearch = DesktopExtension.imports.ui.internetSearch;
 const Main = imports.ui.main;
+const ParentalControlsManager = imports.misc.parentalControlsManager;
 const Search = imports.ui.search;
 const Utils = DesktopExtension.imports.utils;
 
@@ -85,6 +87,86 @@ function removeMaxWidthBoxFromSearch() {
     viewSelector._searchResults.x_expand = false;
 }
 
+// Internet search provider
+
+let parentalControlsSignalId = 0;
+let internetSearchProvider = null
+
+function registerInternetSearchProvider() {
+    if (internetSearchProvider)
+        return;
+
+    const parentalControls = ParentalControlsManager.getDefault();
+    if (!parentalControls.initialized)
+        return;
+
+    const provider = InternetSearch.getInternetSearchProvider();
+
+    if (provider) {
+        // Don't register if parental controls doesn't allow us to
+        if (!parentalControls.shouldShowApp(provider.appInfo))
+            return;
+
+        const searchView = Main.overview.viewSelector._searchResults;
+
+        searchView._registerProvider(provider);
+        internetSearchProvider = provider;
+
+        searchView._reloadRemoteProviders();
+
+        // Update the search entry text
+        const entry = Main.overview.searchEntry;
+        const searchEngine = InternetSearch.getSearchEngineName();
+        if (searchEngine)
+            entry.hint_text = _('Search %s and more…').format(searchEngine);
+        else
+            entry.hint_text = _('Search the internet and more…');
+    }
+}
+
+function unregisterInternetSearchProvider() {
+    if (!internetSearchProvider)
+        return;
+
+    const searchView = Main.overview.viewSelector._searchResults;
+    searchView._unregisterProvider(internetSearchProvider);
+    internetSearchProvider = null;
+
+    searchView._reloadRemoteProviders();
+
+    // Reset the search entry text
+    Main.overview.searchEntry.hint_text = _('Type to search');
+}
+
+function setInternetSearchProviderEnable(enabled) {
+    const parentalControls = ParentalControlsManager.getDefault();
+    if (parentalControlsSignalId > 0) {
+        parentalControls.disconnect(parentalControlsSignalId);
+        parentalControlsSignalId = 0;
+    }
+
+    if (enabled) {
+        registerInternetSearchProvider();
+
+        // Monitor parental controls to either retry adding the search
+        // provider, or remove if it the browser is filtered out
+        parentalControlsSignalId =
+            parentalControls.connect('app-filter-changed', () => {
+                if (!parentalControls.initialized)
+                    return;
+
+                if (internetSearchProvider &&
+                    !parentalControls.shouldShowApp(internetSearchProvider.appInfo))
+                    unregisterInternetSearchProvider()
+                else
+                    registerInternetSearchProvider();
+            });
+    } else {
+        // Simplest case: disabling only removes the search provider period
+        unregisterInternetSearchProvider();
+    }
+}
+
 function enable() {
     Utils.override(Search.ProviderInfo, '_init', function(provider) {
         const original = Utils.original(Search.ProviderInfo, '_init');
@@ -99,6 +181,7 @@ function enable() {
         get: function() { return 64 },
     });
 
+    setInternetSearchProviderEnable(true);
     addMaxWidthBoxInSearch();
     addCloseButton();
 }
@@ -106,6 +189,7 @@ function enable() {
 function disable() {
     Utils.restore(Search.ProviderInfo);
 
+    setInternetSearchProviderEnable(false);
     removeMaxWidthBoxFromSearch();
     removeCloseButton();
 }
