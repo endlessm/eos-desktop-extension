@@ -1,0 +1,2 @@
+var DATADIR = '@datadir@';
+var LOCALSTATEDIR = '@localstatedir@';

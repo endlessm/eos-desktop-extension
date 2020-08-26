@@ -5,6 +5,7 @@ project('eos-desktop-extension',
 
 sources = [
   'extension.js',
+  'settings.js',
   'utils.js',
 ]
 extra_sources = ['COPYING']
@@ -22,7 +23,7 @@ endif
 
 datadir = get_option('datadir')
 extensiondir = join_paths(datadir, 'gnome-shell', 'extensions')
-schemadir = join_paths(datadir, 'glib-2.0', 'schemas')
+schemadir = join_paths(extensiondir, uuid, 'schemas')
 
 have_schemas = schemas.length() > 0
 
@@ -41,6 +42,23 @@ meta = [
   )
 ]
 
+# Config dirs
+
+prefix = get_option('prefix')
+localstatedir = join_paths(prefix, get_option('localstatedir'))
+
+dirs = configuration_data()
+dirs.set('datadir', join_paths(prefix, datadir))
+dirs.set('localstatedir', localstatedir)
+
+dirs_js = configure_file(
+  input: 'dirs.js.in',
+  output: 'dirs.js',
+  configuration: dirs,
+)
+
+sources += [ dirs_js ]
+
 install_data(sources + extra_sources + meta,
   install_dir: join_paths(extensiondir, uuid)
 )
@@ -52,6 +70,15 @@ foreach s : schemas
     install_dir: schemadir
   )
 endforeach
+
+# Compile schemas manually
+glib_compile = find_program('glib-compile-schemas', required: true)
+
+run_command([glib_compile, 'schemas'])
+install_data('schemas/gschemas.compiled', install_dir: schemadir)
+
+run_command([glib_compile, 'migration'])
+install_subdir('migration', install_dir: join_paths(extensiondir, uuid))
 
 if have_schemas
   meson.add_install_script('meson-postinstall.sh')

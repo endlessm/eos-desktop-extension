@@ -22,6 +22,7 @@ const AppDisplay = DesktopExtension.imports.ui.appDisplay;
 const Dash = DesktopExtension.imports.ui.dash;
 const Layout = DesktopExtension.imports.ui.layout;
 const Overview = DesktopExtension.imports.ui.overview;
+const Settings = DesktopExtension.imports.settings;
 const ViewSelector = DesktopExtension.imports.ui.viewSelector;
 const Search = DesktopExtension.imports.ui.search;
 const WorkspaceMonitor = DesktopExtension.imports.ui.workspaceMonitor;
@@ -29,9 +30,15 @@ const WorkspaceMonitor = DesktopExtension.imports.ui.workspaceMonitor;
 class Extension {
     constructor() {
         this._workspaceMonitor = new WorkspaceMonitor.WorkspaceMonitor();
+        this._enabled = false;
     }
 
-    enable() {
+    async enable() {
+        if (this._enabled)
+            return;
+
+        await Settings.migrate();
+
         this._workspaceMonitor.enable();
         AppDisplay.enable();
         Dash.enable();
@@ -39,9 +46,14 @@ class Extension {
         ViewSelector.enable();
         Overview.enable();
         Search.enable();
+
+        this._enabled = true;
     }
 
     disable() {
+        if (!this._enabled)
+            return;
+
         this._workspaceMonitor.disable();
         AppDisplay.disable();
         Dash.disable();
@@ -49,6 +61,8 @@ class Extension {
         ViewSelector.disable();
         Overview.disable();
         Search.disable();
+
+        this._enabled = false;
     }
 }
 
