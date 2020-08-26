@@ -58,9 +58,31 @@ function removeCloseButton() {
     delete searchResults._closeButton;
 }
 
-function setSearchResultsXAlign(align) {
+function addMaxWidthBoxInSearch() {
     const { viewSelector } = Main.overview;
-    viewSelector._searchResults.x_align = align;
+
+    viewSelector._searchPage.remove_child(viewSelector._searchResults);
+
+    const maxWidthBox = new Search.MaxWidthBox({
+        name: 'searchResultsBox',
+        x_expand: true,
+    });
+    maxWidthBox.add_child(viewSelector._searchResults);
+
+    viewSelector._searchPage.child = maxWidthBox;
+    viewSelector._searchResults.x_expand = true;
+}
+
+function removeMaxWidthBoxFromSearch() {
+    const { viewSelector } = Main.overview;
+
+    const maxWidthBox = viewSelector._searchResults.get_parent();
+    maxWidthBox.remove_child(viewSelector._searchResults);
+
+    viewSelector._searchPage.child = viewSelector._searchResults;
+    maxWidthBox.destroy();
+
+    viewSelector._searchResults.x_expand = false;
 }
 
 function enable() {
@@ -77,13 +99,13 @@ function enable() {
         get: function() { return 64 },
     });
 
-    setSearchResultsXAlign(Clutter.ActorAlign.CENTER);
+    addMaxWidthBoxInSearch();
     addCloseButton();
 }
 
 function disable() {
     Utils.restore(Search.ProviderInfo);
 
-    setSearchResultsXAlign(Clutter.ActorAlign.FILL);
+    removeMaxWidthBoxFromSearch();
     removeCloseButton();
 }
