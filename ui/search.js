@@ -18,7 +18,12 @@
 
 const { Clutter, St } = imports.gi;
 
+const ExtensionUtils = imports.misc.extensionUtils;
+const DesktopExtension = ExtensionUtils.getCurrentExtension();
+
 const Main = imports.ui.main;
+const Search = imports.ui.search;
+const Utils = DesktopExtension.imports.utils;
 
 function addCloseButton() {
     const searchResults = Main.overview.viewSelector._searchResults;
@@ -59,11 +64,26 @@ function setSearchResultsXAlign(align) {
 }
 
 function enable() {
+    Utils.override(Search.ProviderInfo, '_init', function(provider) {
+        const original = Utils.original(Search.ProviderInfo, '_init');
+        original.bind(this)(provider);
+
+        this._content.vertical = true;
+        for (const label of this._content.get_child_at_index(1))
+            label.x_align = Clutter.ActorAlign.CENTER;
+    });
+
+    Utils.overrideProperty(Search.ProviderInfo, 'PROVIDER_ICON_SIZE', {
+        get: function() { return 64 },
+    });
+
     setSearchResultsXAlign(Clutter.ActorAlign.CENTER);
     addCloseButton();
 }
 
 function disable() {
+    Utils.restore(Search.ProviderInfo);
+
     setSearchResultsXAlign(Clutter.ActorAlign.FILL);
     removeCloseButton();
 }
