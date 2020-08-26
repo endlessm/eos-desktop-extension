@@ -8,7 +8,7 @@ config.*
 config/
 configure
 metadata.json
-schemas/*.compiled
-schemas/*.valid
+**/*.compiled
+**/*.valid
 _build/
 *.css
