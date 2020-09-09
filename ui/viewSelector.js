@@ -60,10 +60,13 @@ function enable() {
 
         this._workspacesDisplay.animateFromOverview(this._activePage != this._workspacesPage);
 
-        this._showAppsButton.checked = true;
-
         if (!this._workspacesDisplay.activeWorkspaceHasMaximizedWindows())
             Main.overview.fadeInDesktop();
+
+        const id = Main.overview.connect('hidden', () => {
+            this._showAppsButton.checked = true;
+            Main.overview.disconnect(id);
+        })
     });
 
 
