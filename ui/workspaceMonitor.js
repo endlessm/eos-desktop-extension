@@ -15,8 +15,9 @@ class WorkspaceMonitor extends GObject.Object {
         this._shellwm.connect('minimize', this._windowDisappearing.bind(this));
         this._shellwm.connect('destroy', this._windowDisappearing.bind(this));
 
-        global.window_group.connect('actor-added', this._windowsChanged.bind(this));
-        global.window_group.connect('actor-removed', this._windowsChanged.bind(this));
+        this._windowGroup = global.window_group;
+        this._windowGroup.connect('actor-added', this._windowsChanged.bind(this));
+        this._windowGroup.connect('actor-removed', this._windowsChanged.bind(this));
 
         global.display.connect('in-fullscreen-changed', this._fullscreenChanged.bind(this));
 
@@ -85,7 +86,7 @@ class WorkspaceMonitor extends GObject.Object {
     }
 
     _getVisibleWindows() {
-        return global.window_group.get_children().filter(child => {
+        return this._windowGroup.get_children().filter(child => {
             if (!(child instanceof Meta.WindowActor))
                 return false;
 
