@@ -29,6 +29,7 @@ const ParentalControlsManager = imports.misc.parentalControlsManager;
 
 const CURRENT_VERSION = 1;
 const EOS_LINK_PREFIX = 'eos-link-';
+const APP_CENTER_ID = 'org.gnome.Software.desktop';
 
 function _getMigrationSettings() {
     const dir = DesktopExtension.dir.get_child('migration').get_path();
@@ -158,6 +159,13 @@ function _migrateToV1(migrationSettings, extensionSettings) {
         addedItems.add(itemId);
         index++;
     }
+
+    // Append the app center icon
+    pages[Math.floor(index / itemsPerPage)][APP_CENTER_ID] = {
+        position: GLib.Variant.new_int32(index % itemsPerPage),
+    };
+    addedItems.add(APP_CENTER_ID);
+    index++;
 
     // Switch to the next page
     index = itemsPerPage * Math.ceil(index / itemsPerPage);
