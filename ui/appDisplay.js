@@ -126,6 +126,22 @@ function setFixedIconSize(iconSize, appDisplay = null) {
     appDisplay._grid.layout_manager.layout_changed();
 }
 
+function rebuildAppGrid() {
+    const { appDisplay } = Main.overview.viewSelector;
+
+    appDisplay._items.clear();
+    appDisplay._orderedItems.splice(0, appDisplay._orderedItems.length);
+
+    const grid = appDisplay._grid;
+    while (grid.nPages > 0) {
+        const items = appDisplay._grid.getItemsAtPage(grid.nPages - 1);
+        for (const item of items)
+            appDisplay._grid.removeItem(item);
+    }
+
+    appDisplay._redisplay();
+}
+
 function enable() {
     Utils.override(AppDisplay.AppDisplay, 'adaptToSize', function(width, height) {
         const [, indicatorHeight] = this._pageIndicators.get_preferred_height(-1);
@@ -161,6 +177,7 @@ function enable() {
         // Empty function to avoid overriding AppDisplay.animate()
     });
 
+    rebuildAppGrid();
     changeAppGridOrientation(Clutter.Orientation.HORIZONTAL);
     setFixedIconSize(64);
 }
@@ -170,6 +187,7 @@ function disable() {
     Utils.restore(IconGrid.IconGrid);
     Utils.restore(PageIndicators.PageIndicators);
 
+    rebuildAppGrid();
     changeAppGridOrientation(Clutter.Orientation.VERTICAL);
     setFixedIconSize(-1);
 }
