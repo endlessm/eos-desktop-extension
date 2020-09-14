@@ -12,14 +12,8 @@ class WorkspaceMonitor extends GObject.Object {
         super._init();
 
         this._shellwm = global.window_manager;
-        this._shellwm.connect('minimize', this._windowDisappearing.bind(this));
-        this._shellwm.connect('destroy', this._windowDisappearing.bind(this));
-
         this._windowGroup = global.window_group;
-        this._windowGroup.connect('actor-added', this._windowsChanged.bind(this));
-        this._windowGroup.connect('actor-removed', this._windowsChanged.bind(this));
-
-        global.display.connect('in-fullscreen-changed', this._fullscreenChanged.bind(this));
+        this._display = global.display;
 
         const primaryMonitor = Main.layoutManager.primaryMonitor;
         this._inFullscreen = primaryMonitor && primaryMonitor.inFullscreen;
@@ -98,10 +92,27 @@ class WorkspaceMonitor extends GObject.Object {
     enable() {
         this._enabled = true;
         this._updateOverview();
+
+        this._wmMinimizeId =
+            this._shellwm.connect('minimize', this._windowDisappearing.bind(this));
+        this._wmDestroyId =
+            this._shellwm.connect('destroy', this._windowDisappearing.bind(this));
+        this._actorAddedId =
+            this._windowGroup.connect('actor-added', this._windowsChanged.bind(this));
+        this._actorRemovedId =
+            this._windowGroup.connect('actor-removed', this._windowsChanged.bind(this));
+        this._inFullscreenId =
+            this._display.connect('in-fullscreen-changed', this._fullscreenChanged.bind(this));
     }
 
     disable() {
         this._enabled = false;
+
+        this._shellwm.disconnect(this._wmMinimizeId);
+        this._shellwm.disconnect(this._wmDestroyId);
+        this._windowGroup.disconnect(this._actorAddedId);
+        this._windowGroup.disconnect(this._actorRemovedId);
+        this._display.disconnect(this._inFullscreenId);
     }
 
     get hasVisibleWindows() {
