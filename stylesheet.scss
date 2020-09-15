@@ -122,7 +122,8 @@ StEntry.search-entry {
   -st-hfade-offset: 0;
   -st-vfade-offset: 0;
 
-  .grid-search-results .app-well-app {
+  .grid-search-results .app-well-app,
+  .grid-search-results .grid-search-result {
     .overview-icon.overview-icon-with-label {
       @extend %search-label-main;
       @extend %search-label-color;
