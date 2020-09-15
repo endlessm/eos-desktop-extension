@@ -142,6 +142,10 @@ function rebuildAppGrid() {
     appDisplay._redisplay();
 }
 
+let overviewHidingId = 0;
+let overviewHiddenId = 0;
+let hidingOverview = false;
+
 function enable() {
     Utils.override(AppDisplay.AppDisplay, 'adaptToSize', function(width, height) {
         const [, indicatorHeight] = this._pageIndicators.get_preferred_height(-1);
@@ -188,6 +192,36 @@ function enable() {
         return filteredApps;
     });
 
+    Utils.override(AppDisplay.AppDisplay, 'goToPage',
+        function(pageNumber, animate = true) {
+            if (hidingOverview)
+                return;
+
+            pageNumber = Math.clamp(pageNumber, 0, this._grid.nPages - 1);
+
+            if (this._grid.currentPage === pageNumber &&
+                this._displayingDialog &&
+                this._currentDialog)
+                return;
+            if (this._displayingDialog && this._currentDialog)
+                this._currentDialog.popdown();
+
+            if (this._grid.currentPage === pageNumber)
+                return;
+
+            this._grid.goToPage(pageNumber, animate);
+        });
+
+    // This relies on the fact that signals are emitted in the
+    // order they are connected. Which means, AppDisplay will
+    // receive the 'hidden' signal first, then we will receive
+    // after, which guarantees that 'hidingOverview' is set to
+    // true during the precise time we want
+    overviewHidingId =
+        Main.overview.connect('hiding', () => hidingOverview = true);
+    overviewHiddenId =
+        Main.overview.connect('hidden', () => hidingOverview = false);
+
     Utils.override(IconGrid.IconGrid, 'animateSpring', function() {
         // Skip the entire spring animation
         this._animationDone();
@@ -206,6 +240,9 @@ function disable() {
     Utils.restore(AppDisplay.AppDisplay);
     Utils.restore(IconGrid.IconGrid);
     Utils.restore(PageIndicators.PageIndicators);
+
+    Main.overview.disconnect(overviewHidingId);
+    Main.overview.disconnect(overviewHiddenId);
 
     rebuildAppGrid();
     changeAppGridOrientation(Clutter.Orientation.VERTICAL);
