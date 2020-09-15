@@ -16,7 +16,7 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-const { Clutter, St } = imports.gi;
+const { Clutter, GLib, Meta, St } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
@@ -145,10 +145,30 @@ function rebuildAppGrid() {
 function enable() {
     Utils.override(AppDisplay.AppDisplay, 'adaptToSize', function(width, height) {
         const [, indicatorHeight] = this._pageIndicators.get_preferred_height(-1);
-        height -= indicatorHeight;
 
-        const original = Utils.original(AppDisplay.AppDisplay, 'adaptToSize');
-        original.bind(this)(width, height);
+        let box = new Clutter.ActorBox({
+            x2: width,
+            y2: height - indicatorHeight,
+        });
+        box = this._scrollView.get_theme_node().get_content_box(box);
+        box = this._grid.get_theme_node().get_content_box(box);
+
+        const availWidth = box.get_width();
+        const availHeight = box.get_height();
+
+        this._grid.adaptToSize(availWidth, availHeight);
+
+        if (this._availWidth !== availWidth ||
+            this._availHeight !== availHeight ||
+            this._pageIndicators.nPages !== this._grid.nPages) {
+            Meta.later_add(Meta.LaterType.BEFORE_REDRAW, () => {
+                this._pageIndicators.setNPages(this._grid.nPages);
+                return GLib.SOURCE_REMOVE;
+            });
+        }
+
+        this._availWidth = availWidth;
+        this._availHeight = availHeight;
     });
 
     Utils.override(AppDisplay.AppDisplay, '_loadApps', function() {
