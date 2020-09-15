@@ -93,6 +93,8 @@ function enable() {
             if (symbol === Clutter.KEY_Escape) {
                 if (this._searchActive)
                     this.reset();
+                else if (this._activePage == this._workspacesPage)
+                    Main.overview.hide();
                 return Clutter.EVENT_STOP;
             } else if (this._shouldTriggerSearch(symbol)) {
                 this.startSearch(event);
