@@ -30,6 +30,7 @@ const ParentalControlsManager = imports.misc.parentalControlsManager;
 const CURRENT_VERSION = 1;
 const EOS_LINK_PREFIX = 'eos-link-';
 const APP_CENTER_ID = 'org.gnome.Software.desktop';
+const CLUBHOUSE_ID = 'com.hack_computer.Clubhouse.desktop';
 
 function _getMigrationSettings() {
     const dir = DesktopExtension.dir.get_child('migration').get_path();
@@ -109,6 +110,17 @@ function _getAppsInsideFolder(installedApps, folder) {
     return appIds;
 }
 
+function _addIcon(pages, itemId, index, itemsPerPage) {
+    const page = Math.floor(index / itemsPerPage);
+
+    if (page === pages.length)
+        pages.push({});
+
+    pages[page][itemId] = {
+        position: GLib.Variant.new_int32(index % itemsPerPage),
+    };
+}
+
 function _migrateToV1(migrationSettings, extensionSettings) {
     const folderSettings = new Gio.Settings({
         schema_id: 'org.gnome.desktop.app-folders',
@@ -131,9 +143,11 @@ function _migrateToV1(migrationSettings, extensionSettings) {
     let index = 0;
     const addedItems = new Set();
 
+    // Add the clubhouse icon
+    _addIcon(pages, CLUBHOUSE_ID, index++, itemsPerPage);
+    addedItems.add(CLUBHOUSE_ID);
+
     for (const itemId of desktopIcons) {
-        const page = Math.floor(index / itemsPerPage);
-        const position = index % itemsPerPage;
         const isFolder = iconGridLayout.iconIsFolder(itemId);
 
         let id = itemId;
@@ -148,24 +162,13 @@ function _migrateToV1(migrationSettings, extensionSettings) {
                 continue;
         }
 
-        if (page === pages.length)
-            pages.push({});
-
-        const pageData = pages[page];
-        pageData[id] = {
-            position: GLib.Variant.new_int32(position),
-        }
-
+        _addIcon(pages, id, index++, itemsPerPage);
         addedItems.add(itemId);
-        index++;
     }
 
     // Append the app center icon
-    pages[Math.floor(index / itemsPerPage)][APP_CENTER_ID] = {
-        position: GLib.Variant.new_int32(index % itemsPerPage),
-    };
+    _addIcon(pages, APP_CENTER_ID, index++, itemsPerPage);
     addedItems.add(APP_CENTER_ID);
-    index++;
 
     // Switch to the next page
     index = itemsPerPage * Math.ceil(index / itemsPerPage);
@@ -192,18 +195,7 @@ function _migrateToV1(migrationSettings, extensionSettings) {
             appId.startsWith(EOS_LINK_PREFIX))
             continue;
 
-        const page = Math.floor(index / itemsPerPage);
-        const position = index % itemsPerPage;
-
-        if (page === pages.length)
-            pages.push({});
-
-        const pageData = pages[page];
-        pageData[appId] = {
-            position: GLib.Variant.new_int32(position),
-        }
-
-        index++;
+        _addIcon(pages, appId, index++, itemsPerPage);
     }
 
     // Store the new page layout
