@@ -14,6 +14,15 @@
   text-shadow: black 0px 2px 2px;
 }
 
+// Page Indicators
+
+.page-indicator {
+  padding: 15px 12px;
+  .page-indicator-icon {
+    box-shadow: 0 0 4px 3px black;
+  }
+}
+
 // Search Entry
 
 StEntry.search-entry {
