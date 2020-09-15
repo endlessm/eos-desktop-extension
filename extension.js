@@ -20,6 +20,7 @@ const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
 const AppDisplay = DesktopExtension.imports.ui.appDisplay;
 const Dash = DesktopExtension.imports.ui.dash;
+const Keybindings = DesktopExtension.imports.ui.keybindings;
 const Layout = DesktopExtension.imports.ui.layout;
 const Overview = DesktopExtension.imports.ui.overview;
 const Settings = DesktopExtension.imports.settings;
@@ -42,6 +43,7 @@ class Extension {
         this._workspaceMonitor.enable();
         AppDisplay.enable();
         Dash.enable();
+        Keybindings.enable();
         Layout.enable();
         ViewSelector.enable();
         Overview.enable();
@@ -57,6 +59,7 @@ class Extension {
         this._workspaceMonitor.disable();
         AppDisplay.disable();
         Dash.disable();
+        Keybindings.disable();
         Layout.disable();
         ViewSelector.disable();
         Overview.disable();
