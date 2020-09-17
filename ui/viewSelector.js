@@ -25,6 +25,52 @@ const Main = imports.ui.main;
 const Utils = DesktopExtension.imports.utils;
 const ViewSelector = imports.ui.viewSelector;
 
+function addWorkspacesPageClickAction() {
+    if (Main.overview._workspacePageClickActionData)
+        return;
+
+    const overviewActor = Main.overview._overview;
+    const { viewSelector } = Main.overview;
+
+    const clickAction = new Clutter.ClickAction();
+    clickAction.connect('clicked', () => {
+        if (clickAction.get_button() == 1) {
+            viewSelector.showApps();
+
+            // This is the background menu action we add in
+            // layout.js
+            if (overviewActor._bgMenuClickAction)
+                overviewActor._bgMenuClickAction.release();
+        }
+    });
+    Main.overview._overview.add_action(clickAction);
+
+    const pageChangedId = viewSelector.connect('page-changed', () => {
+        const activePage = viewSelector.getActivePage();
+        const inWindowsPage = activePage === ViewSelector.ViewPage.WINDOWS;
+
+        clickAction.enabled = inWindowsPage;
+    });
+
+    Main.overview._workspacePageClickActionData = {
+        clickAction,
+        pageChangedId,
+    };
+}
+
+function removeWorkspacesPageClickAction() {
+    if (!Main.overview._workspacePageClickActionData)
+        return;
+
+    const { viewSelector } = Main.overview;
+    const data = Main.overview._workspacePageClickActionData;
+
+    Main.overview._overview.remove_action(data.clickAction);
+    viewSelector.disconnect(data.pageChangedId);
+
+    delete Main.overview._workspacePageClickActionData;
+}
+
 function reconnectToStageKeyPress() {
     const { viewSelector } = Main.overview;
 
@@ -112,11 +158,13 @@ function enable() {
 
     Main.overview.searchEntry.primary_icon.add_style_class_name('primary');
 
+    addWorkspacesPageClickAction();
     reconnectToStageKeyPress();
 }
 
 function disable() {
     Utils.restore(ViewSelector.ViewSelector);
     Main.overview.searchEntry.primary_icon.remove_style_class_name('primary');
+    removeWorkspacesPageClickAction();
     reconnectToStageKeyPress();
 }

@@ -140,9 +140,8 @@ var OverviewCloneController = class OverviewCloneController {
     }
 
     _updateClones() {
-        const { visible, animationInProgress } = Main.overview;
-        const activePage = Main.overview.viewSelector.getActivePage();
-        const inWindowsPage = activePage === ViewSelector.ViewPage.WINDOWS;
+        const { viewSelector, visible, animationInProgress } = Main.overview;
+        const inWindowsPage = viewSelector._workspacesPage.visible;
 
         const overviewCloneOpacity =
             animationInProgress || inWindowsPage ? 255 : 0;
@@ -163,6 +162,8 @@ var OverviewCloneController = class OverviewCloneController {
             group._appGridClone = clone;
         });
 
+        const { viewSelector } = Main.overview;
+
         this._overviewShowingId =
             Main.overview.connect('showing', () => this._updateClones());
         this._overviewShownId =
@@ -172,7 +173,7 @@ var OverviewCloneController = class OverviewCloneController {
         this._overviewHiddenId =
             Main.overview.connect('hidden', () => this._updateClones());
         this._viewSelectorPageChangedId =
-            Main.overview.viewSelector.connect('page-changed',
+            viewSelector._workspacesPage.connect('notify::visible',
                 () => this._updateClones());
     }
 
