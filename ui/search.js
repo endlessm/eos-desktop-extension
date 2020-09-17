@@ -22,6 +22,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
 const InternetSearch = DesktopExtension.imports.ui.internetSearch;
+const LayoutOverrides = DesktopExtension.imports.ui.layout;
 const Main = imports.ui.main;
 const ParentalControlsManager = imports.misc.parentalControlsManager;
 const Search = imports.ui.search;
@@ -121,6 +122,8 @@ function registerInternetSearchProvider() {
             entry.hint_text = _('Search %s and more…').format(searchEngine);
         else
             entry.hint_text = _('Search the internet and more…');
+
+        LayoutOverrides.setSearchHint(entry.hint_text);
     }
 }
 
@@ -136,6 +139,7 @@ function unregisterInternetSearchProvider() {
 
     // Reset the search entry text
     Main.overview.searchEntry.hint_text = _('Type to search');
+    LayoutOverrides.setSearchHint(_('Type to search'));
 }
 
 function setInternetSearchProviderEnable(enabled) {
