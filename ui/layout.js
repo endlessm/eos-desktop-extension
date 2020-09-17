@@ -59,17 +59,30 @@ class OverviewClone extends St.BoxLayout {
         });
         box.add_child(panelGhost);
 
-        const searchEntryClone = new Clutter.Clone({
-            source: Main.overview.searchEntry.get_parent(),
-            x_align: Clutter.ActorAlign.CENTER,
+        // Search entry
+        this._entry = new St.Entry({
+            primary_icon: new St.Icon({
+                style_class: 'search-entry-icon',
+                icon_name: 'edit-find-symbolic',
+            }),
+            style_class: 'search-entry',
+            track_hover: true,
+            can_focus: true,
         });
-        box.add_actor(searchEntryClone);
+        this._entry.primary_icon.add_style_class_name('primary');
+        const searchEntryBin = new St.Bin({
+            child: this._entry,
+            x_align: Clutter.ActorAlign.CENTER,
+            offscreen_redirect: Clutter.OffscreenRedirect.ALWAYS,
+        });
+        box.add_actor(searchEntryBin);
 
         // HACK: invasively find the overview signal id that AppDisplay
         // will use when connecting to the 'hidden' signal
         this._overviewHiddenId = Main.overview._nextConnectionId;
 
         const appDisplayClone = new AppDisplay.AppDisplay();
+        appDisplayClone.offscreen_redirect = Clutter.OffscreenRedirect.ALWAYS;
 
         // Disable DnD on clones
         appDisplayClone._disconnectDnD();
@@ -110,6 +123,10 @@ class OverviewClone extends St.BoxLayout {
         OverviewOverrides.updateGhostPanelPosition(box);
 
         this.connect('destroy', this._onDestroy.bind(this));
+    }
+
+    setSearchHint(hint) {
+        this._entry.hint_text = hint;
     }
 
     _onDestroy() {
@@ -199,6 +216,15 @@ var OverviewCloneController = class OverviewCloneController {
 };
 
 const cloneController = new OverviewCloneController();
+
+function setSearchHint(hint) {
+    bgGroups.forEach(group => {
+        if (!group._appGridClone)
+            return;
+
+        group._appGridClone.setSearchHint(hint);
+    });
+}
 
 function enable() {
     if (startupPreparedId === 0) {
