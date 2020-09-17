@@ -36,7 +36,6 @@ function _setSwitcherKeybindingsMode(mode) {
     ];
 
     for (const keybinding of keybindings) {
-        Main.wm.removeKeybinding(keybinding);
         Main.wm.setCustomKeybindingHandler(keybinding,
             mode, Main.wm._startSwitcher.bind(Main.wm));
     }
