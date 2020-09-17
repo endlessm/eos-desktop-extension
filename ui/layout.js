@@ -70,6 +70,7 @@ class OverviewClone extends St.BoxLayout {
         this._overviewHiddenId = Main.overview._nextConnectionId;
 
         const appDisplayClone = new AppDisplay.AppDisplay();
+        appDisplayClone.offscreen_redirect = Clutter.OffscreenRedirect.ALWAYS;
 
         // Disable DnD on clones
         appDisplayClone._disconnectDnD();
