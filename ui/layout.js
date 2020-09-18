@@ -189,7 +189,7 @@ var OverviewCloneController = class OverviewCloneController {
             Main.overview.connect('hiding', () => this._updateClones());
         this._overviewHiddenId =
             Main.overview.connect('hidden', () => this._updateClones());
-        this._viewSelectorPageChangedId =
+        this._workspacesVisibleId =
             viewSelector._workspacesPage.connect('notify::visible',
                 () => this._updateClones());
     }
@@ -210,8 +210,9 @@ var OverviewCloneController = class OverviewCloneController {
         this._overviewShownId = 0;
         Main.overview.disconnect(this._overviewHidingId);
         this._overviewHidingId = 0;
-        Main.overview.viewSelector.disconnect(this._viewSelectorPageChangedId);
-        this._viewSelectorPageChangedId = 0;
+        Main.overview.viewSelector._workspacesPage.disconnect(
+            this._workspacesVisibleId);
+        this._workspacesVisibleId = 0;
     }
 };
 
