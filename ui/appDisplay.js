@@ -218,9 +218,9 @@ function enable() {
     // after, which guarantees that 'hidingOverview' is set to
     // true during the precise time we want
     overviewHidingId =
-        Main.overview.connect('hiding', () => hidingOverview = true);
+        Main.overview.connect('hiding', () => { hidingOverview = true });
     overviewHiddenId =
-        Main.overview.connect('hidden', () => hidingOverview = false);
+        Main.overview.connect('hidden', () => { hidingOverview = false });
 
     Utils.override(IconGrid.IconGrid, 'animateSpring', function() {
         // Skip the entire spring animation
