@@ -71,6 +71,27 @@ function removeWorkspacesPageClickAction() {
     delete Main.overview._workspacePageClickActionData;
 }
 
+function connectSearchEntryClick() {
+    const { searchEntry } = Main.overview;
+    if (searchEntry._clickHandler)
+        return;
+
+    searchEntry._clickHandler = searchEntry.connect_after('secondary-icon-clicked', () => {
+        const overviewActor = Main.overview._overview;
+        if (overviewActor._bgMenuClickAction)
+            overviewActor._bgMenuClickAction.release();
+    });
+}
+
+function disconnectSearchEntryClick() {
+    const { searchEntry } = Main.overview;
+    if (!searchEntry._clickHandler)
+        return;
+    searchEntry.disconnect(searchEntry._clickHandler);
+
+    delete searchEntry._clickHandler;
+}
+
 function reconnectToStageKeyPress() {
     const { viewSelector } = Main.overview;
 
@@ -160,6 +181,7 @@ function enable() {
 
     addWorkspacesPageClickAction();
     reconnectToStageKeyPress();
+    connectSearchEntryClick();
 }
 
 function disable() {
@@ -167,4 +189,5 @@ function disable() {
     Main.overview.searchEntry.primary_icon.remove_style_class_name('primary');
     removeWorkspacesPageClickAction();
     reconnectToStageKeyPress();
+    disconnectSearchEntryClick();
 }
