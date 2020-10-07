@@ -40,7 +40,6 @@ class Extension {
 
         await Settings.migrate();
 
-        this._workspaceMonitor.enable();
         AppDisplay.enable();
         Dash.enable();
         Keybindings.enable();
@@ -48,6 +47,7 @@ class Extension {
         ViewSelector.enable();
         Overview.enable();
         Search.enable();
+        this._workspaceMonitor.enable();
 
         this._enabled = true;
     }
