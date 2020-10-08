@@ -231,6 +231,8 @@ function enable() {
     if (startupPreparedId === 0) {
         startupPreparedId =
             Main.layoutManager.connect('startup-prepared', () => {
+                if (Main.overview.visible)
+                    Main.overview.hide();
                 Main.overview.show();
             });
     }
