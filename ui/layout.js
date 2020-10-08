@@ -87,6 +87,7 @@ class OverviewClone extends St.BoxLayout {
         // Disable DnD on clones
         appDisplayClone._disconnectDnD();
         appDisplayClone._connectDnD = function() {};
+        appDisplayClone._savePages = function() {};
 
         AppDisplayOverrides.changeAppGridOrientation(
             Clutter.Orientation.HORIZONTAL,
