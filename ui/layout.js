@@ -98,12 +98,14 @@ class OverviewClone extends St.BoxLayout {
 
         // Bind adjustments
         const { appDisplay } = Main.overview.viewSelector;
-        appDisplay._scrollView.hscroll.adjustment.bind_property('value',
-            appDisplayClone._scrollView.hscroll.adjustment, 'value',
-            GObject.BindingFlags.SYNC_CREATE);
-        appDisplay._scrollView.vscroll.adjustment.bind_property('value',
-            appDisplayClone._scrollView.vscroll.adjustment, 'value',
-            GObject.BindingFlags.SYNC_CREATE);
+        ['upper', 'value'].forEach(property => {
+            appDisplay._scrollView.hscroll.adjustment.bind_property(property,
+                appDisplayClone._scrollView.hscroll.adjustment, property,
+                GObject.BindingFlags.SYNC_CREATE);
+            appDisplay._scrollView.vscroll.adjustment.bind_property(property,
+                appDisplayClone._scrollView.vscroll.adjustment, property,
+                GObject.BindingFlags.SYNC_CREATE);
+        });
 
         // Added by this extension's ui/appDisplay.js file
         this._desaturateEffect = new Clutter.DesaturateEffect({
