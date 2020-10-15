@@ -194,6 +194,7 @@ function enable() {
 
     Utils.override(AppDisplay.AppDisplay, 'goToPage',
         function(pageNumber, animate = true) {
+            log ('+++ invoking goToPage for appDisplay %s page %d'.format(this, pageNumber));
             if (hidingOverview)
                 return;
 
@@ -210,11 +211,12 @@ function enable() {
                 return;
 
             this._grid.goToPage(pageNumber, animate);
+            log ('+++ appDisplay %s page changed to %d'.format(this, pageNumber));
         });
 
     // This relies on the fact that signals are emitted in the
     // order they are connected. Which means, AppDisplay will
-    // receive the 'hidden' signal first, then we will receive
+    // receive the 'hiding' signal first, then we will receive 'hidden'
     // after, which guarantees that 'hidingOverview' is set to
     // true during the precise time we want
     overviewHidingId =

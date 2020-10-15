@@ -82,6 +82,8 @@ class OverviewClone extends St.BoxLayout {
         this._overviewHiddenId = Main.overview._nextConnectionId;
 
         const appDisplayClone = new AppDisplay.AppDisplay();
+        this.appDisplayClone = appDisplayClone;
+        log('+++ Created app display clone %s'.format(appDisplayClone));
         appDisplayClone.offscreen_redirect = Clutter.OffscreenRedirect.ALWAYS;
 
         // Disable DnD on clones
@@ -159,14 +161,23 @@ var OverviewCloneController = class OverviewCloneController {
 
     _updateClones() {
         const { viewSelector, visible, animationInProgress } = Main.overview;
+        const appDisplay = viewSelector.appDisplay;
         const inWindowsPage = viewSelector._workspacesPage.visible;
+
+        log('+++ Overview hidden setting clones to page %d'.format(
+            appDisplay._grid.currentPage));
 
         const overviewCloneOpacity =
             animationInProgress || inWindowsPage ? 255 : 0;
         Main.overview._backgroundGroup._appGridClone.opacity = overviewCloneOpacity;
+        Main.overview._backgroundGroup._appGridClone.appDisplayClone.goToPage(appDisplay._grid.currentPage);
 
         const layoutCloneOpacity = visible ? 0 : 255;
         Main.layoutManager._backgroundGroup._appGridClone.opacity = layoutCloneOpacity;
+        Main.layoutManager._backgroundGroup._appGridClone.appDisplayClone.goToPage(appDisplay._grid.currentPage);
+
+        log('+++ Clones set to page %d'.format(
+            Main.layoutManager._backgroundGroup._appGridClone.appDisplayClone._grid.currentPage));
     }
 
     enable() {
