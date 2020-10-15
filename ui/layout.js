@@ -83,6 +83,7 @@ class OverviewClone extends St.BoxLayout {
 
         const appDisplayClone = new AppDisplay.AppDisplay();
         appDisplayClone.offscreen_redirect = Clutter.OffscreenRedirect.ALWAYS;
+        this._appDisplayClone = appDisplayClone;
 
         // Disable DnD on clones
         appDisplayClone._disconnectDnD();
@@ -128,6 +129,11 @@ class OverviewClone extends St.BoxLayout {
 
     setSearchHint(hint) {
         this._entry.hint_text = hint;
+    }
+
+    vfunc_map() {
+        super.vfunc_map();
+        this._appDisplayClone._grid.queue_redraw();
     }
 
     _onDestroy() {
