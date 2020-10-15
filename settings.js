@@ -157,9 +157,8 @@ function _migrateToV1(migrationSettings, extensionSettings) {
                 Shell.util_get_translated_folder_name(itemId);
 
             id = _createFolder(folderSettings, translatedName, folderIcons);
-        } else {
-            if (!installedAppsSet.has(itemId))
-                continue;
+        } else if (!installedAppsSet.has(itemId)) {
+            continue;
         }
 
         _addIcon(pages, id, index++, itemsPerPage);
