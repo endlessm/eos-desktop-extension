@@ -157,18 +157,26 @@ function _migrateToV1(migrationSettings, extensionSettings) {
                 Shell.util_get_translated_folder_name(itemId);
 
             id = _createFolder(folderSettings, translatedName, folderIcons);
-        } else {
-            if (!installedAppsSet.has(itemId))
-                continue;
+        } else if (!installedAppsSet.has(itemId)) {
+            continue;
+        }
+
+        // If we have more than 24 icons, make sure that the app center icon
+        // appended to the first page
+        if (index === itemsPerPage - 1) {
+            _addIcon(pages, APP_CENTER_ID, index++, itemsPerPage);
+            addedItems.add(APP_CENTER_ID);
         }
 
         _addIcon(pages, id, index++, itemsPerPage);
         addedItems.add(itemId);
     }
 
-    // Append the app center icon
-    _addIcon(pages, APP_CENTER_ID, index++, itemsPerPage);
-    addedItems.add(APP_CENTER_ID);
+    // Append the app center icon if it wasn't added in the loop above
+    if (!addedItems.has(APP_CENTER_ID)) {
+        _addIcon(pages, APP_CENTER_ID, index++, itemsPerPage);
+        addedItems.add(APP_CENTER_ID);
+    }
 
     // Switch to the next page
     index = itemsPerPage * Math.ceil(index / itemsPerPage);
