@@ -84,6 +84,7 @@ function changeAppGridOrientation(orientation, appDisplay = null) {
     appDisplay._pageIndicators = pageIndicators;
 
     if (vertical) {
+        appDisplay.remove_style_class_name('app-display');
         appDisplay._stack.add_child(scrollView);
         appDisplay.add_child(pageIndicators);
         scrollViewParent.destroy();
@@ -105,6 +106,7 @@ function changeAppGridOrientation(orientation, appDisplay = null) {
             });
 
         scrollView.remove_style_class_name('all-apps');
+        appDisplay.add_style_class_name('app-display');
     }
 
     appDisplay._scrollView.set_policy(
