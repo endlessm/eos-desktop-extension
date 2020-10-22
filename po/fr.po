@@ -1,0 +1,76 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the eos-desktop-extension package.
+#
+# Translators:
+# AlainLojewski <allomervan@gmail.com>, 2014,2017
+# AlainLojewski <allomervan@gmail.com>, 2014
+# Alexandre Franke <alexandre.franke@gmail.com>, 2012,2015
+# Charles Monzat <c.monzat@laposte.net>, 2016
+# Claude Paroz <claude@2xlibre.net>, 2016
+# Cyril Arnaud <cyril dot arnaud at gmail dot com>, 2011
+# Erwan Georget <egeorget@opmbx.org>, 2016
+# Julien Humbert <julroy67@gmail.com>, 2019
+# Luc Guillemin <luc.guillemin@gmail.com>, 2011
+# Luc Pionchon <pionchon.luc@gmail.com>, 2011
+# Mathieu Bridon <bochecha@daitauha.fr>, 2009
+# Mathieu Bridon <bochecha@fedoraproject.org>, 2009
+# Mathieu Stumpf <psychoslave@culture-libre.org>, 2013
+# Pablo Martin-Gomez <pablo.martin-gomez@laposte.net>, 2010
+# Pierre Henry <pierrehenry73@yahoo.fr>, 2012
+# Roddy Shuler <roddy@stanfordalumni.org>, 2014-2018
+# Will Thompson <wjt@endlessos.org>, 2019
+msgid ""
+msgstr ""
+"Project-Id-Version: eos-desktop-extension\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-10-22 19:04-0300\n"
+"PO-Revision-Date: 2020-09-23 15:28+0000\n"
+"Last-Translator: Will Thompson <wjt@endlessos.org>\n"
+"Language-Team: French (http://www.transifex.com/endless-os/eos-desktop-"
+"extension/language/fr/)\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#.
+#. * Translators: this is the name of the search engine that shows in the
+#. * Shell's desktop search entry.
+#.
+#: ui/internetSearch.js:99
+msgid "Google"
+msgstr "Google"
+
+#: ui/internetSearch.js:210
+#, javascript-format
+msgid "Open \"%s\" in browser"
+msgstr "Ouvrir « %s » dans le navigateur"
+
+#. Translators: the first %s is the search engine name, and the second
+#. * is the search string. For instance, 'Search Google for "hello"'.
+#.
+#: ui/internetSearch.js:219
+#, javascript-format
+msgid "Search %s for \"%s\""
+msgstr "Rechercher \"%s\" sur %s"
+
+#: ui/internetSearch.js:221
+#, javascript-format
+msgid "Search the internet for \"%s\""
+msgstr "Rechercher \"%s\" sur internet"
+
+#: ui/search.js:123
+#, javascript-format
+msgid "Search %s and more…"
+msgstr "Rechercher %s et plus…"
+
+#: ui/search.js:125
+msgid "Search the internet and more…"
+msgstr "Faire des recherches sur internet et plus…"
+
+#. Reset the search entry text
+#: ui/search.js:142 ui/search.js:143
+msgid "Type to search"
+msgstr ""

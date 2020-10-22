@@ -1,0 +1,91 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the eos-desktop-extension package.
+#
+# Translators:
+# Adorilson Bezerra <adorilson@gmail.com>, 2011,2014
+# Artur de Aquino Morais <artur.morais93@outlook.com>, 2016
+# Bruno Lopes da Silva <brunolopesbldsb@gmail.com>, 2018
+# Djavan Fagundes <djavan@comum.org>, 2012
+# Enrico Nicoletto <liverig@gmail.com>, 2013-2017
+# Fábio Nogueira <fnogueira@gnome.org>, 2014
+# Felipe Borges <felipe10borges@gmail.com>, 2010
+# Felipe Braga <fbobraga@gmail.com>, 2015
+# Gabriel F. Vilar <cogumm@gmail.com>, 2011
+# Georges Basile Stavracas Neto <georges.stavracas@gmail.com>, 2014
+# Henrique P. Machado <hpmachado@gnome.org>, 2010-2011
+# Ivan G. Gonçalves <i@endlessm.com>, 2015
+# Jonh Wendell <wendell@bani.com.br>, 2010
+# Juan Diego Martins da Costa Cruz <juan.martins@ifrn.edu.br>, 2013
+# Leandro Stanger <leandrostanger@hotmail.com>, 2018
+# Leandro Stanger <leandrostanger@hotmail.com>, 2018-2020
+# Luan Zuffo <luanzuffo.lz@gmail.com>, 2020
+# Mariana Barbosa <mariana@endlessm.com>, 2016-2018
+# Mariana Barbosa <mari@endlessm.com>, 2015-2016
+# Mazen Asef Ali <mazen@endlessm.com>, 2019
+# Og Maciel <ogmaciel@gnome.org>, 2009
+# Rafael Fontenelle <rffontenelle@gmail.com>, 2013
+# Rafael Fontenelle <rafaelff@gnome.org>, 2013-2017
+# Rafael Fontenelle <rffontenelle@gmail.com>, 2013
+# Renato Peixoto Pinto <renato@endlessm.com>, 2020
+# Ricardo Pitanga <pitanga@endlessm.com>, 2013
+# Ricardo Silva Veloso <ricvelozo@gmail.com>, 2019
+# Richard Vignais, 2014
+# Roddy Shuler <roddy@stanfordalumni.org>, 2015-2018
+# Rodrigo Flores <mail@rodrigoflores.org>, 2009
+# Rodrigo Padula <contato@rodrigopadula.com>, 2011
+# Will Thompson <wjt@endlessos.org>, 2019
+msgid ""
+msgstr ""
+"Project-Id-Version: eos-desktop-extension\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-10-22 19:04-0300\n"
+"PO-Revision-Date: 2020-09-19 11:01+0000\n"
+"Last-Translator: Leandro Stanger <leandrostanger@hotmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/endless-os/eos-"
+"desktop-extension/language/pt_BR/)\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#.
+#. * Translators: this is the name of the search engine that shows in the
+#. * Shell's desktop search entry.
+#.
+#: ui/internetSearch.js:99
+msgid "Google"
+msgstr "Google"
+
+#: ui/internetSearch.js:210
+#, javascript-format
+msgid "Open \"%s\" in browser"
+msgstr "Abrir \"%s\" na Internet"
+
+#. Translators: the first %s is the search engine name, and the second
+#. * is the search string. For instance, 'Search Google for "hello"'.
+#.
+#: ui/internetSearch.js:219
+#, javascript-format
+msgid "Search %s for \"%s\""
+msgstr "Buscar no %s por \"%s\""
+
+#: ui/internetSearch.js:221
+#, javascript-format
+msgid "Search the internet for \"%s\""
+msgstr "Buscar na internet por \"%s\""
+
+#: ui/search.js:123
+#, javascript-format
+msgid "Search %s and more…"
+msgstr "Busque no %s e mais…"
+
+#: ui/search.js:125
+msgid "Search the internet and more…"
+msgstr "Busque na internet e mais…"
+
+#. Reset the search entry text
+#: ui/search.js:142 ui/search.js:143
+msgid "Type to search"
+msgstr ""
