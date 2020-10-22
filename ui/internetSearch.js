@@ -2,6 +2,10 @@
 
 const { GLib, Gio, Json, Shell } = imports.gi;
 
+const ExtensionUtils = imports.misc.extensionUtils;
+const DesktopExtension = ExtensionUtils.getCurrentExtension();
+const _ = DesktopExtension.imports.utils.gettext;
+
 // http://stackoverflow.com/questions/4691070/validate-url-without-www-or-http
 const _searchUrlRegexp = new RegExp(
     '^([a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+.*)\\.+[A-Za-z0-9\.\/%&=\?\-_]+$',

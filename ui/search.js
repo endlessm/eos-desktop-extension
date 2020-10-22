@@ -20,6 +20,7 @@ const { Clutter, St } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
+const _ = DesktopExtension.imports.utils.gettext;
 
 const InternetSearch = DesktopExtension.imports.ui.internetSearch;
 const LayoutOverrides = DesktopExtension.imports.ui.layout;

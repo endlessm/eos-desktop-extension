@@ -4,6 +4,10 @@
 const ExtensionUtils = imports.misc.extensionUtils;
 const Main = imports.ui.main;
 
+const Gettext = imports.gettext.domain('eos-desktop-extension');
+
+var gettext = Gettext.gettext;
+
 function override(object, methodName, callback) {
     if (!object._desktopFnOverrides)
         object._desktopFnOverrides = {};
