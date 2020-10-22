@@ -80,6 +80,9 @@ install_data('schemas/gschemas.compiled', install_dir: schemadir)
 run_command([glib_compile, 'migration'])
 install_subdir('migration', install_dir: join_paths(extensiondir, uuid))
 
+i18n = import('i18n')
+subdir('po')
+
 if have_schemas
   meson.add_install_script('meson-postinstall.sh')
 endif
