@@ -1,0 +1,14 @@
+# List of source files to look for translatable strings.
+# Please keep this file sorted alphabetically.
+ui/appDisplay.js
+ui/dash.js
+ui/iconGridLayout.js
+ui/internetSearch.js
+ui/keybindings.js
+ui/layout.js
+ui/overview.js
+ui/search.js
+ui/viewSelector.js
+ui/workspaceMonitor.js
+settings.js
+utils.js
