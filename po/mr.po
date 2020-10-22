@@ -1,0 +1,61 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the eos-desktop-extension package.
+#
+# Translators:
+# Prasadh Baapaat <prasadhbaapaat@gmail.com>, 2016
+# sandeeps <sshedmak@redhat.com>, 2011-2014
+msgid ""
+msgstr ""
+"Project-Id-Version: eos-desktop-extension\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-10-22 19:04-0300\n"
+"PO-Revision-Date: 2020-09-17 15:36+0000\n"
+"Last-Translator: endlessmobile_build <philip@endlessm.com>\n"
+"Language-Team: Marathi (http://www.transifex.com/endless-os/eos-desktop-"
+"extension/language/mr/)\n"
+"Language: mr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#.
+#. * Translators: this is the name of the search engine that shows in the
+#. * Shell's desktop search entry.
+#.
+#: ui/internetSearch.js:99
+msgid "Google"
+msgstr "Google"
+
+#: ui/internetSearch.js:210
+#, javascript-format
+msgid "Open \"%s\" in browser"
+msgstr "\"%s\" ब्राउझरमध्ये उघडा"
+
+#. Translators: the first %s is the search engine name, and the second
+#. * is the search string. For instance, 'Search Google for "hello"'.
+#.
+#: ui/internetSearch.js:219
+#, javascript-format
+msgid "Search %s for \"%s\""
+msgstr "%s \"%s\" करीता शोधा"
+
+#: ui/internetSearch.js:221
+#, javascript-format
+msgid "Search the internet for \"%s\""
+msgstr "\"%s\" इंटरनेटवर शोधा"
+
+#: ui/search.js:123
+#, javascript-format
+msgid "Search %s and more…"
+msgstr ""
+
+#: ui/search.js:125
+msgid "Search the internet and more…"
+msgstr ""
+
+#. Reset the search entry text
+#: ui/search.js:142 ui/search.js:143
+msgid "Type to search"
+msgstr ""

@@ -1,0 +1,63 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the eos-desktop-extension package.
+#
+# Translators:
+# Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>, 2010
+# Roddy Shuler <roddy@stanfordalumni.org>, 2017-2018
+# Wei-Lun Chao <chaoweilun@gmail.com>, 2010
+# Will Thompson <wjt@endlessos.org>, 2019
+msgid ""
+msgstr ""
+"Project-Id-Version: eos-desktop-extension\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-10-22 19:04-0300\n"
+"PO-Revision-Date: 2020-09-23 17:28+0000\n"
+"Last-Translator: Will Thompson <wjt@endlessos.org>\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/endless-os/eos-"
+"desktop-extension/language/zh_TW/)\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#.
+#. * Translators: this is the name of the search engine that shows in the
+#. * Shell's desktop search entry.
+#.
+#: ui/internetSearch.js:99
+msgid "Google"
+msgstr "Google"
+
+#: ui/internetSearch.js:210
+#, javascript-format
+msgid "Open \"%s\" in browser"
+msgstr "在瀏覽器中開啟「%s」"
+
+#. Translators: the first %s is the search engine name, and the second
+#. * is the search string. For instance, 'Search Google for "hello"'.
+#.
+#: ui/internetSearch.js:219
+#, javascript-format
+msgid "Search %s for \"%s\""
+msgstr "用 %s 搜索「%s」"
+
+#: ui/internetSearch.js:221
+#, javascript-format
+msgid "Search the internet for \"%s\""
+msgstr "在網際網路上搜索「%s」"
+
+#: ui/search.js:123
+#, javascript-format
+msgid "Search %s and more…"
+msgstr "搜尋 %s 以及更多…"
+
+#: ui/search.js:125
+msgid "Search the internet and more…"
+msgstr "搜尋網際網路，以及更多…"
+
+#. Reset the search entry text
+#: ui/search.js:142 ui/search.js:143
+msgid "Type to search"
+msgstr ""

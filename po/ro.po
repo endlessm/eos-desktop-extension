@@ -1,0 +1,69 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the eos-desktop-extension package.
+#
+# Translators:
+# Daniel Șerbănescu <cyber19rider@gmail.com>, 2010-2011
+# Daniel Șerbănescu <daniel [at] serbanescu [dot] dk>, 2015,2018
+# georgian balan <braila222@gmail.com>, 2016-2018
+# Ion Laurențiu Cristian <me_lawr@yahoo.com>, 2010
+# laurion <me_lawr@yahoo.com>, 2010
+# Lucian Adrian Grijincu <lucian.grijincu@gmail.com>, 2009-2011
+# Viorel-Cătălin Răpițeanu <rapiteanu.catalin@gmail.com>, 2013
+# Roddy Shuler <roddy@stanfordalumni.org>, 2017-2018
+# Viorel-Cătălin Răpițeanu <rapiteanu.catalin@gmail.com>, 2013-2014
+msgid ""
+msgstr ""
+"Project-Id-Version: eos-desktop-extension\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-10-22 19:04-0300\n"
+"PO-Revision-Date: 2020-09-17 15:36+0000\n"
+"Last-Translator: endlessmobile_build <philip@endlessm.com>\n"
+"Language-Team: Romanian (http://www.transifex.com/endless-os/eos-desktop-"
+"extension/language/ro/)\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?"
+"2:1));\n"
+
+#.
+#. * Translators: this is the name of the search engine that shows in the
+#. * Shell's desktop search entry.
+#.
+#: ui/internetSearch.js:99
+msgid "Google"
+msgstr "Google"
+
+#: ui/internetSearch.js:210
+#, javascript-format
+msgid "Open \"%s\" in browser"
+msgstr "Deschide %s in browser"
+
+#. Translators: the first %s is the search engine name, and the second
+#. * is the search string. For instance, 'Search Google for "hello"'.
+#.
+#: ui/internetSearch.js:219
+#, javascript-format
+msgid "Search %s for \"%s\""
+msgstr "Cauta %s pentru %s"
+
+#: ui/internetSearch.js:221
+#, javascript-format
+msgid "Search the internet for \"%s\""
+msgstr "Cauta pe internet %s"
+
+#: ui/search.js:123
+#, javascript-format
+msgid "Search %s and more…"
+msgstr "Cauta %s si mai multe…"
+
+#: ui/search.js:125
+msgid "Search the internet and more…"
+msgstr "Cauta pe internet…"
+
+#. Reset the search entry text
+#: ui/search.js:142 ui/search.js:143
+msgid "Type to search"
+msgstr ""

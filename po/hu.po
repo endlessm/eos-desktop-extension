@@ -1,0 +1,67 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the eos-desktop-extension package.
+#
+# Translators:
+# Balázs Meskó <mesko.balazs at fsf dot hu>, 2014,2019-2020
+# Balázs Meskó <meskobalazs at gmail dot com>, 2014
+# Balázs Úr <ur.balazs at fsf dot hu>, 2012,2014-2020
+# Balázs Úr <urbalazs at gmail dot com>, 2012,2014-2019
+# Gabor Kelemen <kelemeng at gnome dot hu>, 2009-2016
+# Gyula Szabó <gyhun95@gmail.com>, 2018
+# Lukács Bence <lukacs.bence1 at gmail dot com>, 2012
+# Zoltan Hoppar <hopparz@gmail.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: eos-desktop-extension\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-10-22 19:04-0300\n"
+"PO-Revision-Date: 2020-09-17 15:36+0000\n"
+"Last-Translator: endlessmobile_build <philip@endlessm.com>\n"
+"Language-Team: Hungarian (http://www.transifex.com/endless-os/eos-desktop-"
+"extension/language/hu/)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#.
+#. * Translators: this is the name of the search engine that shows in the
+#. * Shell's desktop search entry.
+#.
+#: ui/internetSearch.js:99
+msgid "Google"
+msgstr "Google"
+
+#: ui/internetSearch.js:210
+#, javascript-format
+msgid "Open \"%s\" in browser"
+msgstr "\"%s\" megnyitása böngészőben"
+
+#. Translators: the first %s is the search engine name, and the second
+#. * is the search string. For instance, 'Search Google for "hello"'.
+#.
+#: ui/internetSearch.js:219
+#, javascript-format
+msgid "Search %s for \"%s\""
+msgstr "Keresés %s \"%s\" után"
+
+#: ui/internetSearch.js:221
+#, javascript-format
+msgid "Search the internet for \"%s\""
+msgstr "Keresés az interneten ez után: \"%s\""
+
+#: ui/search.js:123
+#, javascript-format
+msgid "Search %s and more…"
+msgstr " %s keresése és egyéb…"
+
+#: ui/search.js:125
+msgid "Search the internet and more…"
+msgstr "Keresés az interneten és egyebek..."
+
+#. Reset the search entry text
+#: ui/search.js:142 ui/search.js:143
+msgid "Type to search"
+msgstr ""
