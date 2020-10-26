@@ -25,7 +25,6 @@ const AppDisplay = imports.ui.appDisplay;
 const IconGrid = imports.ui.iconGrid;
 const Main = imports.ui.main;
 const PageIndicators = imports.ui.pageIndicators;
-const ViewSelector = imports.ui.viewSelector;
 const Utils = DesktopExtension.imports.utils;
 
 function _disconnectAdjustment(appDisplay) {
@@ -147,7 +146,7 @@ let overviewHiddenId = 0;
 let hidingOverview = false;
 
 function enable() {
-    Utils.override(AppDisplay.AppDisplay, 'adaptToSize', function(width, height) {
+    Utils.override(AppDisplay.AppDisplay, 'adaptToSize', function (width, height) {
         const [, indicatorHeight] = this._pageIndicators.get_preferred_height(-1);
 
         let box = new Clutter.ActorBox({
@@ -176,7 +175,7 @@ function enable() {
     });
 
     Utils.override(AppDisplay.AppDisplay, 'goToPage',
-        function(pageNumber, animate = true) {
+        function (pageNumber, animate = true) {
             if (hidingOverview)
                 return;
 
@@ -201,16 +200,20 @@ function enable() {
     // after, which guarantees that 'hidingOverview' is set to
     // true during the precise time we want
     overviewHidingId =
-        Main.overview.connect('hiding', () => { hidingOverview = true });
+        Main.overview.connect('hiding', () => {
+            hidingOverview = true;
+        });
     overviewHiddenId =
-        Main.overview.connect('hidden', () => { hidingOverview = false });
+        Main.overview.connect('hidden', () => {
+            hidingOverview = false;
+        });
 
-    Utils.override(IconGrid.IconGrid, 'animateSpring', function() {
+    Utils.override(IconGrid.IconGrid, 'animateSpring', function () {
         // Skip the entire spring animation
         this._animationDone();
     });
 
-    Utils.override(PageIndicators.PageIndicators, 'animateIndicators', function() {
+    Utils.override(PageIndicators.PageIndicators, 'animateIndicators', function () {
         // Empty function to avoid overriding AppDisplay.animate()
     });
 
