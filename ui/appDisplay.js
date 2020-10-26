@@ -28,8 +28,6 @@ const PageIndicators = imports.ui.pageIndicators;
 const ViewSelector = imports.ui.viewSelector;
 const Utils = DesktopExtension.imports.utils;
 
-const EOS_LINK_PREFIX = 'eos-link-';
-
 function _disconnectAdjustment(appDisplay) {
     if (!appDisplay._adjId || appDisplay._adjId === 0)
         return;
@@ -175,23 +173,6 @@ function enable() {
 
         this._availWidth = availWidth;
         this._availHeight = availHeight;
-    });
-
-    Utils.override(AppDisplay.AppDisplay, '_loadApps', function() {
-        const original = Utils.original(AppDisplay.AppDisplay, '_loadApps');
-        const newApps = original.bind(this)();
-
-        const filteredApps = newApps.filter(appIcon => {
-            const appId = appIcon.id;
-            const [page, position] = this._pageManager.getAppPosition(appId);
-
-            const isLink = appId.startsWith(EOS_LINK_PREFIX);
-            const isOnDesktop = page !== -1 && position !== -1;
-
-            return !isLink || isOnDesktop;
-        });
-
-        return filteredApps;
     });
 
     Utils.override(AppDisplay.AppDisplay, 'goToPage',
