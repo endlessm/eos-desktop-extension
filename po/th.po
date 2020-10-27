@@ -1,32 +1,28 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the eos-desktop-extension package.
-#
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
 # Translators:
-# 71aa0e4baa10247739d383a6c8e17052, 2016
-# 71aa0e4baa10247739d383a6c8e17052, 2016
-# Roddy Shuler <roddy@stanfordalumni.org>, 2016-2018
-# Sira Nokyoongtong <gumaraa@gmail.com>, 2010-2011
-# Theppitak Karoonboonyanan <thep@linux.thai.net>, 2012
+# Andre Magalhaes <andre@endlessm.com>, 2020
+# 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-22 19:04-0300\n"
-"PO-Revision-Date: 2020-09-17 15:36+0000\n"
-"Last-Translator: endlessmobile_build <philip@endlessm.com>\n"
-"Language-Team: Thai (http://www.transifex.com/endless-os/eos-desktop-"
-"extension/language/th/)\n"
-"Language: th\n"
+"POT-Creation-Date: 2020-10-27 12:09+0000\n"
+"PO-Revision-Date: 2020-10-26 16:37+0000\n"
+"Last-Translator: Andre Magalhaes <andre@endlessm.com>, 2020\n"
+"Language-Team: Thai (https://www.transifex.com/endless-os/teams/9016/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: th\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#.
 #. * Translators: this is the name of the search engine that shows in the
 #. * Shell's desktop search entry.
-#.
 #: ui/internetSearch.js:99
 msgid "Google"
 msgstr "Google"
@@ -38,7 +34,6 @@ msgstr "เปิด \"%s\" ในเบราว์เซอร์"
 
 #. Translators: the first %s is the search engine name, and the second
 #. * is the search string. For instance, 'Search Google for "hello"'.
-#.
 #: ui/internetSearch.js:219
 #, javascript-format
 msgid "Search %s for \"%s\""
