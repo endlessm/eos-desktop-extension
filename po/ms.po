@@ -5,15 +5,16 @@
 # 
 # Translators:
 # Andre Magalhaes <andre@endlessm.com>, 2020
+# abuyop <abuyop@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-27 12:09+0000\n"
+"POT-Creation-Date: 2020-11-03 01:41+0000\n"
 "PO-Revision-Date: 2020-10-26 16:37+0000\n"
-"Last-Translator: Andre Magalhaes <andre@endlessm.com>, 2020\n"
+"Last-Translator: abuyop <abuyop@gmail.com>, 2020\n"
 "Language-Team: Malay (https://www.transifex.com/endless-os/teams/9016/ms/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -51,9 +52,9 @@ msgstr "Gelintar lagi %s..."
 
 #: ui/search.js:125
 msgid "Search the internet and more…"
-msgstr "Gelintar lagi internet..."
+msgstr "Gelintar internet lagi..."
 
 #. Reset the search entry text
 #: ui/search.js:142 ui/search.js:143
 msgid "Type to search"
-msgstr ""
+msgstr "Taip untuk gelintar"
