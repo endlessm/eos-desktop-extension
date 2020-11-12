@@ -13,7 +13,7 @@ const _searchUrlRegexp = new RegExp(
 
 const supportedSearchSchemes = ['http', 'https', 'ftp'];
 
-const FALLBACK_BROWSER_ID = 'chromium-browser.desktop';
+const FALLBACK_BROWSER_ID = 'org.chromium.Chromium.desktop';
 const GOOGLE_CHROME_ID = 'google-chrome.desktop';
 
 // _findSearchUrls:
@@ -83,10 +83,10 @@ function _getBrowserApp() {
     return appSystem.lookup_app(id);
 }
 
-function _getJsonSearchEngine(folder) {
+function _getJsonSearchEngine(config_dir, folder) {
     const parser = new Json.Parser();
     const path = GLib.build_filenamev([
-        GLib.get_user_config_dir(),
+        config_dir,
         folder,
         'Default',
         'Preferences',
@@ -136,11 +136,14 @@ function _getJsonSearchEngine(folder) {
 function getSearchEngineName() {
     const browser = _getBrowserId();
 
-    if (browser === FALLBACK_BROWSER_ID)
-        return _getJsonSearchEngine('chromium');
+    if (browser === FALLBACK_BROWSER_ID) {
+        const config_dir = GLib.build_filenamev([GLib.get_home_dir(),
+            '.var', 'app', 'org.chromium.Chromium', 'config']);
+        return _getJsonSearchEngine(config_dir, 'chromium');
+    }
 
     if (browser === GOOGLE_CHROME_ID)
-        return _getJsonSearchEngine('google-chrome');
+        return _getJsonSearchEngine(GLib.get_user_config_dir(), 'google-chrome');
 
     return null;
 }
