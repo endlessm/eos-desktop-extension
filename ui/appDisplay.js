@@ -172,6 +172,10 @@ function enable() {
 
         this._availWidth = availWidth;
         this._availHeight = availHeight;
+
+        // Disable easing allocation on clones
+        if (this !== Main.overview.viewSelector.appDisplay)
+            this._grid.layout_manager._pageSizeChanged = true;
     });
 
     Utils.override(AppDisplay.AppDisplay, 'goToPage',
