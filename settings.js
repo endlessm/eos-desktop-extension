@@ -86,7 +86,7 @@ function _getAppsInsideFolder(installedApps, folder) {
         if (excludedApps.includes(appId))
             return;
 
-        const app = appSys.lookup_app(appId);
+        const app = appSys.lookup_alias(appId);
         if (!app)
             return;
 
