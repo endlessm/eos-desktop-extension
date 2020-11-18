@@ -19,6 +19,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
 const AppDisplay = DesktopExtension.imports.ui.appDisplay;
+const AppSystem = DesktopExtension.imports.ui.appSystem;
 const Dash = DesktopExtension.imports.ui.dash;
 const Keybindings = DesktopExtension.imports.ui.keybindings;
 const Layout = DesktopExtension.imports.ui.layout;
@@ -38,6 +39,8 @@ class Extension {
         if (this._enabled)
             return;
 
+        AppSystem.enable();
+
         await Settings.migrate();
 
         AppDisplay.enable();
@@ -56,6 +59,7 @@ class Extension {
         if (!this._enabled)
             return;
 
+        AppSystem.disable();
         this._workspaceMonitor.disable();
         AppDisplay.disable();
         Dash.disable();

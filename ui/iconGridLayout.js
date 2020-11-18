@@ -76,7 +76,7 @@ class IconGridLayout extends GObject.Object {
             let children = context.get_child_value(1).get_strv();
 
             children = children.filter(appId => {
-                const app = appSys.lookup_app(appId);
+                const app = appSys.lookup_alias(appId);
                 if (!app)
                     return true;
 
@@ -94,7 +94,7 @@ class IconGridLayout extends GObject.Object {
 
                 // Some apps have their name superceded, for instance gedit -> org.gnome.gedit.
                 // We want the new name, not the old one.
-                const app = appSys.lookup_app(appId);
+                const app = appSys.lookup_alias(appId);
                 if (app)
                     return app.get_id();
 
