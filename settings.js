@@ -154,10 +154,10 @@ function _migrateToV1(migrationSettings, extensionSettings) {
         let id = itemId;
         if (isFolder) {
             const folderIcons = iconGridLayout.getIcons(itemId);
-            const translatedName =
+            let translatedName =
                 Shell.util_get_translated_folder_name(itemId);
 
-            if (translatedName)
+            if (!translatedName)
                 translatedName = _('Unnamed Folder');
 
             id = _createFolder(folderSettings, translatedName, folderIcons);
