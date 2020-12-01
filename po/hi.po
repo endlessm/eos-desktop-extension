@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-03 01:41+0000\n"
+"POT-Creation-Date: 2020-12-01 01:41+0000\n"
 "PO-Revision-Date: 2020-10-26 16:37+0000\n"
 "Last-Translator: Will Thompson <wjt@endlessos.org>, 2020\n"
 "Language-Team: Hindi (https://www.transifex.com/endless-os/teams/9016/hi/)\n"
@@ -58,3 +58,7 @@ msgstr "इंटरनेट और अधिक खोजें"
 #: ui/search.js:142 ui/search.js:143
 msgid "Type to search"
 msgstr "खोजने के लिए टाइप करें"
+
+#: settings.js:161
+msgid "Unnamed Folder"
+msgstr "बेनाम फ़ोल्डर"

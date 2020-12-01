@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-03 01:41+0000\n"
+"POT-Creation-Date: 2020-12-01 01:41+0000\n"
 "PO-Revision-Date: 2020-10-26 16:37+0000\n"
 "Last-Translator: Will Thompson <wjt@endlessos.org>, 2020\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/endless-os/teams/9016/zh_CN/)\n"
@@ -58,3 +58,7 @@ msgstr "搜索互联网等…"
 #: ui/search.js:142 ui/search.js:143
 msgid "Type to search"
 msgstr "输入以搜索"
+
+#: settings.js:161
+msgid "Unnamed Folder"
+msgstr "未命名文件夹"
