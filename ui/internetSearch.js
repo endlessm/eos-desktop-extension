@@ -216,10 +216,10 @@ var InternetSearchProvider = class {
                 const engineName = this._getEngineName();
 
                 if (engineName) {
-                    /* Translators: the first %s is the search engine name, and the second
+                    /* Translators: the first placeholder is the search engine name, and the second
                      * is the search string. For instance, 'Search Google for "hello"'.
                      */
-                    name = _('Search %s for "%s"').format(engineName, query);
+                    name = _('Search %1$s for "%2$s"').format(engineName, query);
                 } else {
                     name = _('Search the internet for "%s"').format(query);
                 }
