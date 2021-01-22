@@ -19,20 +19,31 @@
 
 const { Shell } = imports.gi;
 
-let overriden = false;
+let overriden_lookup_alias = false;
+let overriden_lookup_app = false;
 
 function enable() {
     const appSystem = Shell.AppSystem.get_default();
     if (!appSystem.lookup_alias) {
         appSystem.lookup_alias = appSystem.lookup_app;
-        overriden = true;
+        overriden_lookup_alias = true;
+    } else {
+        appSystem.orig_lookup_app = appSystem.lookup_app;
+        appSystem.lookup_app = appSystem.lookup_alias;
+        overriden_lookup_app = true;
     }
 }
 
 function disable() {
     const appSystem = Shell.AppSystem.get_default();
-    if (overriden) {
+    if (overriden_lookup_alias) {
         delete appSystem.lookup_alias;
-        overriden = false;
+        overriden_lookup_alias = false;
+    }
+
+    if (overriden_lookup_app) {
+        appSystem.lookup_app = appSystem.orig_lookup_app;
+        delete appSystem.orig_lookup_app;
+        overriden_lookup_app = false;
     }
 }

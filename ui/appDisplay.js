@@ -16,7 +16,7 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-const { Clutter, GLib, Meta, St } = imports.gi;
+const { Clutter, GLib, Meta, Shell, St } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
@@ -198,6 +198,46 @@ function enable() {
             this._grid.goToPage(pageNumber, animate);
         });
 
+    Utils.override(AppDisplay.PageManager, 'getAppPosition', function(appId) {
+        const original = Utils.original(AppDisplay.PageManager, 'getAppPosition');
+        let [page, position] = original.bind(this)(appId);
+        if (page != -1 || position != -1)
+            return [page, position];
+
+        const appSys = Shell.AppSystem.get_default();
+        const app = appSys.lookup_app(appId);
+        if (app) {
+            const appInfo = app.get_app_info();
+            const installedApps = appSys.get_installed();
+            const renamedFromList = appInfo.get_string_list("X-Flatpak-RenamedFrom");
+            for (const renamedFromId of renamedFromList) {
+                // Protect against malformed .desktop files
+                if (renamedFromId == appId)
+                    continue;
+
+                // We use the installed apps list to check if the renamed app
+                // is still installed as AppSystem.lookup_app() may be
+                // redirecting to AppSystem.lookup_alias()
+                if (installedApps.find(appInfo => appInfo && appInfo.get_id() == renamedFromId))
+                    continue;
+
+                // Invoke original impl here to make sure we don't end up in an
+                // infinite loop in case both apps refer to each other as
+                // renamed from - although the check above should avoid that by
+                // ignoring the renamed app if still installed.
+                // This also means we go down one level only so if for example AppA
+                // is renamed from AppB which is renamed from AppC... we would stop
+                // searching at AppB (as the AppSystem.lookup_alias() impl
+                // currently does)
+                [page, position] = original.bind(this)(renamedFromId);
+                if (page != -1 || position != -1)
+                    break;
+            }
+        }
+
+        return [page, position];
+    });
+
     // This relies on the fact that signals are emitted in the
     // order they are connected. Which means, AppDisplay will
     // receive the 'hidden' signal first, then we will receive
@@ -228,6 +268,7 @@ function enable() {
 
 function disable() {
     Utils.restore(AppDisplay.AppDisplay);
+    Utils.restore(AppDisplay.PageManager);
     Utils.restore(IconGrid.IconGrid);
     Utils.restore(PageIndicators.PageIndicators);
 
