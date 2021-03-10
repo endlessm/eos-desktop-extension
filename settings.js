@@ -29,7 +29,6 @@ const Main = imports.ui.main;
 const ParentalControlsManager = imports.misc.parentalControlsManager;
 
 const CURRENT_VERSION = 1;
-const EOS_LINK_PREFIX = 'eos-link-';
 const APP_CENTER_ID = 'org.gnome.Software.desktop';
 const CLUBHOUSE_ID = 'com.hack_computer.Clubhouse.desktop';
 
@@ -203,8 +202,7 @@ function _migrateToV1(migrationSettings, extensionSettings) {
 
         if (!app.should_show() ||
             addedItems.has(appId) ||
-            appsInsideFolders.has(appId) ||
-            appId.startsWith(EOS_LINK_PREFIX))
+            appsInsideFolders.has(appId))
             continue;
 
         _addIcon(pages, appId, index++, itemsPerPage);
