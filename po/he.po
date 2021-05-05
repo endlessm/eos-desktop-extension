@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-06 00:42+0000\n"
+"POT-Creation-Date: 2021-05-04 00:41+0000\n"
 "PO-Revision-Date: 2020-10-26 16:37+0000\n"
 "Last-Translator: Omer I.S. <omeritzicschwartz@gmail.com>, 2021\n"
 "Language-Team: Hebrew (https://www.transifex.com/endless-os/teams/9016/he/)\n"
@@ -49,11 +49,11 @@ msgstr "חיפוש באינטרנט אחר \"%s\""
 #: ui/search.js:123
 #, javascript-format
 msgid "Search %s and more…"
-msgstr ""
+msgstr "חיפוש עם %s ועוד…"
 
 #: ui/search.js:125
 msgid "Search the internet and more…"
-msgstr ""
+msgstr "חיפוש באינטרנט ועוד…"
 
 #. Reset the search entry text
 #: ui/search.js:142 ui/search.js:143
