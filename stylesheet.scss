@@ -20,6 +20,11 @@
 
 // Page Indicators
 
+.page-indicators {
+  background-color: rgba(0,0,0,0.4);
+  border-radius: 24px;
+}
+
 .page-indicator {
   padding: 15px 12px;
   .page-indicator-icon {
