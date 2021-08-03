@@ -16,7 +16,7 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-const { Clutter, GLib, Meta, Shell, St } = imports.gi;
+const { Clutter, Gio, GLib, Graphene, Meta, Shell, St } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
@@ -141,6 +141,85 @@ function rebuildAppGrid() {
     appDisplay._redisplay();
 }
 
+function addNavigationArrows() {
+    const { appDisplay } = Main.overview.viewSelector;
+
+    const rtl = appDisplay.get_text_direction() === Clutter.TextDirection.RTL;
+
+    const file = DesktopExtension.dir.get_child('data/icons/swipe-arrow-symbolic.svg');
+    const gicon = new Gio.FileIcon({ file });
+
+    const previousArrow = new St.Button({
+        style_class: 'navigation-arrow',
+        x_align: Clutter.ActorAlign.START,
+        x_expand: true,
+        reactive: true,
+        track_hover: true,
+        pivot_point: new Graphene.Point({ x: 0.5, y: 0.5 }),
+        rotation_angle_z: rtl ? 90 : -90,
+        child: new St.Icon({
+            gicon,
+            x_align: Clutter.ActorAlign.CENTER,
+            y_align: Clutter.ActorAlign.CENTER,
+        }),
+    });
+    previousArrow.connect('clicked', () => {
+        appDisplay.goToPage(appDisplay._grid.currentPage - 1);
+    });
+    appDisplay.add_child(previousArrow);
+
+    const nextArrow = new St.Button({
+        style_class: 'navigation-arrow',
+        x_align: Clutter.ActorAlign.END,
+        x_expand: true,
+        reactive: true,
+        track_hover: true,
+        pivot_point: new Graphene.Point({ x: 0.5, y: 0.5 }),
+        rotation_angle_z: rtl ? -90 : 90,
+        child: new St.Icon({
+            gicon,
+            x_align: Clutter.ActorAlign.CENTER,
+            y_align: Clutter.ActorAlign.CENTER,
+        }),
+    });
+    nextArrow.connect('clicked', () => {
+        appDisplay.goToPage(appDisplay._grid.currentPage + 1);
+    });
+    appDisplay.add_child(nextArrow);
+
+    appDisplay._navigationArrows = [previousArrow, nextArrow];
+
+    const updateArrowVisibility = (adj) => {
+        const { value, pageSize, upper } = adj;
+        const currentPage = value / pageSize;
+        const nPages = upper / pageSize;
+
+        previousArrow.visible = currentPage - 0.5 > 0;
+        nextArrow.visible = currentPage + 0.5 < nPages - 1;
+    };
+
+    appDisplay._navigationAdjustmentId =
+        appDisplay._adjustment.connect('notify', adj => {
+            updateArrowVisibility(adj);
+        });
+    updateArrowVisibility(appDisplay._adjustment);
+}
+
+function removeNavigationArrows(appDisplay) {
+    if (!appDisplay)
+        appDisplay = Main.overview.viewSelector.appDisplay;
+
+    if (!appDisplay._navigationArrows)
+        return;
+
+    appDisplay._adjustment.disconnect(appDisplay._navigationAdjustmentId);
+    delete appDisplay._navigationAdjustmentId;
+
+    for (const icon of appDisplay._navigationArrows)
+        icon.destroy();
+    delete appDisplay._navigationArrows;
+}
+
 let overviewHidingId = 0;
 let overviewHiddenId = 0;
 let hidingOverview = false;
@@ -172,6 +251,32 @@ function enable() {
 
         this._availWidth = availWidth;
         this._availHeight = availHeight;
+
+        // Adjust navigation arrows to be center aligned in
+        // the empty space between icons, and screen edges
+        if (this._navigationArrows) {
+            const iconGridLayout = this._grid.layout_manager;
+
+            const rtl = this.get_text_direction() === Clutter.TextDirection.RTL;
+            const childSize = iconGridLayout._getChildrenMaxSize();
+            const [leftEmptySpace] = iconGridLayout._calculateSpacing(childSize);
+
+            const [previousArrow, nextArrow] = this._navigationArrows;
+
+            const previousArrowMargin =
+                Math.max(leftEmptySpace / 2 - previousArrow.width / 2, 0);
+            previousArrow.set({
+                margin_left: rtl ? 0 : previousArrowMargin,
+                margin_right: rtl ? previousArrowMargin : 0,
+            });
+
+            const nextArrowMargin =
+                Math.max(leftEmptySpace / 2 - nextArrow.width / 2, 0);
+            nextArrow.set({
+                margin_left: rtl ? nextArrowMargin : 0,
+                margin_right: rtl ? 0 : nextArrowMargin,
+            });
+        }
 
         // Disable easing allocation on clones
         if (this !== Main.overview.viewSelector.appDisplay)
@@ -264,6 +369,7 @@ function enable() {
     rebuildAppGrid();
     changeAppGridOrientation(Clutter.Orientation.HORIZONTAL);
     setFixedIconSize(64);
+    addNavigationArrows();
 }
 
 function disable() {
@@ -275,6 +381,7 @@ function disable() {
     Main.overview.disconnect(overviewHidingId);
     Main.overview.disconnect(overviewHiddenId);
 
+    removeNavigationArrows();
     rebuildAppGrid();
     changeAppGridOrientation(Clutter.Orientation.VERTICAL);
     setFixedIconSize(-1);
