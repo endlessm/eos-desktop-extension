@@ -90,6 +90,14 @@ class OverviewClone extends St.BoxLayout {
         appDisplayClone._connectDnD = function() {};
         appDisplayClone._savePages = function() {};
 
+        // Hide running dots of the clones
+        const originalAddItem = appDisplayClone._addItem;
+        appDisplayClone._addItem = function(item, page, position) {
+            originalAddItem.bind(appDisplayClone)(item, page, position);
+            if (item._dot)
+                item._dot.opacity = 0;
+        };
+
         AppDisplayOverrides.changeAppGridOrientation(
             Clutter.Orientation.HORIZONTAL,
             appDisplayClone);
