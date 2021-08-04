@@ -126,6 +126,9 @@ class OverviewClone extends St.BoxLayout {
             () => OverviewOverrides.updateGhostPanelPosition(box));
         OverviewOverrides.updateGhostPanelPosition(box);
 
+        // Hide page indicators in clones
+        appDisplayClone._pageIndicators.opacity = 0;
+
         this.connect('destroy', this._onDestroy.bind(this));
     }
 
