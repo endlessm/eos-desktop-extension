@@ -27,6 +27,8 @@ const Main = imports.ui.main;
 const PageIndicators = imports.ui.pageIndicators;
 const Utils = DesktopExtension.imports.utils;
 
+const PAGINATION_DOTS_PADDING = 32;
+
 function _disconnectAdjustment(appDisplay) {
     if (!appDisplay._adjId || appDisplay._adjId === 0)
         return;
@@ -252,14 +254,26 @@ function enable() {
         this._availWidth = availWidth;
         this._availHeight = availHeight;
 
+        const iconGridLayout = this._grid.layout_manager;
+        const childSize = iconGridLayout._getChildrenMaxSize();
+        const [leftEmptySpace, topEmptySpace, , vSpacing] =
+            iconGridLayout._calculateSpacing(childSize);
+
+        // Move main app grid's page indicators closer to the icons
+        if (this === Main.overview.viewSelector.appDisplay) {
+            const gridHeight =
+                childSize * iconGridLayout.rowsPerPage
+                + vSpacing * (iconGridLayout.rowsPerPage - 1);
+            let bottomEmptySpace = availHeight - gridHeight - topEmptySpace - PAGINATION_DOTS_PADDING;
+            bottomEmptySpace = Math.max(0, Math.round(bottomEmptySpace / 2));
+
+            this._pageIndicators.translation_y = -bottomEmptySpace;
+        }
+
         // Adjust navigation arrows to be center aligned in
         // the empty space between icons, and screen edges
         if (this._navigationArrows) {
-            const iconGridLayout = this._grid.layout_manager;
-
             const rtl = this.get_text_direction() === Clutter.TextDirection.RTL;
-            const childSize = iconGridLayout._getChildrenMaxSize();
-            const [leftEmptySpace] = iconGridLayout._calculateSpacing(childSize);
 
             const [previousArrow, nextArrow] = this._navigationArrows;
 
