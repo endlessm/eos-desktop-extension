@@ -1,60 +1,46 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the eos-desktop-extension package.
-#
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
 # Translators:
-# abc Def <hdogan1974@gmail.com>, 2020
-# Baris Cicek <baris@teamforce.name.tr>, 2009
-# Bayram Güçlü <byrmgcl@yandex.com.tr>, 2014
-# Burcu Özacar <13urcu@gmail.com>, 2017
-# Emin Tufan <etcetin@gmail.com>, 2017
-# ercin <ercin@linux.org.tr>, 2011
-# Furkan Ahmet Kara <furkanahmetkara.fk@gmail.com>, 2017-2018
-# Gökhan Gurbetoğlu <ggurbet@gmail.com>, 2014
-# Koray KIRCAOĞLU <koraym@gmail.com>, 2017
-# Muha Aliss <muhaaliss@gmail.com>, 2019
-# Muhammet Kara <muhammet.k@gmail.com>, 2011-2012
-# Muhammet Kara <muhammetk@gmail.com>, 2011-2017
-# Osman Karagöz <osmank3@gmail.com>, 2013
-# Sabri Ünal <libreajans@gmail.com>, 2014,2019
-# Sabri Ünal <yakushabb@gmail.com>, 2014
+# Andre Magalhaes <andre@endlessm.com>, 2020
+# Will Thompson <wjt@endlessos.org>, 2020
+# 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-22 19:04-0300\n"
-"PO-Revision-Date: 2020-09-17 15:36+0000\n"
-"Last-Translator: endlessmobile_build <philip@endlessm.com>\n"
-"Language-Team: Turkish (http://www.transifex.com/endless-os/eos-desktop-"
-"extension/language/tr/)\n"
-"Language: tr\n"
+"POT-Creation-Date: 2021-09-15 12:12+0000\n"
+"PO-Revision-Date: 2020-10-26 16:37+0000\n"
+"Last-Translator: Will Thompson <wjt@endlessos.org>, 2020\n"
+"Language-Team: Turkish (https://www.transifex.com/endless-os/teams/9016/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#.
 #. * Translators: this is the name of the search engine that shows in the
 #. * Shell's desktop search entry.
-#.
 #: ui/internetSearch.js:99
 msgid "Google"
 msgstr "Google"
 
-#: ui/internetSearch.js:210
+#: ui/internetSearch.js:213
 #, javascript-format
 msgid "Open \"%s\" in browser"
 msgstr "%s dosyasını tarayıcı ile aç."
 
 #. Translators: the first %s is the search engine name, and the second
 #. * is the search string. For instance, 'Search Google for "hello"'.
-#.
-#: ui/internetSearch.js:219
+#: ui/internetSearch.js:222
 #, javascript-format
 msgid "Search %s for \"%s\""
 msgstr "%s üzerinde \"%s\" ara."
 
-#: ui/internetSearch.js:221
+#: ui/internetSearch.js:224
 #, javascript-format
 msgid "Search the internet for \"%s\""
 msgstr "İnternette \"%s\" araması yap"
@@ -71,4 +57,8 @@ msgstr "İnternette ara"
 #. Reset the search entry text
 #: ui/search.js:142 ui/search.js:143
 msgid "Type to search"
-msgstr ""
+msgstr "Aramak için yaz"
+
+#: settings.js:160
+msgid "Unnamed Folder"
+msgstr "Adsız Klasör"

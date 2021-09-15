@@ -1,51 +1,45 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the eos-desktop-extension package.
-#
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
 # Translators:
-# e2f_vn_c4 <leo.nguyen@expertrans.com>, 2016
-# Trung Ngô <ndtrung4419@gmail.com>, 2011
-# Roddy Shuler <roddy@stanfordalumni.org>, 2016-2018
-# Trần Ngọc Quân <vnwildman@gmail.com>, 2013-2019
-# Trần Ngọc Quân <vnwildman@gmail.com>, 2015-2017
-# Trung Ngô <ndtrung4419@gmail.com>, 2011
+# Andre Magalhaes <andre@endlessm.com>, 2020
+# 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-22 19:04-0300\n"
-"PO-Revision-Date: 2020-09-17 15:36+0000\n"
-"Last-Translator: endlessmobile_build <philip@endlessm.com>\n"
-"Language-Team: Vietnamese (http://www.transifex.com/endless-os/eos-desktop-"
-"extension/language/vi/)\n"
-"Language: vi\n"
+"POT-Creation-Date: 2021-09-15 12:12+0000\n"
+"PO-Revision-Date: 2020-10-26 16:37+0000\n"
+"Last-Translator: Andre Magalhaes <andre@endlessm.com>, 2020\n"
+"Language-Team: Vietnamese (https://www.transifex.com/endless-os/teams/9016/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: vi\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#.
 #. * Translators: this is the name of the search engine that shows in the
 #. * Shell's desktop search entry.
-#.
 #: ui/internetSearch.js:99
 msgid "Google"
 msgstr "Google"
 
-#: ui/internetSearch.js:210
+#: ui/internetSearch.js:213
 #, javascript-format
 msgid "Open \"%s\" in browser"
 msgstr "Mở \"%s\" trong trình duyệt"
 
 #. Translators: the first %s is the search engine name, and the second
 #. * is the search string. For instance, 'Search Google for "hello"'.
-#.
-#: ui/internetSearch.js:219
+#: ui/internetSearch.js:222
 #, javascript-format
 msgid "Search %s for \"%s\""
 msgstr "Tìm kiếm %s để có \"%s\""
 
-#: ui/internetSearch.js:221
+#: ui/internetSearch.js:224
 #, javascript-format
 msgid "Search the internet for \"%s\""
 msgstr "Tìm \"%s\" trên internet"
@@ -62,4 +56,8 @@ msgstr "Tìm kiếm trên internet và hơn thế nữa…"
 #. Reset the search entry text
 #: ui/search.js:142 ui/search.js:143
 msgid "Type to search"
+msgstr ""
+
+#: settings.js:160
+msgid "Unnamed Folder"
 msgstr ""
