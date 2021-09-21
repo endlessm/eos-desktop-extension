@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-15 12:12+0000\n"
+"POT-Creation-Date: 2021-09-21 08:25+0000\n"
 "PO-Revision-Date: 2020-10-26 16:37+0000\n"
 "Last-Translator: Will Thompson <wjt@endlessos.org>, 2020\n"
 "Language-Team: Polish (https://www.transifex.com/endless-os/teams/9016/pl/)\n"
@@ -33,11 +33,12 @@ msgstr "Google"
 msgid "Open \"%s\" in browser"
 msgstr ""
 
-#. Translators: the first %s is the search engine name, and the second
+#. Translators: the first placeholder is the search engine name, and the
+#. second
 #. * is the search string. For instance, 'Search Google for "hello"'.
 #: ui/internetSearch.js:222
 #, javascript-format
-msgid "Search %s for \"%s\""
+msgid "Search %1$s for \"%2$s\""
 msgstr ""
 
 #: ui/internetSearch.js:224

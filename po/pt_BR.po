@@ -5,17 +5,17 @@
 # 
 # Translators:
 # Andre Magalhaes <andre@endlessm.com>, 2020
-# Will Thompson <wjt@endlessos.org>, 2020
 # Leandro Stanger <leandrostanger@hotmail.com>, 2020
+# Will Thompson <wjt@endlessos.org>, 2021
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-15 12:12+0000\n"
+"POT-Creation-Date: 2021-09-21 08:25+0000\n"
 "PO-Revision-Date: 2020-10-26 16:37+0000\n"
-"Last-Translator: Leandro Stanger <leandrostanger@hotmail.com>, 2020\n"
+"Last-Translator: Will Thompson <wjt@endlessos.org>, 2021\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/endless-os/teams/9016/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,12 +34,13 @@ msgstr "Google"
 msgid "Open \"%s\" in browser"
 msgstr "Abrir \"%s\" na Internet"
 
-#. Translators: the first %s is the search engine name, and the second
+#. Translators: the first placeholder is the search engine name, and the
+#. second
 #. * is the search string. For instance, 'Search Google for "hello"'.
 #: ui/internetSearch.js:222
 #, javascript-format
-msgid "Search %s for \"%s\""
-msgstr "Buscar no %s por \"%s\""
+msgid "Search %1$s for \"%2$s\""
+msgstr "Buscar no %1$s por \"%2$s\""
 
 #: ui/internetSearch.js:224
 #, javascript-format
