@@ -115,16 +115,6 @@ function registerInternetSearchProvider() {
         internetSearchProvider = provider;
 
         searchView._reloadRemoteProviders();
-
-        // Update the search entry text
-        const entry = Main.overview.searchEntry;
-        const searchEngine = InternetSearch.getSearchEngineName();
-        if (searchEngine)
-            entry.hint_text = _('Search %s and more…').format(searchEngine);
-        else
-            entry.hint_text = _('Search the internet and more…');
-
-        LayoutOverrides.setSearchHint(entry.hint_text);
     }
 }
 
@@ -137,10 +127,6 @@ function unregisterInternetSearchProvider() {
     internetSearchProvider = null;
 
     searchView._reloadRemoteProviders();
-
-    // Reset the search entry text
-    Main.overview.searchEntry.hint_text = _('Type to search');
-    LayoutOverrides.setSearchHint(_('Type to search'));
 }
 
 function setInternetSearchProviderEnable(enabled) {
