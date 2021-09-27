@@ -140,10 +140,6 @@ class OverviewClone extends St.BoxLayout {
         this.connect('destroy', this._onDestroy.bind(this));
     }
 
-    setSearchHint(hint) {
-        this._entry.hint_text = hint;
-    }
-
     vfunc_map() {
         super.vfunc_map();
         this._appDisplayClone._grid.queue_redraw();
@@ -237,15 +233,6 @@ var OverviewCloneController = class OverviewCloneController {
 };
 
 const cloneController = new OverviewCloneController();
-
-function setSearchHint(hint) {
-    bgGroups.forEach(group => {
-        if (!group._appGridClone)
-            return;
-
-        group._appGridClone.setSearchHint(hint);
-    });
-}
 
 function enable() {
     if (startupPreparedId === 0) {
