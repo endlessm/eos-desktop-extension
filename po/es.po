@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-21 08:25+0000\n"
+"POT-Creation-Date: 2021-09-28 10:50+0000\n"
 "PO-Revision-Date: 2020-10-26 16:37+0000\n"
 "Last-Translator: Will Thompson <wjt@endlessos.org>, 2021\n"
 "Language-Team: Spanish (https://www.transifex.com/endless-os/teams/9016/es/)\n"
@@ -45,20 +45,6 @@ msgstr "Buscar %1$s por \"%2$s\""
 #, javascript-format
 msgid "Search the internet for \"%s\""
 msgstr "Buscar en internet por \"%s\""
-
-#: ui/search.js:123
-#, javascript-format
-msgid "Search %s and more…"
-msgstr "Buscar en %s y más…"
-
-#: ui/search.js:125
-msgid "Search the internet and more…"
-msgstr "Buscar en internet y más…"
-
-#. Reset the search entry text
-#: ui/search.js:142 ui/search.js:143
-msgid "Type to search"
-msgstr "Escribir para buscar"
 
 #: settings.js:160
 msgid "Unnamed Folder"

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-21 08:25+0000\n"
+"POT-Creation-Date: 2021-09-28 10:50+0000\n"
 "PO-Revision-Date: 2020-10-26 16:37+0000\n"
 "Last-Translator: Andre Magalhaes <andre@endlessm.com>, 2020\n"
 "Language-Team: Swahili (https://www.transifex.com/endless-os/teams/9016/sw/)\n"
@@ -44,20 +44,6 @@ msgstr ""
 #, javascript-format
 msgid "Search the internet for \"%s\""
 msgstr "Tafuta mtandao kwa \"%s\""
-
-#: ui/search.js:123
-#, javascript-format
-msgid "Search %s and more…"
-msgstr "Tafuta%sna zaidi…"
-
-#: ui/search.js:125
-msgid "Search the internet and more…"
-msgstr "Tafuta mtandao na zaidi…"
-
-#. Reset the search entry text
-#: ui/search.js:142 ui/search.js:143
-msgid "Type to search"
-msgstr ""
 
 #: settings.js:160
 msgid "Unnamed Folder"
