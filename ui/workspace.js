@@ -22,8 +22,36 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
 const Main = imports.ui.main;
+const OverviewControls = imports.ui.overviewControls;
+const ShellUtils = imports.misc.util;
 const Utils = DesktopExtension.imports.utils;
 const Workspace = imports.ui.workspace;
+
+function getBorderRadiusForState(state) {
+    switch (state) {
+    case OverviewControls.ControlsState.HIDDEN:
+        return 0;
+    case OverviewControls.ControlsState.WINDOW_PICKER:
+        return 18;
+    case OverviewControls.ControlsState.APP_GRID:
+        return 0;
+    }
+
+    return 0;
+}
+
+function getOpacityForState(state) {
+    switch (state) {
+    case OverviewControls.ControlsState.HIDDEN:
+        return 0.0;
+    case OverviewControls.ControlsState.WINDOW_PICKER:
+        return 0.5;
+    case OverviewControls.ControlsState.APP_GRID:
+        return 0.0;
+    }
+
+    return 0.0;
+}
 
 function enable() {
     Utils.override(Workspace.Workspace, '_init', function(metaWorkspace, monitorIndex, overviewAdjustment) {
@@ -32,6 +60,35 @@ function enable() {
 
         this.remove_child(this._background);
         delete this._background;
+
+        this._overviewStateChangedId = overviewAdjustment.connect('notify::value', () => {
+            const { currentState, initialState, finalState, progress } =
+                overviewAdjustment.getStateTransitionParams();
+
+            const opacity = ShellUtils.lerp(
+                getOpacityForState(initialState),
+                getOpacityForState(finalState),
+                progress);
+            const radius = ShellUtils.lerp(
+                getBorderRadiusForState(initialState),
+                getBorderRadiusForState(finalState),
+                progress);
+
+            this.style = `
+                background-color: rgba(0, 0, 0, ${opacity});
+                border-radius: ${radius}px;
+            `;
+        });
+    });
+
+    Utils.override(Workspace.Workspace, '_onDestroy', function() {
+        if (this._overviewStateChangedId) {
+            this._overviewAdjustment.disconnect(this._overviewStateChangedId);
+            delete this._overviewStateChangedId;
+        }
+
+        const original = Utils.original(Workspace.Workspace, '_onDestroy');
+        original.bind(this)();
     });
 }
 
