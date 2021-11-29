@@ -18,20 +18,11 @@
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
-const AppDisplay = DesktopExtension.imports.ui.appDisplay;
 const AppSystem = DesktopExtension.imports.ui.appSystem;
-const Dash = DesktopExtension.imports.ui.dash;
-const Keybindings = DesktopExtension.imports.ui.keybindings;
-const Layout = DesktopExtension.imports.ui.layout;
-const Overview = DesktopExtension.imports.ui.overview;
 const Settings = DesktopExtension.imports.settings;
-const ViewSelector = DesktopExtension.imports.ui.viewSelector;
-const Search = DesktopExtension.imports.ui.search;
-const WorkspaceMonitor = DesktopExtension.imports.ui.workspaceMonitor;
 
 class Extension {
     constructor() {
-        this._workspaceMonitor = new WorkspaceMonitor.WorkspaceMonitor();
         this._enabled = false;
     }
 
@@ -40,17 +31,7 @@ class Extension {
             return;
 
         AppSystem.enable();
-
         await Settings.migrate();
-
-        AppDisplay.enable();
-        Dash.enable();
-        Keybindings.enable();
-        Layout.enable();
-        ViewSelector.enable();
-        Overview.enable();
-        Search.enable();
-        this._workspaceMonitor.enable();
 
         this._enabled = true;
     }
@@ -60,14 +41,6 @@ class Extension {
             return;
 
         AppSystem.disable();
-        this._workspaceMonitor.disable();
-        AppDisplay.disable();
-        Dash.disable();
-        Keybindings.disable();
-        Layout.disable();
-        ViewSelector.disable();
-        Overview.disable();
-        Search.disable();
 
         this._enabled = false;
     }
