@@ -20,6 +20,7 @@ const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
 const AppSystem = DesktopExtension.imports.ui.appSystem;
 const Settings = DesktopExtension.imports.settings;
+const Workspace = DesktopExtension.imports.ui.workspace;
 
 class Extension {
     constructor() {
@@ -32,6 +33,7 @@ class Extension {
 
         AppSystem.enable();
         await Settings.migrate();
+        Workspace.enable();
 
         this._enabled = true;
     }
@@ -41,6 +43,7 @@ class Extension {
             return;
 
         AppSystem.disable();
+        Workspace.disable();
 
         this._enabled = false;
     }
