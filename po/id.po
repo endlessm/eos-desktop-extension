@@ -6,15 +6,16 @@
 # Translators:
 # Andre Magalhaes <andre@endlessm.com>, 2020
 # Will Thompson <wjt@endlessos.org>, 2020
+# Kukuh Syafaat <syafaatkukuh@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-28 10:50+0000\n"
+"POT-Creation-Date: 2021-11-30 20:01+0000\n"
 "PO-Revision-Date: 2020-10-26 16:37+0000\n"
-"Last-Translator: Will Thompson <wjt@endlessos.org>, 2020\n"
+"Last-Translator: Kukuh Syafaat <syafaatkukuh@gmail.com>, 2021\n"
 "Language-Team: Indonesian (https://www.transifex.com/endless-os/teams/9016/id/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,7 +32,7 @@ msgstr "Google"
 #: ui/internetSearch.js:213
 #, javascript-format
 msgid "Open \"%s\" in browser"
-msgstr "Buka \"%s\" di browser"
+msgstr "Buka \"%s\" di peramban"
 
 #. Translators: the first placeholder is the search engine name, and the
 #. second
@@ -39,12 +40,12 @@ msgstr "Buka \"%s\" di browser"
 #: ui/internetSearch.js:222
 #, javascript-format
 msgid "Search %1$s for \"%2$s\""
-msgstr ""
+msgstr "Cari %1$s untuk \"%2$s\""
 
 #: ui/internetSearch.js:224
 #, javascript-format
 msgid "Search the internet for \"%s\""
-msgstr "Cari internet untuk \"%s\""
+msgstr "Cari di internet untuk \"%s\""
 
 #: settings.js:160
 msgid "Unnamed Folder"
