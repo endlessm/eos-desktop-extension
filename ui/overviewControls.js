@@ -24,6 +24,7 @@ const DesktopExtension = ExtensionUtils.getCurrentExtension();
 const Background = imports.ui.background;
 const Main = imports.ui.main;
 const OverviewControls = imports.ui.overviewControls;
+const ShellUtils = imports.misc.util;
 const Utils = DesktopExtension.imports.utils;
 
 const SMALL_WORKSPACE_RATIO = 0.55;
@@ -144,7 +145,35 @@ function removeBackgroundFromOverview() {
 
 function enable() {
     Utils.override(OverviewControls.ControlsManager, '_updateAppDisplayVisibility', function(params) {
+        if (!params)
+            params = this._stateAdjustment.getStateTransitionParams();
+
         this._appDisplay.visible = true;
+
+        // Update the vignette effect
+        if (this._backgroundGroup) {
+            for (const background of this._backgroundGroup) {
+                const { content } = background;
+
+                const getVignetteForState = state => {
+                    switch (state) {
+                    case OverviewControls.ControlsState.HIDDEN:
+                         return [1.0, 0.0];
+                    case OverviewControls.ControlsState.WINDOW_PICKER:
+                    case OverviewControls.ControlsState.APP_GRID:
+                        return [0.7, 0.5];
+                    }
+                }
+
+                const initial = getVignetteForState(params.initialState);
+                const final = getVignetteForState(params.finalState);
+
+                content.set_vignette(true, ...[
+                    ShellUtils.lerp(initial[0], final[0], params.progress),
+                    ShellUtils.lerp(initial[1], final[1], params.progress),
+                ]);
+            }
+        }
     });
 
     addBackgroundToOverview();
