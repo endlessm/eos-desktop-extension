@@ -16,7 +16,7 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-const { Clutter, GObject, Graphene, Meta, St } = imports.gi;
+const { Clutter, GObject, Graphene, Meta, Shell, St } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
@@ -24,6 +24,9 @@ const DesktopExtension = ExtensionUtils.getCurrentExtension();
 const Background = imports.ui.background;
 const Main = imports.ui.main;
 const OverviewControls = imports.ui.overviewControls;
+const Utils = DesktopExtension.imports.utils;
+
+const SMALL_WORKSPACE_RATIO = 0.55;
 
 var EndlessControlsManagerLayout = GObject.registerClass(
 class EndlessControlsManagerLayout extends OverviewControls.ControlsManagerLayout {
@@ -34,6 +37,61 @@ class EndlessControlsManagerLayout extends OverviewControls.ControlsManagerLayou
             stateAdjustment);
 
         this._background = background;
+    }
+
+    _computeWorkspacesBoxForState(state, workAreaBox, searchHeight, dashHeight, thumbnailsHeight) {
+        const workspaceBox = workAreaBox.copy();
+        const [startX, startY] = workAreaBox.get_origin();
+        const [width, height] = workspaceBox.get_size();
+        const { spacing } = this;
+        const { expandFraction } = this._workspacesThumbnails;
+        const offLimitsY = 0 - startY - height * SMALL_WORKSPACE_RATIO;
+
+        switch (state) {
+        case OverviewControls.ControlsState.HIDDEN:
+            break;
+        case OverviewControls.ControlsState.WINDOW_PICKER:
+            workspaceBox.set_origin(startX,
+                startY + searchHeight + spacing +
+                thumbnailsHeight + spacing * expandFraction);
+            workspaceBox.set_size(width,
+                height -
+                dashHeight - spacing -
+                searchHeight - spacing -
+                thumbnailsHeight - spacing * expandFraction);
+            break;
+        case OverviewControls.ControlsState.APP_GRID:
+            workspaceBox.set_origin(startX, offLimitsY);
+            workspaceBox.set_size(
+                width,
+                Math.round(height * SMALL_WORKSPACE_RATIO));
+            break;
+        }
+
+        return workspaceBox;
+    }
+
+    _getAppDisplayBoxForState(state, workAreaBox, searchHeight, dashHeight) {
+        const [startX, startY] = workAreaBox.get_origin();
+        const [width, height] = workAreaBox.get_size();
+        const appDisplayBox = new Clutter.ActorBox();
+        const { spacing } = this;
+
+        switch (state) {
+        case OverviewControls.ControlsState.HIDDEN:
+        case OverviewControls.ControlsState.WINDOW_PICKER:
+        case OverviewControls.ControlsState.APP_GRID:
+            appDisplayBox.set_origin(startX,
+                startY + searchHeight + spacing);
+            break;
+        }
+
+        appDisplayBox.set_size(width,
+            height -
+            searchHeight - spacing -
+            dashHeight);
+
+        return appDisplayBox;
     }
 
     vfunc_allocate(container, box) {
@@ -85,9 +143,14 @@ function removeBackgroundFromOverview() {
 }
 
 function enable() {
+    Utils.override(OverviewControls.ControlsManager, '_updateAppDisplayVisibility', function(params) {
+        this._appDisplay.visible = true;
+    });
+
     addBackgroundToOverview();
 }
 
 function disable() {
+    Utils.restore(OverviewControls.ControlsManager);
     removeBackgroundFromOverview();
 }
