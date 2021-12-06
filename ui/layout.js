@@ -110,7 +110,7 @@ class OverviewClone extends St.BoxLayout {
         // 'Go To Overview' click action
         const clickAction = new Clutter.ClickAction();
         clickAction.connect('clicked', () => {
-            Main.overview.show();
+            Main.overview.showApps();
         });
         this.add_action(clickAction);
 
