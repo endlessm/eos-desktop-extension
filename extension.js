@@ -19,6 +19,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
 const AppSystem = DesktopExtension.imports.ui.appSystem;
+const Layout = DesktopExtension.imports.ui.layout;
 const OverviewControls = DesktopExtension.imports.ui.overviewControls;
 const Settings = DesktopExtension.imports.settings;
 const Workspace = DesktopExtension.imports.ui.workspace;
@@ -35,6 +36,7 @@ class Extension {
         AppSystem.enable();
         await Settings.migrate();
 
+        Layout.enable();
         OverviewControls.enable();
         Workspace.enable();
 
@@ -46,6 +48,7 @@ class Extension {
             return;
 
         AppSystem.disable();
+        Layout.disable();
         OverviewControls.disable();
         Workspace.disable();
 

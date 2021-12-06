@@ -22,11 +22,8 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
 const AppDisplay = imports.ui.appDisplay;
-const AppDisplayOverrides = DesktopExtension.imports.ui.appDisplay;
 const LayoutManager = imports.ui.layout;
 const Main = imports.ui.main;
-const OverviewOverrides = DesktopExtension.imports.ui.overview;
-const ViewSelector = imports.ui.viewSelector;
 
 const EOS_INACTIVE_GRID_OPACITY = 96;
 
@@ -40,7 +37,7 @@ class OverviewClone extends St.BoxLayout {
         });
 
         const box = new St.BoxLayout({
-            name: 'overview',
+            styleClass: 'controls-manager',
             opacity: EOS_INACTIVE_GRID_OPACITY,
             vertical: true,
         });
@@ -48,16 +45,10 @@ class OverviewClone extends St.BoxLayout {
 
         Shell.util_set_hidden_from_pick(box, true);
 
-        this.add_constraint(new LayoutManager.MonitorConstraint({ primary: true }));
-
-        // Add a clone of the panel to the overview so spacing and such is
-        // automatic
-        const panelGhost = new St.Bin({
-            child: new Clutter.Clone({ source: Main.panel }),
-            reactive: false,
-            opacity: 0,
-        });
-        box.add_child(panelGhost);
+        this.add_constraint(new LayoutManager.MonitorConstraint({
+            primary: true,
+            workArea: true,
+        }));
 
         // Search entry
         this._entry = new St.Entry({
@@ -66,8 +57,6 @@ class OverviewClone extends St.BoxLayout {
                 icon_name: 'edit-find-symbolic',
             }),
             style_class: 'search-entry',
-            track_hover: true,
-            can_focus: true,
         });
         this._entry.primary_icon.add_style_class_name('primary');
         const searchEntryBin = new St.Bin({
@@ -82,8 +71,11 @@ class OverviewClone extends St.BoxLayout {
         this._overviewHiddenId = Main.overview._nextConnectionId;
 
         const appDisplayClone = new AppDisplay.AppDisplay();
-        appDisplayClone.offscreen_redirect = Clutter.OffscreenRedirect.ALWAYS;
-        this._appDisplayClone = appDisplayClone;
+
+        appDisplayClone.add_constraint(new Clutter.BindConstraint({
+            source: Main.overview._overview.controls.appDisplay,
+            coordinate: Clutter.BindCoordinate.HEIGHT,
+        }));
 
         // Disable DnD on clones
         appDisplayClone._disconnectDnD();
@@ -97,15 +89,10 @@ class OverviewClone extends St.BoxLayout {
             if (item._dot)
                 item._dot.opacity = 0;
         };
-
-        AppDisplayOverrides.changeAppGridOrientation(
-            Clutter.Orientation.HORIZONTAL,
-            appDisplayClone);
-        AppDisplayOverrides.setFixedIconSize(64, appDisplayClone);
         box.add_child(appDisplayClone);
 
         // Bind adjustments
-        const { appDisplay } = Main.overview.viewSelector;
+        const { appDisplay } = Main.overview._overview.controls;
         ['upper', 'value'].forEach(property => {
             appDisplay._scrollView.hscroll.adjustment.bind_property(property,
                 appDisplayClone._scrollView.hscroll.adjustment, property,
@@ -129,10 +116,12 @@ class OverviewClone extends St.BoxLayout {
         });
         this.add_action(clickAction);
 
-        this._extensionStateChangedId =
-        Main.extensionManager.connect('extension-state-changed',
-            () => OverviewOverrides.updateGhostPanelPosition(box));
-        OverviewOverrides.updateGhostPanelPosition(box);
+        // Dash clone
+        const dashClone = new Clutter.Actor({ opacity: 0 });
+        Main.overview.dash.bind_property('height',
+            dashClone, 'height',
+            GObject.BindingFlags.SYNC_CREATE);
+        box.add_child(dashClone);
 
         // Hide page indicators in clones
         appDisplayClone._pageIndicators.opacity = 0;
@@ -140,27 +129,16 @@ class OverviewClone extends St.BoxLayout {
         this.connect('destroy', this._onDestroy.bind(this));
     }
 
-    vfunc_map() {
-        super.vfunc_map();
-        this._appDisplayClone._grid.queue_redraw();
-    }
-
     _onDestroy() {
         if (this._overviewHiddenId > 0) {
             Main.overview.disconnect(this._overviewHiddenId);
             this._overviewHiddenId = 0;
-        }
-
-        if (this._extensionStateChangedId > 0) {
-            Main.extensionManager.disconnect(this._extensionStateChangedId);
-            this._extensionStateChangedId = 0;
         }
     }
 });
 
 const bgGroups = [
     Main.layoutManager._backgroundGroup,
-    Main.overview._backgroundGroup,
 ];
 
 var OverviewCloneController = class OverviewCloneController {
@@ -169,16 +147,10 @@ var OverviewCloneController = class OverviewCloneController {
         this._overviewShownId = 0;
         this._overviewHidingId = 0;
         this._overviewHiddenId = 0;
-        this._viewSelectorPageChangedId = 0;
     }
 
     _updateClones() {
-        const { viewSelector, visible, animationInProgress } = Main.overview;
-        const inWindowsPage = viewSelector._workspacesPage.visible;
-
-        const overviewCloneOpacity =
-            animationInProgress || inWindowsPage ? 255 : 0;
-        Main.overview._backgroundGroup._appGridClone.opacity = overviewCloneOpacity;
+        const { visible } = Main.overview;
 
         const layoutCloneOpacity = visible ? 0 : 255;
         Main.layoutManager._backgroundGroup._appGridClone.opacity = layoutCloneOpacity;
@@ -195,8 +167,6 @@ var OverviewCloneController = class OverviewCloneController {
             group._appGridClone = clone;
         });
 
-        const { viewSelector } = Main.overview;
-
         this._overviewShowingId =
             Main.overview.connect('showing', () => this._updateClones());
         this._overviewShownId =
@@ -205,9 +175,6 @@ var OverviewCloneController = class OverviewCloneController {
             Main.overview.connect('hiding', () => this._updateClones());
         this._overviewHiddenId =
             Main.overview.connect('hidden', () => this._updateClones());
-        this._workspacesVisibleId =
-            viewSelector._workspacesPage.connect('notify::visible',
-                () => this._updateClones());
     }
 
     disable() {
@@ -226,8 +193,6 @@ var OverviewCloneController = class OverviewCloneController {
         this._overviewShownId = 0;
         Main.overview.disconnect(this._overviewHidingId);
         this._overviewHidingId = 0;
-        Main.overview.viewSelector._workspacesPage.disconnect(
-            this._workspacesVisibleId);
         this._workspacesVisibleId = 0;
     }
 };
