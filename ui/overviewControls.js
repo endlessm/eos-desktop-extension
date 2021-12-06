@@ -148,7 +148,19 @@ function enable() {
         if (!params)
             params = this._stateAdjustment.getStateTransitionParams();
 
-        this._appDisplay.visible = true;
+        const { searchActive } = this._searchController;
+
+        if (!searchActive) {
+            this._appDisplay.visible = true;
+            this._appDisplay.opacity = ShellUtils.lerp(
+                128,
+                255,
+                Math.abs(OverviewControls.ControlsState.WINDOW_PICKER - params.currentState));
+
+            Shell.util_set_hidden_from_pick(
+                this._appDisplay,
+                params.currentState <= OverviewControls.ControlsState.WINDOW_PICKER);
+        }
 
         // Update the vignette effect
         if (this._backgroundGroup) {
