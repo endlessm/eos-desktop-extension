@@ -162,6 +162,17 @@ function enable() {
                 params.currentState <= OverviewControls.ControlsState.WINDOW_PICKER);
         }
 
+        // Update search entry visibility
+        const searchOpacityProgress =
+            Math.abs(params.currentState - OverviewControls.ControlsState.APP_GRID);
+        this._searchEntryBin.opacity = ShellUtils.lerp(
+            0,
+            255,
+            1 - Math.clamp(searchOpacityProgress, 0, 1));
+        Shell.util_set_hidden_from_pick(
+            this._searchEntryBin,
+            this._searchEntryBin.opacity < 195);
+
         // Update the vignette effect
         if (this._backgroundGroup) {
             for (const background of this._backgroundGroup) {
