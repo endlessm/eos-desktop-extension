@@ -27,8 +27,6 @@ const Main = imports.ui.main;
 
 const EOS_INACTIVE_GRID_OPACITY = 96;
 
-let startupPreparedId = 0;
-
 var OverviewClone = GObject.registerClass(
 class OverviewClone extends St.BoxLayout {
     _init() {
@@ -200,23 +198,9 @@ var OverviewCloneController = class OverviewCloneController {
 const cloneController = new OverviewCloneController();
 
 function enable() {
-    if (startupPreparedId === 0) {
-        startupPreparedId =
-            Main.layoutManager.connect('startup-prepared', () => {
-                if (Main.overview.visible)
-                    Main.overview.hide();
-                Main.overview.show();
-            });
-    }
-
     cloneController.enable();
 }
 
 function disable() {
-    if (startupPreparedId > 0) {
-        Main.layoutManager.disconnect(startupPreparedId);
-        startupPreparedId = 0;
-    }
-
     cloneController.disable();
 }
