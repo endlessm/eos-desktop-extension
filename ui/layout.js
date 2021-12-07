@@ -25,7 +25,7 @@ const AppDisplay = imports.ui.appDisplay;
 const LayoutManager = imports.ui.layout;
 const Main = imports.ui.main;
 
-const EOS_INACTIVE_GRID_OPACITY = 96;
+var EOS_INACTIVE_GRID_OPACITY = 96;
 
 var OverviewClone = GObject.registerClass(
 class OverviewClone extends St.BoxLayout {
