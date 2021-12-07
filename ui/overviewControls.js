@@ -22,6 +22,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
 const Background = imports.ui.background;
+const LayoutOverrides = DesktopExtension.imports.ui.layout;
 const Main = imports.ui.main;
 const OverviewControls = imports.ui.overviewControls;
 const ShellUtils = imports.misc.util;
@@ -143,19 +144,42 @@ function removeBackgroundFromOverview() {
     delete controls._originalLayoutManager;
 }
 
+function getAppDisplayOpacityForState(state) {
+    switch(state) {
+    case OverviewControls.ControlsState.HIDDEN:
+        return LayoutOverrides.EOS_INACTIVE_GRID_OPACITY;
+    case OverviewControls.ControlsState.WINDOW_PICKER:
+        return 128;
+    case OverviewControls.ControlsState.APP_GRID:
+        return 255;
+    }
+}
+
+function getSearchEntryOpacityForState(state) {
+    switch(state) {
+    case OverviewControls.ControlsState.HIDDEN:
+        return LayoutOverrides.EOS_INACTIVE_GRID_OPACITY;
+    case OverviewControls.ControlsState.WINDOW_PICKER:
+        return 0;
+    case OverviewControls.ControlsState.APP_GRID:
+        return 255;
+    }
+}
+
 function enable() {
     Utils.override(OverviewControls.ControlsManager, '_updateAppDisplayVisibility', function(params) {
         if (!params)
             params = this._stateAdjustment.getStateTransitionParams();
 
         const { searchActive } = this._searchController;
+        const { initialState, finalState, progress } = params;
 
         if (!searchActive) {
             this._appDisplay.visible = true;
             this._appDisplay.opacity = ShellUtils.lerp(
-                128,
-                255,
-                Math.abs(OverviewControls.ControlsState.WINDOW_PICKER - params.currentState));
+                getAppDisplayOpacityForState(initialState),
+                getAppDisplayOpacityForState(finalState),
+                progress);
 
             Shell.util_set_hidden_from_pick(
                 this._appDisplay,
@@ -163,12 +187,10 @@ function enable() {
         }
 
         // Update search entry visibility
-        const searchOpacityProgress =
-            Math.abs(params.currentState - OverviewControls.ControlsState.APP_GRID);
         this._searchEntryBin.opacity = ShellUtils.lerp(
-            0,
-            255,
-            1 - Math.clamp(searchOpacityProgress, 0, 1));
+            getSearchEntryOpacityForState(initialState),
+            getSearchEntryOpacityForState(finalState),
+            progress);
         Shell.util_set_hidden_from_pick(
             this._searchEntryBin,
             this._searchEntryBin.opacity < 195);
@@ -188,12 +210,12 @@ function enable() {
                     }
                 }
 
-                const initial = getVignetteForState(params.initialState);
-                const final = getVignetteForState(params.finalState);
+                const initial = getVignetteForState(initialState);
+                const final = getVignetteForState(finalState);
 
                 content.set_vignette(true, ...[
-                    ShellUtils.lerp(initial[0], final[0], params.progress),
-                    ShellUtils.lerp(initial[1], final[1], params.progress),
+                    ShellUtils.lerp(initial[0], final[0], progress),
+                    ShellUtils.lerp(initial[1], final[1], progress),
                 ]);
             }
         }
