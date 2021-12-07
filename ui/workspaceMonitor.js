@@ -4,7 +4,6 @@
 const { GObject, Meta, Shell } = imports.gi;
 
 const Main = imports.ui.main;
-const ViewSelector = imports.ui.viewSelector;
 
 var WorkspaceMonitor = GObject.registerClass(
 class WorkspaceMonitor extends GObject.Object {
@@ -40,7 +39,7 @@ class WorkspaceMonitor extends GObject.Object {
 
         const windows = this._getVisibleWindows();
         if (windows.length === 0)
-            Main.overview.show();
+            Main.overview.showApps();
     }
 
     _updateOverview() {
@@ -49,7 +48,7 @@ class WorkspaceMonitor extends GObject.Object {
 
         const windows = this._getVisibleWindows();
         if (windows.length === 0)
-            Main.overview.show();
+            Main.overview.showApps();
         else if (this._inFullscreen)
             // Hide in fullscreen mode
             Main.overview.hide();
@@ -67,7 +66,7 @@ class WorkspaceMonitor extends GObject.Object {
         const overview = Main.overview;
         const isShowingAppsGrid =
             overview.visible &&
-            overview.viewSelector.getActivePage() === ViewSelector.ViewPage.APPS;
+            !overview._overview.controls._searchController.searchActive;
 
         if (windows.length > 0 && isShowingAppsGrid) {
             // Make sure to hide the apps grid so that running apps whose
