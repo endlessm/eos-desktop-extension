@@ -149,7 +149,7 @@ function getAppDisplayOpacityForState(state) {
     case OverviewControls.ControlsState.HIDDEN:
         return LayoutOverrides.EOS_INACTIVE_GRID_OPACITY;
     case OverviewControls.ControlsState.WINDOW_PICKER:
-        return 128;
+        return 0;
     case OverviewControls.ControlsState.APP_GRID:
         return 255;
     }
