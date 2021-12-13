@@ -100,13 +100,6 @@ class OverviewClone extends St.BoxLayout {
                 GObject.BindingFlags.SYNC_CREATE);
         });
 
-        // Added by this extension's ui/appDisplay.js file
-        this._desaturateEffect = new Clutter.DesaturateEffect({
-            name: 'endless-desaturate',
-            factor: 1.0,
-        });
-        box.add_effect(this._desaturateEffect);
-
         // 'Go To Overview' click action
         const clickAction = new Clutter.ClickAction();
         clickAction.connect('clicked', () => {
