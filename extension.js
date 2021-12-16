@@ -22,6 +22,7 @@ const AppSystem = DesktopExtension.imports.ui.appSystem;
 const AppDisplay = DesktopExtension.imports.ui.appDisplay;
 const Layout = DesktopExtension.imports.ui.layout;
 const OverviewControls = DesktopExtension.imports.ui.overviewControls;
+const Panel = DesktopExtension.imports.ui.panel;
 const Settings = DesktopExtension.imports.settings;
 const Workspace = DesktopExtension.imports.ui.workspace;
 const WorkspaceMonitor = DesktopExtension.imports.ui.workspaceMonitor;
@@ -42,6 +43,7 @@ class Extension {
         AppDisplay.enable();
         Layout.enable();
         OverviewControls.enable();
+        Panel.enable();
         Workspace.enable();
         this._workspaceMonitor.enable();
 
@@ -57,6 +59,7 @@ class Extension {
         AppDisplay.disable();
         Layout.disable();
         OverviewControls.disable();
+        Panel.disable();
         Workspace.disable();
 
         this._enabled = false;
