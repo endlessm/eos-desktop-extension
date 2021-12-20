@@ -166,13 +166,22 @@ function getSearchEntryOpacityForState(state) {
     }
 }
 
+function setDashAboveWorkspaces(above) {
+    const { controls } = Main.overview._overview;
+
+    if (above)
+        controls.set_child_above_sibling(controls.dash, controls._workspacesDisplay);
+    else
+        controls.set_child_below_sibling(controls.dash, controls._searchController);
+}
+
 function enable() {
     Utils.override(OverviewControls.ControlsManager, '_updateAppDisplayVisibility', function(params) {
         if (!params)
             params = this._stateAdjustment.getStateTransitionParams();
 
         const { searchActive } = this._searchController;
-        const { initialState, finalState, progress } = params;
+        const { currentState, initialState, finalState, progress } = params;
 
         if (!searchActive) {
             this._appDisplay.visible = true;
@@ -183,8 +192,10 @@ function enable() {
 
             Shell.util_set_hidden_from_pick(
                 this._appDisplay,
-                params.currentState <= OverviewControls.ControlsState.WINDOW_PICKER);
+                currentState <= OverviewControls.ControlsState.WINDOW_PICKER);
         }
+
+        setDashAboveWorkspaces(currentState < OverviewControls.ControlsState.WINDOW_PICKER);
 
         // Update search entry visibility
         this._searchEntryBin.opacity = ShellUtils.lerp(
