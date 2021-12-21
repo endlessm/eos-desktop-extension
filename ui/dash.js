@@ -16,13 +16,15 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-const { Clutter, GObject } = imports.gi;
+const { Clutter, GLib, GObject, Meta } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
 const LayoutManager = imports.ui.layout;
 const Main = imports.ui.main;
+
+const WINDOW_OVERLAP_POLL_TIMEOUT = 200;
 
 // Note: must be kept in sync with js/ui/overviewControls.js
 const DASH_MAX_HEIGHT_RATIO = 0.15;
@@ -92,10 +94,139 @@ const FakeDash = GObject.registerClass({
     }
 });
 
+const windowTypes = [
+    Meta.WindowType.NORMAL,
+    Meta.WindowType.DOCK,
+    Meta.WindowType.DIALOG,
+    Meta.WindowType.MODAL_DIALOG,
+    Meta.WindowType.TOOLBAR,
+    Meta.WindowType.MENU,
+    Meta.WindowType.UTILITY,
+    Meta.WindowType.SPLASHSCREEN
+];
+
+const Intellihide = GObject.registerClass({
+    Properties: {
+        'dash-visible': GObject.ParamSpec.boolean(
+            'dash-visible', 'dash-visible', 'dash-visible',
+            GObject.ParamFlags.READABLE,
+            true),
+    },
+}, class Intellihide extends GObject.Object {
+    _init() {
+        super._init();
+
+        this._dashVisible = true;
+    }
+
+    _getRelevantWindows() {
+        return global.get_window_actors().filter(windowActor => {
+            const metaWindow = windowActor.get_meta_window();
+
+            if (!metaWindow)
+                return false;
+
+            if (windowTypes.indexOf(metaWindow.get_window_type()) === -1)
+                return false;
+
+            if (metaWindow.minimized)
+                return false;
+
+            const currentWorkspaceIndex =
+                global.workspace_manager.get_active_workspace_index();
+            const windowWorkspaceIndex = metaWindow.get_workspace()?.index();
+
+            return currentWorkspaceIndex === windowWorkspaceIndex &&
+                metaWindow.showing_on_its_workspace();
+        }).map(windowActor => windowActor.get_meta_window());
+    }
+
+    _getDashBox() {
+        const { primaryIndex } = Main.layoutManager;
+        const { x, y, width, height } =
+            Main.layoutManager.getWorkAreaForMonitor(primaryIndex);
+
+        const dashHeight = Main.overview.dash.height;
+
+        const childBox = new Clutter.ActorBox();
+        childBox.set_origin(x, y + height - dashHeight);
+        childBox.set_size(width, dashHeight);
+        return childBox;
+    }
+
+    _setDashVisible(visible) {
+        if (this._dashVisible === visible)
+            return;
+
+        this._dashVisible = visible;
+        this.notify('dash-visible');
+    }
+
+    update() {
+        // Always show the Dash in overview
+        if (Main.overview.visibleTarget) {
+            this._setDashVisible(true);
+            return;
+        }
+
+        const dashBox = this._getDashBox();
+        let hasOverlaps = false;
+
+        for (const metaWindow of this._getRelevantWindows()) {
+            const frameRect = metaWindow.get_frame_rect();
+
+            hasOverlaps |=
+                frameRect.x + frameRect.width > dashBox.x1 &&
+                frameRect.y + frameRect.height > dashBox.y1 &&
+                frameRect.x < dashBox.x2 &&
+                frameRect.y < dashBox.y2;
+
+            if (hasOverlaps)
+                break;
+        }
+
+        this._setDashVisible(!hasOverlaps);
+    }
+
+    enable() {
+        this._timeoutId = GLib.timeout_add(
+            GLib.PRIORITY_LOW,
+            WINDOW_OVERLAP_POLL_TIMEOUT,
+            () => {
+                this.update();
+                return GLib.SOURCE_CONTINUE;
+            });
+    }
+
+    disable() {
+        GLib.source_remove(this._timeoutId);
+        delete this._timeoutId;
+    }
+
+    get dash_visible() {
+        return this._dashVisible;
+    }
+});
+
 const EosDashController = class EosDashController {
     constructor() {
         this._fakeDash = new FakeDash();
         this._sessionDashContainer = new SessionDashContainer();
+
+        this._intellihide = new Intellihide();
+        this._intellihide.connect('notify::dash-visible', () => this._updateDash());
+    }
+
+    _updateDash() {
+        const { dash } = Main.overview;
+        const { dashVisible } = this._intellihide;
+
+        dash.remove_transition('translation-y');
+        dash.ease({
+            translation_y: dashVisible ? 0 : dash.height,
+            duration: 250,
+            mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+        });
     }
 
     _addDashToOverview() {
@@ -139,10 +270,19 @@ const EosDashController = class EosDashController {
         this._overviewSignals = [];
         this._overviewSignals.push(Main.overview.connect('showing', () => {
             this._addDashToOverview();
+
+            // This must be done after reparenting, otherwise the translation-y
+            // transition doesn't happen
+            this._intellihide.update();
+        }));
+        this._overviewSignals.push(Main.overview.connect('hiding', () => {
+            this._intellihide.update();
         }));
         this._overviewSignals.push(Main.overview.connect('hidden', () => {
             this._addDashToSession();
         }));
+
+        this._intellihide.enable();
     }
 
     disable() {
@@ -153,6 +293,8 @@ const EosDashController = class EosDashController {
 
         this._overviewSignals.forEach(id => Main.overview.disconnect(id));
         delete this._overviewSignals;
+
+        this._intellihide.disable();
     }
 };
 
