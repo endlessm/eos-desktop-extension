@@ -356,6 +356,20 @@ const EosDashController = class EosDashController {
         }));
 
         this._intellihide.enable();
+
+        // Show the overview when the toggling the apps button in session
+        // mode
+        const { showAppsButton } = Main.overview.dash;
+        this._showOverviewId = showAppsButton.connect('notify::checked', () => {
+            if (Main.overview._overview.controls._ignoreShowAppsButtonToggle ||
+                Main.overview.visibleTarget)
+                return;
+
+            if (showAppsButton.checked)
+                Main.overview.showApps();
+            else
+                Main.overview.show();
+        });
     }
 
     disable() {
@@ -371,6 +385,9 @@ const EosDashController = class EosDashController {
         delete this._overviewSignals;
 
         this._intellihide.disable();
+
+        Main.overview.dash.showAppsButton.disconnect(this._showOverviewId);
+        delete this._showOverviewId;
     }
 };
 
