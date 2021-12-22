@@ -16,7 +16,7 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-const { Clutter, GLib, GObject, Meta } = imports.gi;
+const { Clutter, GLib, GObject, Meta, Shell, St } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
@@ -119,6 +119,27 @@ const Intellihide = GObject.registerClass({
         this._dashVisible = true;
     }
 
+    _armTriggerTimeout() {
+        if (this._triggerTimeoutId)
+            return;
+
+        this._triggerTimeoutId = GLib.timeout_add(
+            GLib.PRIORITY_LOW,
+            1000,
+            () => {
+                delete this._triggerTimeoutId;
+                return GLib.SOURCE_REMOVE;
+            });
+    }
+
+    _disarmTriggerTimeout() {
+        if (!this._triggerTimeoutId)
+            return;
+
+        GLib.source_remove(this._triggerTimeoutId);
+        delete this._triggerTimeoutId;
+    }
+
     _getRelevantWindows() {
         return global.get_window_actors().filter(windowActor => {
             const metaWindow = windowActor.get_meta_window();
@@ -164,7 +185,7 @@ const Intellihide = GObject.registerClass({
 
     update() {
         // Always show the Dash in overview
-        if (Main.overview.visibleTarget) {
+        if (Main.overview.visibleTarget || Main.overview.dash.hover || this._triggerTimeoutId) {
             this._setDashVisible(true);
             return;
         }
@@ -188,6 +209,32 @@ const Intellihide = GObject.registerClass({
         this._setDashVisible(!hasOverlaps);
     }
 
+    _removeBarrier() {
+        if (!this._barrier)
+            return;
+
+        this._pressureBarrier.removeBarrier(this._barrier);
+        delete this._barrier;
+    }
+
+    _updateBarrier() {
+        this._removeBarrier();
+
+        const { primaryIndex } = Main.layoutManager;
+        const { x, y, width, height } =
+            Main.layoutManager.getWorkAreaForMonitor(primaryIndex);
+
+        this._barrier = new Meta.Barrier({
+            display: global.display,
+            x1: x + 1,
+            x2: x + width - 2,
+            y1: y + height,
+            y2: y + height,
+            directions: Meta.BarrierDirection.NEGATIVE_Y,
+        });
+        this._pressureBarrier.addBarrier(this._barrier);
+    }
+
     enable() {
         this._timeoutId = GLib.timeout_add(
             GLib.PRIORITY_LOW,
@@ -196,11 +243,27 @@ const Intellihide = GObject.registerClass({
                 this.update();
                 return GLib.SOURCE_CONTINUE;
             });
+
+        this._pressureBarrier = new LayoutManager.PressureBarrier(
+            25,
+            500,
+            Shell.ActionMode.NORMAL);
+        this._pressureBarrier.connect('trigger', () => {
+            this._setDashVisible(true);
+            this._armTriggerTimeout();
+        });
+        this._updateBarrier();
     }
 
     disable() {
         GLib.source_remove(this._timeoutId);
         delete this._timeoutId;
+
+        this._removeBarrier();
+        this._pressureBarrier.destroy()
+        delete this._pressureBarrier;
+
+        this._disarmTriggerTimeout();
     }
 
     get dash_visible() {
@@ -226,6 +289,13 @@ const EosDashController = class EosDashController {
             translation_y: dashVisible ? 0 : dash.height,
             duration: 250,
             mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+            onComplete: () => {
+                // GNOME Shell only tracks changes in the actor allocation,
+                // but we're easing translation-y which is a post-allocation
+                // transform that doesn't change allocation, therefore we
+                // must manually queue an update to input regions.
+                Main.layoutManager._queueUpdateRegions();
+            }
         });
     }
 
@@ -260,8 +330,11 @@ const EosDashController = class EosDashController {
     }
 
     enable() {
+        Main.overview.dash.reactive = true;
+        Main.overview.dash.track_hover = true;
+
         Main.layoutManager.addChrome(this._sessionDashContainer, {
-            affectsInputRegion: true,
+            affectsInputRegion: false,
         });
 
         const overviewControls = Main.overview._overview.controls;
@@ -286,6 +359,9 @@ const EosDashController = class EosDashController {
     }
 
     disable() {
+        Main.overview.dash.reactive = false;
+        Main.overview.dash.track_hover = false;
+
         Main.layoutManager.removeChrome(this._sessionDashContainer);
 
         const overviewControls = Main.overview._overview.controls;
