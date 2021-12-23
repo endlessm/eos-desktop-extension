@@ -289,6 +289,13 @@ const EosDashController = class EosDashController {
             translation_y: dashVisible ? 0 : dash.height,
             duration: 250,
             mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+            onStopped: () => {
+                // Sometimes we reparent the Dash before this transition
+                // is finished, cancelling the timeline. In these cases,
+                // we must ensure the Dash ends up with the target
+                // translation
+                dash.translation_y = dashVisible ? 0 : dash.height;
+            },
             onComplete: () => {
                 // GNOME Shell only tracks changes in the actor allocation,
                 // but we're easing translation-y which is a post-allocation
