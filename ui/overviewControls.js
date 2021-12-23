@@ -198,9 +198,9 @@ function enable() {
         setDashAboveWorkspaces(currentState < OverviewControls.ControlsState.WINDOW_PICKER);
 
         // Update search entry visibility
-        this._searchEntryBin.opacity = ShellUtils.lerp(
-            getSearchEntryOpacityForState(initialState),
-            getSearchEntryOpacityForState(finalState),
+        this._searchEntryBin.opacity = searchActive ? 255 : ShellUtils.lerp(
+                getSearchEntryOpacityForState(initialState),
+                getSearchEntryOpacityForState(finalState),
             progress);
         Shell.util_set_hidden_from_pick(
             this._searchEntryBin,
