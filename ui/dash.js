@@ -21,13 +21,53 @@ const { Clutter, GLib, GObject, Meta, Shell, St } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
+const Dash = imports.ui.dash;
 const LayoutManager = imports.ui.layout;
 const Main = imports.ui.main;
+const Utils = DesktopExtension.imports.utils;
 
 const WINDOW_OVERLAP_POLL_TIMEOUT = 200;
 
 // Note: must be kept in sync with js/ui/overviewControls.js
 const DASH_MAX_HEIGHT_RATIO = 0.15;
+
+const EosDashIcon = GObject.registerClass({
+    GTypeName: 'EosDashIcon',
+}, class EosDashIcon extends Dash.DashIcon {
+    _init(app) {
+        super._init(app);
+
+        this._windowsChangedId =
+            app.connect('windows-changed', () => this.updateIconGeometry());
+    }
+
+    vfunc_map() {
+        super.vfunc_map();
+        this.updateIconGeometry();
+    }
+
+    _onDestroy() {
+        if (this._windowsChangedId) {
+            this.app.disconnect(this._windowsChangedId);
+            delete this._windowsChangedId;
+        }
+
+        super._onDestroy();
+    }
+
+    updateIconGeometry() {
+        const windows = this.app.get_windows();
+
+        if (windows?.length === 0)
+            return;
+
+        const rect = new Meta.Rectangle();
+        [rect.x, rect.y] = this.get_transformed_position();
+        [rect.width, rect.height] = this.get_transformed_size();
+
+        windows.forEach(w => w.set_icon_geometry(rect));
+    }
+});
 
 const SessionDashContainer = GObject.registerClass({
     GTypeName: 'SessionDashContainer',
@@ -297,6 +337,8 @@ const EosDashController = class EosDashController {
                 dash.translation_y = dashVisible ? 0 : dash.height;
             },
             onComplete: () => {
+                this._updateIconsGeometries();
+
                 // GNOME Shell only tracks changes in the actor allocation,
                 // but we're easing translation-y which is a post-allocation
                 // transform that doesn't change allocation, therefore we
@@ -304,6 +346,13 @@ const EosDashController = class EosDashController {
                 Main.layoutManager._queueUpdateRegions();
             }
         });
+    }
+
+    _updateIconsGeometries() {
+        for (const actor of Main.overview.dash._box) {
+            if (actor.child?.updateIconGeometry)
+                actor.child.updateIconGeometry();
+        }
     }
 
     _addDashToOverview() {
@@ -400,6 +449,27 @@ const EosDashController = class EosDashController {
 
 let dashContoller = null;
 function enable() {
+    Utils.override(Dash.Dash, '_createAppItem', function(app) {
+        const appIcon = new EosDashIcon(app);
+
+        appIcon.connect('menu-state-changed', (o, opened) => {
+            this._itemMenuStateChanged(item, opened);
+        });
+
+        const item = new Dash.DashItemContainer();
+        item.setChild(appIcon);
+
+        // Override default AppIcon label_actor, now the
+        // accessible_name is set at DashItemContainer.setLabelText
+        appIcon.label_actor = null;
+        item.setLabelText(app.get_name());
+
+        appIcon.icon.setIconSize(this.iconSize);
+        this._hookUpLabel(item, appIcon);
+
+        return item;
+    });
+
     if (!dashContoller)
         dashContoller = new EosDashController();
 
@@ -407,5 +477,6 @@ function enable() {
 }
 
 function disable() {
+    Utils.restore(Dash.Dash);
     dashContoller.disable();
 }
