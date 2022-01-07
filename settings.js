@@ -30,7 +30,6 @@ const ParentalControlsManager = imports.misc.parentalControlsManager;
 
 const CURRENT_VERSION = 1;
 const APP_CENTER_ID = 'org.gnome.Software.desktop';
-const CLUBHOUSE_ID = 'com.hack_computer.Clubhouse.desktop';
 
 function _getMigrationSettings() {
     const dir = DesktopExtension.dir.get_child('migration').get_path();
@@ -142,10 +141,6 @@ function _migrateToV1(migrationSettings, extensionSettings) {
 
     let index = 0;
     const addedItems = new Set();
-
-    // Add the clubhouse icon
-    _addIcon(pages, CLUBHOUSE_ID, index++, itemsPerPage);
-    addedItems.add(CLUBHOUSE_ID);
 
     for (const itemId of desktopIcons) {
         const isFolder = iconGridLayout.iconIsFolder(itemId);
