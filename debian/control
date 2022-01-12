@@ -16,8 +16,7 @@ Vcs-Git: https://github.com/endlessm/eos-desktop-extension.git
 Package: eos-desktop-extension
 Architecture: all
 Depends:
- gnome-shell (>= 3.35),
- gnome-shell (>= 3.37.3),
+ gnome-shell (>= 41.0),
  ${shlibs:Depends},
  ${misc:Depends}
 Description: Endless OS desktop extension for GNOME Shell
