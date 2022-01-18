@@ -21,13 +21,6 @@ schemas = ['com.endlessm.desktop-extension']
 
 uuid = 'eos-desktop@endlessm.com'
 
-ver_arr = meson.project_version().split('.')
-if ver_arr[1].to_int().is_even()
-  shell_version = '@0@.@1@'.format(ver_arr[0], ver_arr[1])
-else
-  shell_version = '.'.join(ver_arr)
-endif
-
 datadir = get_option('datadir')
 extensiondir = join_paths(datadir, 'gnome-shell', 'extensions')
 schemadir = join_paths(extensiondir, uuid, 'schemas')
@@ -36,7 +29,6 @@ have_schemas = schemas.length() > 0
 
 metaconf = configuration_data()
 metaconf.set('uuid', uuid)
-metaconf.set('shell_version', shell_version)
 if have_schemas
   metaconf.set('settings_schema', schemas[0])
 endif

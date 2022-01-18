@@ -3,6 +3,6 @@
 "name": "Endless Desktop",
 "description": "Endless OS signature desktop",
 "settings-schema": "@settings_schema@",
-"shell-version": ["@shell_version@"],
+"shell-version": ["41"],
 "url": "https://github.com/endlessm/eos-desktop-extension"
 }
