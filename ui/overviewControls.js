@@ -22,6 +22,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
 const Background = imports.ui.background;
+const Layout = imports.ui.layout;
 const LayoutOverrides = DesktopExtension.imports.ui.layout;
 const Main = imports.ui.main;
 const OverviewControls = imports.ui.overviewControls;
@@ -230,6 +231,56 @@ function enable() {
                 ]);
             }
         }
+    });
+
+    Utils.override(OverviewControls.ControlsManager, 'runStartupAnimation', async function(callback) {
+        this._ignoreShowAppsButtonToggle = true;
+
+        this._searchController.prepareToEnterOverview();
+        this._workspacesDisplay.prepareToEnterOverview();
+
+        this.dash.showAppsButton.checked = true;
+        this._stateAdjustment.value = OverviewControls.ControlsState.APP_GRID;
+
+        this._ignoreShowAppsButtonToggle = false;
+
+        // Set the opacity here to avoid a 1-frame flicker
+        this.opacity = 0;
+
+        // We can't run the animation before the first allocation happens
+        await this.layoutManager.ensureAllocation();
+
+        const { STARTUP_ANIMATION_TIME } = Layout;
+
+        // Opacity
+        this.ease({
+            opacity: 255,
+            duration: STARTUP_ANIMATION_TIME,
+            mode: Clutter.AnimationMode.LINEAR,
+        });
+
+        // Search bar falls from the ceiling
+        const { primaryMonitor } = Main.layoutManager;
+        const [, y] = this._searchEntryBin.get_transformed_position();
+        const yOffset = y - primaryMonitor.y;
+
+        this._searchEntryBin.translation_y = -(yOffset + this._searchEntryBin.height);
+        this._searchEntryBin.ease({
+            translation_y: 0,
+            duration: STARTUP_ANIMATION_TIME,
+            mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+        });
+
+        // The Dash rises from the bottom. This is the last animation to finish,
+        // so run the callback there.
+        this.dash.translation_y = this.dash.height;
+        this.dash.ease({
+            translation_y: 0,
+            delay: STARTUP_ANIMATION_TIME,
+            duration: STARTUP_ANIMATION_TIME,
+            mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+            onComplete: () => callback(),
+        });
     });
 
     addBackgroundToOverview();
