@@ -127,7 +127,7 @@ function _migrateToV1(migrationSettings, extensionSettings) {
     });
 
     const itemsPerPage =
-        Main.overview.viewSelector.appDisplay._grid.itemsPerPage;
+        Main.overview._overview.controls.appDisplay._grid.itemsPerPage;
     const pages = [];
 
     const appSys = Shell.AppSystem.get_default();
