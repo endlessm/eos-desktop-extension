@@ -51,7 +51,7 @@ class WorkspaceMonitor extends GObject.Object {
             Main.overview.showApps();
         else if (this._inFullscreen)
             // Hide in fullscreen mode
-            Main.overview.hide();
+            Main.overview.hide(true);
     }
 
     _windowDisappeared() {
@@ -71,7 +71,7 @@ class WorkspaceMonitor extends GObject.Object {
         if (windows.length > 0 && isShowingAppsGrid) {
             // Make sure to hide the apps grid so that running apps whose
             // windows are becoming visible are shown to the user.
-            overview.hide();
+            overview.hide(true);
         } else {
             // Fallback to the default logic used for dissapearing windows.
             this._updateOverview();
