@@ -25,6 +25,7 @@ const Layout = DesktopExtension.imports.ui.layout;
 const Overview = DesktopExtension.imports.ui.overview;
 const OverviewControls = DesktopExtension.imports.ui.overviewControls;
 const Panel = DesktopExtension.imports.ui.panel;
+const Search = DesktopExtension.imports.ui.search;
 const Settings = DesktopExtension.imports.settings;
 const Workspace = DesktopExtension.imports.ui.workspace;
 const WorkspaceMonitor = DesktopExtension.imports.ui.workspaceMonitor;
@@ -48,6 +49,7 @@ class Extension {
         Overview.enable(this._workspaceMonitor);
         OverviewControls.enable();
         Panel.enable();
+        Search.enable();
         Workspace.enable();
         this._workspaceMonitor.enable();
 
@@ -66,6 +68,7 @@ class Extension {
         Overview.disable();
         OverviewControls.disable();
         Panel.disable();
+        Search.disable();
         Workspace.disable();
 
         this._enabled = false;
