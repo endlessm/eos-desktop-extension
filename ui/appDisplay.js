@@ -66,6 +66,13 @@ function enable() {
             this._grid.goToPage(pageNumber, animate);
         });
 
+    Utils.override(AppDisplay.AppIcon, 'activate', function (button) {
+        const original = Utils.original(AppDisplay.AppIcon, 'activate');
+        original.bind(this)(button);
+
+        Main.overview.hide(true);
+    });
+
     Utils.override(AppDisplay.PageManager, 'getAppPosition', function(appId) {
         const original = Utils.original(AppDisplay.PageManager, 'getAppPosition');
         let [page, position] = original.bind(this)(appId);
@@ -125,6 +132,7 @@ function enable() {
 
 function disable() {
     Utils.restore(AppDisplay.AppDisplay);
+    Utils.restore(AppDisplay.AppIcon);
     Utils.restore(AppDisplay.PageManager);
 
     Main.overview.disconnect(overviewHidingId);
