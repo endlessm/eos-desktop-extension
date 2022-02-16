@@ -21,7 +21,6 @@ const { Clutter, GObject, Graphene, Meta, Shell, St } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
-const Background = imports.ui.background;
 const Layout = imports.ui.layout;
 const LayoutOverrides = DesktopExtension.imports.ui.layout;
 const Main = imports.ui.main;
@@ -33,15 +32,6 @@ const SMALL_WORKSPACE_RATIO = 0.55;
 
 var EndlessControlsManagerLayout = GObject.registerClass(
 class EndlessControlsManagerLayout extends OverviewControls.ControlsManagerLayout {
-    _init(background, searchEntry, appDisplay, workspacesDisplay,
-        workspacesThumbnails, searchController, dash, stateAdjustment) {
-        super._init(searchEntry, appDisplay, workspacesDisplay,
-            workspacesThumbnails, searchController, dash,
-            stateAdjustment);
-
-        this._background = background;
-    }
-
     _computeWorkspacesBoxForState(state, workAreaBox, searchHeight, dashHeight, thumbnailsHeight) {
         const workspaceBox = workAreaBox.copy();
         const [startX, startY] = workAreaBox.get_origin();
@@ -96,34 +86,13 @@ class EndlessControlsManagerLayout extends OverviewControls.ControlsManagerLayou
 
         return appDisplayBox;
     }
-
-    vfunc_allocate(container, box) {
-        this._background.allocate(box);
-        super.vfunc_allocate(container, box);
-    }
 });
 
-function addBackgroundToOverview() {
+function overrideOverviewLayoutManager() {
     const { controls } = Main.overview._overview;
-
-    controls._backgroundGroup = new Meta.BackgroundGroup({
-        layout_manager: new Clutter.BinLayout(),
-        x_expand: true,
-        y_expand: true,
-    });
-    controls.insert_child_below(controls._backgroundGroup,
-        controls._searchEntryBin);
-
-    controls._bgManager = new Background.BackgroundManager({
-        container: controls._backgroundGroup,
-        monitorIndex: Main.layoutManager.primaryIndex,
-        controlPosition: false,
-        useContentSize: false,
-    });
 
     controls._originalLayoutManager = controls.layoutManager;
     controls.layoutManager = new EndlessControlsManagerLayout(
-        controls._backgroundGroup,
         controls._searchEntryBin,
         controls._appDisplay,
         controls._workspacesDisplay,
@@ -133,13 +102,8 @@ function addBackgroundToOverview() {
         controls._stateAdjustment);
 }
 
-function removeBackgroundFromOverview() {
+function restoreOverviewLayoutManager() {
     const { controls } = Main.overview._overview;
-
-    controls._bgManager.destroy();
-
-    controls._backgroundGroup.destroy();
-    delete controls._backgroundGroup;
 
     controls.layoutManager = controls._originalLayoutManager;
     delete controls._originalLayoutManager;
@@ -208,8 +172,8 @@ function enable() {
             this._searchEntryBin.opacity < 195);
 
         // Update the vignette effect
-        if (this._backgroundGroup) {
-            for (const background of this._backgroundGroup) {
+        if (Main.overview._backgroundGroup) {
+            for (const background of Main.overview._backgroundGroup) {
                 const { content } = background;
 
                 const getVignetteForState = state => {
@@ -283,10 +247,10 @@ function enable() {
         });
     });
 
-    addBackgroundToOverview();
+    overrideOverviewLayoutManager();
 }
 
 function disable() {
     Utils.restore(OverviewControls.ControlsManager);
-    removeBackgroundFromOverview();
+    restoreOverviewLayoutManager();
 }
