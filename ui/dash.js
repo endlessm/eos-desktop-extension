@@ -254,6 +254,7 @@ const Intellihide = GObject.registerClass({
             return;
 
         this._pressureBarrier.removeBarrier(this._barrier);
+        this._barrier.destroy();
         delete this._barrier;
     }
 
