@@ -254,6 +254,7 @@ const Intellihide = GObject.registerClass({
             return;
 
         this._pressureBarrier.removeBarrier(this._barrier);
+        this._barrier.destroy();
         delete this._barrier;
     }
 
@@ -293,6 +294,14 @@ const Intellihide = GObject.registerClass({
             this._armTriggerTimeout();
         });
         this._updateBarrier();
+
+        this._monitorsChangedId = Main.layoutManager.connect('monitors-changed', () => {
+            this._updateBarrier();
+        });
+
+        this._workareasChangedId = global.display.connect('workareas-changed', () => {
+            this._updateBarrier();
+        });
     }
 
     disable() {
@@ -302,6 +311,12 @@ const Intellihide = GObject.registerClass({
         this._removeBarrier();
         this._pressureBarrier.destroy()
         delete this._pressureBarrier;
+
+        Main.layoutManager.disconnect(this._monitorsChangedId);
+        delete this._monitorsChangedId;
+
+        global.display.disconnect(this._workareasChangedId);
+        delete this._workareasChangedId;
 
         this._disarmTriggerTimeout();
     }
