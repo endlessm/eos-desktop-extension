@@ -46,6 +46,9 @@ class WorkspaceMonitor extends GObject.Object {
         if (!this._enabled)
             return;
 
+        if (!Main.overview._startupAnimationDone)
+            return;
+
         const windows = this._getVisibleWindows();
         if (windows.length === 0)
             Main.overview.showApps();

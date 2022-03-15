@@ -32,6 +32,13 @@ function enable(workspaceMonitor) {
         const original = Utils.original(Overview.Overview, 'hide');
         original.bind(this)();
     });
+
+    Utils.override(Overview.Overview, 'runStartupAnimation', async function(callback) {
+        const original = Utils.original(Overview.Overview, 'runStartupAnimation');
+        original.bind(this)(callback);
+
+        this._startupAnimationDone = true;
+    });
 }
 
 function disable() {
