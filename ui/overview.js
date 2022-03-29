@@ -35,9 +35,10 @@ function enable(workspaceMonitor) {
 
     Utils.override(Overview.Overview, 'runStartupAnimation', async function(callback) {
         const original = Utils.original(Overview.Overview, 'runStartupAnimation');
-        original.bind(this)(callback);
-
-        this._startupAnimationDone = true;
+        original.bind(this)(() => {
+            callback();
+            this._startupAnimationDone = true;
+        });
     });
 }
 
