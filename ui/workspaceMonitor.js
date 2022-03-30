@@ -1,7 +1,7 @@
 // -*- mode: js; js-indent-level: 4; indent-tabs-mode: nil -*-
 /* exported WorkspaceMonitor */
 
-const { GObject, Meta, Shell } = imports.gi;
+const { GLib, GObject, Meta, Shell } = imports.gi;
 
 const Main = imports.ui.main;
 
@@ -65,20 +65,31 @@ class WorkspaceMonitor extends GObject.Object {
         if (!this._enabled)
             return;
 
-        const windows = this._getVisibleWindows();
-        const overview = Main.overview;
-        const isShowingAppsGrid =
-            overview.visible &&
-            !overview._overview.controls._searchController.searchActive;
+        if (this._updateWindowId)
+            return;
 
-        if (windows.length > 0 && isShowingAppsGrid) {
-            // Make sure to hide the apps grid so that running apps whose
-            // windows are becoming visible are shown to the user.
-            overview.hide(true);
-        } else {
-            // Fallback to the default logic used for dissapearing windows.
-            this._updateOverview();
-        }
+        this._updateWindowId = GLib.timeout_add(
+            GLib.PRIORITY_LOW,
+            250,
+            () => {
+                const windows = this._getVisibleWindows();
+                const overview = Main.overview;
+                const isShowingAppsGrid =
+                    overview.visible &&
+                    !overview._overview.controls._searchController.searchActive;
+
+                if (windows.length > 0 && isShowingAppsGrid) {
+                    // Make sure to hide the apps grid so that running apps whose
+                    // windows are becoming visible are shown to the user.
+                    overview.hide(true);
+                } else {
+                    // Fallback to the default logic used for dissapearing windows.
+                    this._updateOverview();
+                }
+
+                delete this._updateWindowId;
+                return GLib.SOURCE_REMOVE;
+            });
     }
 
     _getVisibleWindows() {
@@ -109,6 +120,11 @@ class WorkspaceMonitor extends GObject.Object {
 
     disable() {
         this._enabled = false;
+
+        if (this._updateWindowId) {
+            GLib.source_remove(this._updateWindowId);
+            delete this._updateWindowId;
+        }
 
         this._shellwm.disconnect(this._wmMinimizeId);
         this._shellwm.disconnect(this._wmDestroyId);
