@@ -225,12 +225,20 @@ const Intellihide = GObject.registerClass({
 
     update() {
         // Always show the Dash in overview
-        if (Main.overview.visibleTarget || Main.overview.dash.hover || this._triggerTimeoutId) {
+        if (Main.overview.visibleTarget ||
+            Main.overview.dash._dashContainer.hover ||
+            this._triggerTimeoutId) {
             this._setDashVisible(true);
             return;
         }
 
+        // When the Dash is already visible in the session, and the
+        // cursor is within the Dash boundaries, but not hovering
+        // _dashContainer, continue showing it
         const dashBox = this._getDashBox();
+        if (this._dashVisible && dashBox.contains(...global.get_pointer()))
+            return;
+
         let hasOverlaps = false;
 
         for (const metaWindow of this._getRelevantWindows()) {
@@ -401,8 +409,8 @@ const EosDashController = class EosDashController {
     }
 
     enable() {
-        Main.overview.dash.reactive = true;
-        Main.overview.dash.track_hover = true;
+        Main.overview.dash._dashContainer.reactive = true;
+        Main.overview.dash._dashContainer.track_hover = true;
 
         Main.layoutManager.addChrome(this._sessionDashContainer, {
             affectsInputRegion: false,
@@ -444,8 +452,8 @@ const EosDashController = class EosDashController {
     }
 
     disable() {
-        Main.overview.dash.reactive = false;
-        Main.overview.dash.track_hover = false;
+        Main.overview.dash._dashContainer.reactive = false;
+        Main.overview.dash._dashContainer.track_hover = false;
 
         Main.layoutManager.removeChrome(this._sessionDashContainer);
 
