@@ -236,7 +236,8 @@ const Intellihide = GObject.registerClass({
         // cursor is within the Dash boundaries, but not hovering
         // _dashContainer, continue showing it
         const dashBox = this._getDashBox();
-        if (this._dashVisible && dashBox.contains(...global.get_pointer()))
+        const [pointerX, pointerY] = global.get_pointer();
+        if (this._dashVisible && dashBox.contains(pointerX, pointerY))
             return;
 
         let hasOverlaps = false;
