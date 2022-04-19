@@ -6,15 +6,16 @@
 # Translators:
 # Andre Magalhaes <andre@endlessm.com>, 2020
 # Will Thompson <wjt@endlessos.org>, 2020
+# Muha Aliss <muhaaliss@gmail.com>, 2022
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-30 20:01+0000\n"
+"POT-Creation-Date: 2022-04-19 19:01+0000\n"
 "PO-Revision-Date: 2020-10-26 16:37+0000\n"
-"Last-Translator: Will Thompson <wjt@endlessos.org>, 2020\n"
+"Last-Translator: Muha Aliss <muhaaliss@gmail.com>, 2022\n"
 "Language-Team: Turkish (https://www.transifex.com/endless-os/teams/9016/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -39,13 +40,13 @@ msgstr "%s dosyasını tarayıcı ile aç."
 #: ui/internetSearch.js:222
 #, javascript-format
 msgid "Search %1$s for \"%2$s\""
-msgstr ""
+msgstr "%1$s üzerinde \"%2$s\" ara"
 
 #: ui/internetSearch.js:224
 #, javascript-format
 msgid "Search the internet for \"%s\""
 msgstr "İnternette \"%s\" araması yap"
 
-#: settings.js:160
+#: settings.js:155
 msgid "Unnamed Folder"
 msgstr "Adsız Klasör"

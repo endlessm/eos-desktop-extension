@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-30 20:01+0000\n"
+"POT-Creation-Date: 2022-04-19 19:01+0000\n"
 "PO-Revision-Date: 2020-10-26 16:37+0000\n"
 "Last-Translator: Omer I.S. <omeritzicschwartz@gmail.com>, 2021\n"
 "Language-Team: Hebrew (https://www.transifex.com/endless-os/teams/9016/he/)\n"
@@ -47,6 +47,6 @@ msgstr ""
 msgid "Search the internet for \"%s\""
 msgstr "חיפוש באינטרנט אחר \"%s\""
 
-#: settings.js:160
+#: settings.js:155
 msgid "Unnamed Folder"
 msgstr "תיקייה ללא שם"
