@@ -119,6 +119,7 @@ class OverviewClone extends St.BoxLayout {
                 icon_name: 'edit-find-symbolic',
             }),
             style_class: 'search-entry',
+            hint_text: Main.overview.searchEntry.hintText,
         });
         this._entry.primary_icon.add_style_class_name('primary');
         const searchEntryBin = new St.Bin({
