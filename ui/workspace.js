@@ -58,8 +58,7 @@ function enable() {
         const original = Utils.original(Workspace.Workspace, '_init');
         original.bind(this)(metaWorkspace, monitorIndex, overviewAdjustment);
 
-        this.remove_child(this._background);
-        delete this._background;
+        this._background.hide();
 
         this._overviewStateChangedId = overviewAdjustment.connect('notify::value', () => {
             const { currentState, initialState, finalState, progress } =

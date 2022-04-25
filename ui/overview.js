@@ -21,8 +21,50 @@ const { Clutter, GObject, Graphene, Meta, Shell, St } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
+const Background = imports.ui.background;
+const Main = imports.ui.main;
 const Overview = imports.ui.overview;
 const Utils = DesktopExtension.imports.utils;
+
+function updateBackgrounds() {
+    for (const bgManager of Main.overview._bgManagers)
+        bgManager.destroy();
+
+    Main.overview._bgManagers = [];
+
+    for (const i in Main.layoutManager.monitors) {
+        const bgManager = new Background.BackgroundManager({
+            container: Main.overview._backgroundGroup,
+            monitorIndex: i,
+        });
+        Main.overview._bgManagers.push(bgManager);
+    }
+}
+
+function addBackgroundToOverview() {
+    Main.overview._backgroundGroup = new Meta.BackgroundGroup();
+    Main.layoutManager.overviewGroup.insert_child_below(
+        Main.overview._backgroundGroup, null);
+    Main.overview._monitorsChangedId = Main.layoutManager.connect(
+        'monitors-changed',
+        () => updateBackgrounds());
+
+    Main.overview._bgManagers = [];
+
+    updateBackgrounds();
+}
+
+function removeBackgroundFromOverview() {
+    for (const bgManager of Main.overview._bgManagers)
+        bgManager.destroy();
+    delete Main.overview._bgManagers;
+
+    Main.layoutManager.overviewGroup.remove_child(Main.overview._backgroundGroup);
+    delete Main.overview._backgroundGroup;
+
+    Main.layoutManager.disconnect(Main.overview._monitorsChangedId);
+    delete Main.overview._monitorsChangedId;
+}
 
 function enable(workspaceMonitor) {
     Utils.override(Overview.Overview, 'hide', function(bypassVisibleWindowCheck = false) {
@@ -40,8 +82,11 @@ function enable(workspaceMonitor) {
             this._startupAnimationDone = true;
         });
     });
+
+    addBackgroundToOverview();
 }
 
 function disable() {
     Utils.restore(Overview.Overview);
+    removeBackgroundFromOverview();
 }
