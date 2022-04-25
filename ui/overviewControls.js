@@ -215,8 +215,8 @@ function enable() {
                 const getVignetteForState = state => {
                     switch (state) {
                     case OverviewControls.ControlsState.HIDDEN:
-                         return [1.0, 0.0];
                     case OverviewControls.ControlsState.WINDOW_PICKER:
+                         return [1.0, 0.0];
                     case OverviewControls.ControlsState.APP_GRID:
                         return [0.7, 0.5];
                     }

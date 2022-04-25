@@ -32,7 +32,7 @@ function getBorderRadiusForState(state) {
     case OverviewControls.ControlsState.HIDDEN:
         return 0;
     case OverviewControls.ControlsState.WINDOW_PICKER:
-        return 18;
+        return 16;
     case OverviewControls.ControlsState.APP_GRID:
         return 0;
     }
@@ -41,6 +41,19 @@ function getBorderRadiusForState(state) {
 }
 
 function getOpacityForState(state) {
+    switch (state) {
+    case OverviewControls.ControlsState.HIDDEN:
+        return 0.0;
+    case OverviewControls.ControlsState.WINDOW_PICKER:
+        return 0.1;
+    case OverviewControls.ControlsState.APP_GRID:
+        return 0.0;
+    }
+
+    return 0.0;
+}
+
+function getBoxShadowOpacityForState(state) {
     switch (state) {
     case OverviewControls.ControlsState.HIDDEN:
         return 0.0;
@@ -73,10 +86,15 @@ function enable() {
                 getBorderRadiusForState(initialState),
                 getBorderRadiusForState(finalState),
                 progress);
+            const boxShadowOpacity = ShellUtils.lerp(
+                getBoxShadowOpacityForState(initialState),
+                getBoxShadowOpacityForState(finalState),
+                progress);
 
             this.style = `
-                background-color: rgba(0, 0, 0, ${opacity});
+                background-color: rgba(255,255,255,${opacity});
                 border-radius: ${radius}px;
+                box-shadow: 0px 4px 30px rgba(0, 0, 0, ${boxShadowOpacity});
             `;
         });
     });
