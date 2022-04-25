@@ -27,6 +27,68 @@ const Main = imports.ui.main;
 
 var EOS_INACTIVE_GRID_OPACITY = 96;
 
+var AppDisplayClone = GObject.registerClass(
+class AppDisplayClone extends Clutter.Actor {
+    _init() {
+        const { appDisplay } = Main.overview._overview.controls;
+
+        super._init();
+
+        this._clone = new Clutter.Clone({
+            x_expand: true,
+            clip_to_allocation: true,
+            source: appDisplay._stack,
+        });
+        this.add_child(this._clone);
+    }
+
+    _getYOffset() {
+        const { appDisplay } = Main.overview._overview.controls;
+
+        // HACK!!! I genuinely do not understand why AppDisplay reports
+        // different sizes when outside of the overview, and when there
+        // is only one page.
+        if (appDisplay._grid.nPages == 1 && !Main.overview.visible)
+            return appDisplay._pageIndicators.height;
+
+        return 0;
+    }
+
+    vfunc_get_preferred_width(forHeight) {
+        const { appDisplay } = Main.overview._overview.controls;
+        return appDisplay.get_preferred_width(forHeight);
+    }
+
+    vfunc_get_preferred_height(forWidth) {
+        const { appDisplay } = Main.overview._overview.controls;
+
+        let [minHeight, natHeight] = appDisplay.get_preferred_height(forWidth);
+
+        const offset = this._getYOffset();
+        minHeight += offset;
+        natHeight += offset;
+
+        return [minHeight, natHeight];
+    }
+
+    vfunc_allocate(box) {
+        const { appDisplay } = Main.overview._overview.controls;
+
+        this.set_allocation(box);
+
+        appDisplay.adaptToSize(...box.get_size());
+
+        const cloneBox = box.copy();
+        cloneBox.set_origin(0, 0);
+        cloneBox.y2 -= this._getYOffset();
+
+        if (!appDisplay._stack.has_allocation())
+            appDisplay._stack.allocate(cloneBox);
+
+        this._clone.allocate(cloneBox);
+    }
+});
+
 var OverviewClone = GObject.registerClass(
 class OverviewClone extends St.BoxLayout {
     _init() {
@@ -38,6 +100,8 @@ class OverviewClone extends St.BoxLayout {
             styleClass: 'controls-manager',
             opacity: EOS_INACTIVE_GRID_OPACITY,
             vertical: true,
+            x_expand: true,
+            y_expand: true,
         });
         this.add_child(box);
 
@@ -64,41 +128,9 @@ class OverviewClone extends St.BoxLayout {
         });
         box.add_actor(searchEntryBin);
 
-        // HACK: invasively find the overview signal id that AppDisplay
-        // will use when connecting to the 'hidden' signal
-        this._overviewHiddenId = Main.overview._nextConnectionId;
-
-        const appDisplayClone = new AppDisplay.AppDisplay();
-
-        appDisplayClone.add_constraint(new Clutter.BindConstraint({
-            source: Main.overview._overview.controls.appDisplay,
-            coordinate: Clutter.BindCoordinate.HEIGHT,
-        }));
-
-        // Disable DnD on clones
-        appDisplayClone._disconnectDnD();
-        appDisplayClone._connectDnD = function() {};
-        appDisplayClone._savePages = function() {};
-
-        // Hide running dots of the clones
-        const originalAddItem = appDisplayClone._addItem;
-        appDisplayClone._addItem = function(item, page, position) {
-            originalAddItem.bind(appDisplayClone)(item, page, position);
-            if (item._dot)
-                item._dot.opacity = 0;
-        };
+        // Clone
+        const appDisplayClone = new AppDisplayClone();
         box.add_child(appDisplayClone);
-
-        // Bind adjustments
-        const { appDisplay } = Main.overview._overview.controls;
-        ['upper', 'value'].forEach(property => {
-            appDisplay._scrollView.hscroll.adjustment.bind_property(property,
-                appDisplayClone._scrollView.hscroll.adjustment, property,
-                GObject.BindingFlags.SYNC_CREATE);
-            appDisplay._scrollView.vscroll.adjustment.bind_property(property,
-                appDisplayClone._scrollView.vscroll.adjustment, property,
-                GObject.BindingFlags.SYNC_CREATE);
-        });
 
         // 'Go To Overview' click action
         const clickAction = new Clutter.ClickAction();
@@ -113,9 +145,6 @@ class OverviewClone extends St.BoxLayout {
             dashClone, 'height',
             GObject.BindingFlags.SYNC_CREATE);
         box.add_child(dashClone);
-
-        // Hide page indicators in clones
-        appDisplayClone._pageIndicators.opacity = 0;
 
         this.connect('destroy', this._onDestroy.bind(this));
     }
