@@ -24,7 +24,7 @@ const DesktopExtension = ExtensionUtils.getCurrentExtension();
 const _ = DesktopExtension.imports.utils.gettext;
 
 const AppDisplay = imports.ui.appDisplay;
-const IconGridLayout = DesktopExtension.imports.ui.iconGridLayout
+const IconGridLayout = DesktopExtension.imports.ui.iconGridLayout;
 const Main = imports.ui.main;
 const ParentalControlsManager = imports.misc.parentalControlsManager;
 
