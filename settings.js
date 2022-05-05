@@ -120,7 +120,7 @@ function _addIcon(pages, itemId, index, itemsPerPage) {
     };
 }
 
-function _migrateToV1(migrationSettings, extensionSettings) {
+function _migrateToV1(migrationSettings, _extensionSettings) {
     const folderSettings = new Gio.Settings({
         schema_id: 'org.gnome.desktop.app-folders',
     });
