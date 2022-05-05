@@ -81,7 +81,7 @@ class IconGridLayout extends GObject.Object {
                 if (appId.startsWith('eos-app-'))
                     return appId.slice('eos-app-'.length);
 
-                // Some apps have their name superceded, for instance gedit -> org.gnome.gedit.
+                // Some apps have their name superseded, for instance gedit -> org.gnome.gedit.
                 // We want the new name, not the old one.
                 const app = appSys.lookup_alias(appId);
                 if (app)
