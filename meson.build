@@ -109,7 +109,8 @@ if extension_tool.found()
     'pack',
     '--force',
     '--out-dir=@0@'.format(builddir),
-    '--extra-source=@0@/metadata.json'.format(builddir)
+    '--extra-source=@0@/metadata.json'.format(builddir),
+    '--extra-source=@0@/dirs.js'.format(builddir),
   ]
 
   foreach s : dist_files
