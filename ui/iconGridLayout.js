@@ -23,14 +23,12 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
 const Dirs = DesktopExtension.imports.dirs;
-const Main = imports.ui.main;
 const ParentalControlsManager = imports.misc.parentalControlsManager;
 
 var DESKTOP_GRID_ID = 'desktop';
 
 const SCHEMA_KEY = 'icon-grid-layout';
 const DIRECTORY_EXT = '.directory';
-const FOLDER_DIR_NAME = 'desktop-directories';
 
 const DEFAULT_CONFIGS_DIR = `${Dirs.DATADIR}/eos-shell-content/icon-grid-defaults`;
 const DEFAULT_CONFIG_NAME_BASE = 'icon-grid';
@@ -39,15 +37,6 @@ const OVERRIDE_CONFIGS_DIR = `${Dirs.LOCALSTATEDIR}/lib/eos-image-defaults/icon-
 const OVERRIDE_CONFIG_NAME_BASE = 'icon-grid';
 const PREPEND_CONFIG_NAME_BASE = 'icon-grid-prepend';
 const APPEND_CONFIG_NAME_BASE = 'icon-grid-append';
-
-function findInArray(array, func) {
-    for (const item of array) {
-        if (func(item))
-            return item;
-    }
-
-    return null;
-}
 
 var IconGridLayout = GObject.registerClass(
 class IconGridLayout extends GObject.Object {
