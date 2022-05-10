@@ -179,8 +179,8 @@ function addIndicator(role, indicator, position) {
 
 function enable() {
     setActivitiesButtonVisible(false);
-    addIndicator('applications', new ApplicationsButton(), 0);
-    addIndicator('workspaces', new WorkspacesButton(), 1);
+    addIndicator('workspaces', new WorkspacesButton(), 0);
+    addIndicator('applications', new ApplicationsButton(), 1);
 }
 
 function disable() {
