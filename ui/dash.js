@@ -336,7 +336,9 @@ const Intellihide = GObject.registerClass({
 });
 
 const EosDashController = class EosDashController {
-    constructor() {
+    constructor(workspaceMonitor) {
+        this._workspaceMonitor = workspaceMonitor;
+
         this._fakeDash = new FakeDash();
         this._sessionDashContainer = new SessionDashContainer();
 
@@ -442,6 +444,7 @@ const EosDashController = class EosDashController {
         const { showAppsButton } = Main.overview.dash;
         this._showOverviewId = showAppsButton.connect('notify::checked', () => {
             if (Main.overview._overview.controls._ignoreShowAppsButtonToggle ||
+                this._workspaceMonitor.hasVisibleWindows ||
                 Main.overview.visibleTarget)
                 return;
 
@@ -472,7 +475,7 @@ const EosDashController = class EosDashController {
 };
 
 let dashContoller = null;
-function enable() {
+function enable(workspaceMonitor) {
     Utils.override(Dash.Dash, '_createAppItem', function(app) {
         const appIcon = new EosDashIcon(app);
 
@@ -495,7 +498,7 @@ function enable() {
     });
 
     if (!dashContoller)
-        dashContoller = new EosDashController();
+        dashContoller = new EosDashController(workspaceMonitor);
 
     dashContoller.enable();
 }
