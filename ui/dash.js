@@ -26,6 +26,9 @@ const LayoutManager = imports.ui.layout;
 const Main = imports.ui.main;
 const Utils = DesktopExtension.imports.utils;
 
+const DEFAULT_BARRIER_TRAVEL_THRESHOLD = 150;
+const DEFAULT_BARRIER_TRAVEL_TIMEOUT = 1000;
+
 const WINDOW_OVERLAP_POLL_TIMEOUT = 200;
 
 // Note: must be kept in sync with js/ui/overviewControls.js
@@ -157,6 +160,8 @@ const Intellihide = GObject.registerClass({
         super._init();
 
         this._dashVisible = true;
+        this._barrierThreshold = DEFAULT_BARRIER_TRAVEL_THRESHOLD;
+        this._barrierTimeout = DEFAULT_BARRIER_TRAVEL_TIMEOUT;
     }
 
     _armTriggerTimeout() {
@@ -295,8 +300,8 @@ const Intellihide = GObject.registerClass({
             });
 
         this._pressureBarrier = new LayoutManager.PressureBarrier(
-            150,
-            1000,
+            this._barrierThreshold,
+            this._barrierTimeout,
             Shell.ActionMode.NORMAL);
         this._pressureBarrier.connect('trigger', () => {
             this._setDashVisible(true);
@@ -332,6 +337,26 @@ const Intellihide = GObject.registerClass({
 
     get dash_visible() {
         return this._dashVisible;
+    }
+
+    get barrierThreshold() {
+        return this._barrierThreshold;
+    }
+
+    set barrierThreshold(threshold) {
+        this._barrierThreshold = threshold;
+        if (this._pressureBarrier)
+            this._pressureBarrier._threshold = threshold;
+    }
+
+    get barrierTimeout() {
+        return this._barrierTimeout;
+    }
+
+    set barrierTimeout(timeout) {
+        this._barrierTimeout = timeout;
+        if (this._pressureBarrier)
+            this._pressureBarrier._timeout = timeout;
     }
 });
 
@@ -472,6 +497,10 @@ const EosDashController = class EosDashController {
         Main.overview.dash.showAppsButton.disconnect(this._showOverviewId);
         delete this._showOverviewId;
     }
+
+    get intellihide() {
+        return this._intellihide;
+    }
 };
 
 let dashContoller = null;
@@ -495,6 +524,14 @@ function enable(workspaceMonitor) {
         this._hookUpLabel(item, appIcon);
 
         return item;
+    });
+
+    Utils.override(Dash.Dash, 'setBarrierParams', function(distance, time) {
+        if (!dashContoller)
+            return;
+
+        dashContoller.intellihide.barrierThreshold = distance;
+        dashContoller.intellihide.barrierTimeout = time;
     });
 
     if (!dashContoller)
