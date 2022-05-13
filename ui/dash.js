@@ -295,8 +295,8 @@ const Intellihide = GObject.registerClass({
             });
 
         this._pressureBarrier = new LayoutManager.PressureBarrier(
-            25,
-            500,
+            150,
+            1000,
             Shell.ActionMode.NORMAL);
         this._pressureBarrier.connect('trigger', () => {
             this._setDashVisible(true);
