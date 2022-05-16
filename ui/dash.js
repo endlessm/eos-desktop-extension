@@ -503,7 +503,7 @@ const EosDashController = class EosDashController {
     }
 };
 
-let dashContoller = null;
+let dashController = null;
 function enable(workspaceMonitor) {
     Utils.override(Dash.Dash, '_createAppItem', function(app) {
         const appIcon = new EosDashIcon(app);
@@ -527,20 +527,20 @@ function enable(workspaceMonitor) {
     });
 
     Utils.override(Dash.Dash, 'setBarrierParams', function(distance, time) {
-        if (!dashContoller)
+        if (!dashController)
             return;
 
-        dashContoller.intellihide.barrierThreshold = distance;
-        dashContoller.intellihide.barrierTimeout = time;
+        dashController.intellihide.barrierThreshold = distance;
+        dashController.intellihide.barrierTimeout = time;
     });
 
-    if (!dashContoller)
-        dashContoller = new EosDashController(workspaceMonitor);
+    if (!dashController)
+        dashController = new EosDashController(workspaceMonitor);
 
-    dashContoller.enable();
+    dashController.enable();
 }
 
 function disable() {
     Utils.restore(Dash.Dash);
-    dashContoller.disable();
+    dashController.disable();
 }
