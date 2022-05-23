@@ -16,16 +16,15 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-const { Clutter, GObject, Graphene, Meta, Shell, St } = imports.gi;
-
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
+const Main = imports.ui.main;
 const Search = imports.ui.search;
 const Utils = DesktopExtension.imports.utils;
 
 function enable() {
-    Utils.override(Search.SearchResult, 'hide', function() {
+    Utils.override(Search.SearchResult, 'hide', function () {
         const original = Utils.original(Search.SearchResult, 'activate');
         original.bind(this)();
 
