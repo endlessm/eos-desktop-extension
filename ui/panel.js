@@ -16,7 +16,7 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-const { Atk, Clutter, GLib, GObject, St, Shell } = imports.gi;
+const { Atk, Clutter, GLib, GObject, St } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
@@ -24,8 +24,11 @@ const DesktopExtension = ExtensionUtils.getCurrentExtension();
 const DND = imports.ui.dnd;
 const Main = imports.ui.main;
 const OverviewControls = imports.ui.overviewControls;
+const Panel = imports.ui.panel;
 const PanelMenu = imports.ui.panelMenu;
 const Utils = DesktopExtension.imports.utils;
+
+const _ = Utils.gettext;
 
 const EosPanelButton = GObject.registerClass(
 class EosPanelButton extends PanelMenu.Button {
@@ -70,14 +73,14 @@ class EosPanelButton extends PanelMenu.Button {
     }
 
     handleDragOver(source, _actor, _x, _y, _time) {
-        if (source != Main.xdndHandler)
+        if (source !== Main.xdndHandler)
             return DND.DragMotionResult.CONTINUE;
 
-        if (this._xdndTimeOut != 0)
+        if (this._xdndTimeOut !== 0)
             GLib.source_remove(this._xdndTimeOut);
         this._xdndTimeOut = GLib.timeout_add(
             GLib.PRIORITY_DEFAULT,
-            PanelBUTTON_DND_ACTIVATION_TIMEOUT,
+            Panel.BUTTON_DND_ACTIVATION_TIMEOUT,
             () => this._xdndToggleOverview());
         GLib.Source.set_name_by_id(this._xdndTimeOut, '[eos-desktop-extension] this._xdndToggleOverview');
 
@@ -85,8 +88,8 @@ class EosPanelButton extends PanelMenu.Button {
     }
 
     vfunc_captured_event(event) {
-        if (event.type() == Clutter.EventType.BUTTON_PRESS ||
-            event.type() == Clutter.EventType.TOUCH_BEGIN) {
+        if (event.type() === Clutter.EventType.BUTTON_PRESS ||
+            event.type() === Clutter.EventType.TOUCH_BEGIN) {
             if (!Main.overview.shouldToggleByCornerOrButton())
                 return Clutter.EVENT_STOP;
         }
@@ -94,8 +97,8 @@ class EosPanelButton extends PanelMenu.Button {
     }
 
     vfunc_event(event) {
-        if (event.type() == Clutter.EventType.TOUCH_END ||
-            event.type() == Clutter.EventType.BUTTON_RELEASE) {
+        if (event.type() === Clutter.EventType.TOUCH_END ||
+            event.type() === Clutter.EventType.BUTTON_RELEASE) {
             if (Main.overview.shouldToggleByCornerOrButton())
                 this._callback();
         }
@@ -105,7 +108,7 @@ class EosPanelButton extends PanelMenu.Button {
 
     vfunc_key_release_event(keyEvent) {
         const symbol = keyEvent.keyval;
-        if (symbol == Clutter.KEY_Return || symbol == Clutter.KEY_space) {
+        if (symbol === Clutter.KEY_Return || symbol === Clutter.KEY_space) {
             if (Main.overview.shouldToggleByCornerOrButton()) {
                 this._callback();
                 return Clutter.EVENT_STOP;
@@ -120,7 +123,7 @@ class EosPanelButton extends PanelMenu.Button {
         const pickedActor =
             global.stage.get_actor_at_pos(Clutter.PickMode.REACTIVE, x, y);
 
-        if (pickedActor == this && Main.overview.shouldToggleByCornerOrButton())
+        if (pickedActor === this && Main.overview.shouldToggleByCornerOrButton())
             this._callback();
 
         GLib.source_remove(this._xdndTimeOut);
