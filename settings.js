@@ -242,6 +242,11 @@ function applyMigration() {
 
 function migrate() {
     return new Promise(resolve => {
+        if (GLib.getenv('XDG_CURRENT_DESKTOP').toLowerCase().indexOf('endless') === -1) {
+            resolve();
+            return;
+        }
+
         const parentalControls = ParentalControlsManager.getDefault();
 
         if (parentalControls.initialized) {
