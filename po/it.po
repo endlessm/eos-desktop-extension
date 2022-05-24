@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-17 19:01+0000\n"
+"POT-Creation-Date: 2022-05-24 19:03+0000\n"
 "PO-Revision-Date: 2020-10-26 16:37+0000\n"
 "Last-Translator: Will Thompson <wjt@endlessos.org>, 2020\n"
 "Language-Team: Italian (https://www.transifex.com/endless-os/teams/9016/it/)\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: it\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. * Translators: this is the name of the search engine that shows in the
 #. * Shell's desktop search entry.
