@@ -466,7 +466,10 @@ const EosDashController = class EosDashController {
         // mode
         const { showAppsButton } = Main.overview.dash;
         this._showOverviewId = showAppsButton.connect('notify::checked', () => {
-            if (Main.overview._overview.controls._ignoreShowAppsButtonToggle ||
+            const { controls } = Main.overview._overview;
+
+            if (controls._ignoreShowAppsButtonToggle ||
+                controls._stateAdjustment.gestureInProgress ||
                 Main.overview.visibleTarget)
                 return;
 
