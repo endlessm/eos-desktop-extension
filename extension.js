@@ -44,7 +44,7 @@ class Extension {
         await Settings.migrate();
 
         AppDisplay.enable();
-        Dash.enable(this._workspaceMonitor);
+        Dash.enable();
         Layout.enable();
         Overview.enable(this._workspaceMonitor);
         OverviewControls.enable();
