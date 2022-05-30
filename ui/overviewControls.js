@@ -21,6 +21,7 @@ const { Clutter, GObject, Shell } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
+const Config = imports.misc.config;
 const Layout = imports.ui.layout;
 const LayoutOverrides = DesktopExtension.imports.ui.layout;
 const Main = imports.ui.main;
@@ -28,47 +29,104 @@ const OverviewControls = imports.ui.overviewControls;
 const ShellUtils = imports.misc.util;
 const Utils = DesktopExtension.imports.utils;
 
+const [SHELL_VERSION] = Config.PACKAGE_VERSION.split('.').map(s => Number(s));
 const SMALL_WORKSPACE_RATIO = 0.55;
 
 var EndlessControlsManagerLayout = GObject.registerClass(
 class EndlessControlsManagerLayout extends OverviewControls.ControlsManagerLayout {
-    _computeWorkspacesBoxForState(state, workAreaBox, searchHeight, dashHeight, thumbnailsHeight) {
-        const workspaceBox = workAreaBox.copy();
-        const [startX, startY] = workAreaBox.get_origin();
-        const [width, height] = workspaceBox.get_size();
-        const { spacing } = this;
-        const { expandFraction } = this._workspacesThumbnails;
-        const offLimitsY = 0 - startY - height * SMALL_WORKSPACE_RATIO;
+    _computeWorkspacesBoxForState(state, ...args) {
+        let workspaceBox;
 
-        switch (state) {
-        case OverviewControls.ControlsState.HIDDEN:
-            break;
-        case OverviewControls.ControlsState.WINDOW_PICKER:
-            workspaceBox.set_origin(startX,
-                startY + searchHeight + spacing +
-                thumbnailsHeight + spacing * expandFraction);
-            workspaceBox.set_size(width,
-                height -
-                dashHeight - spacing -
-                searchHeight - spacing -
-                thumbnailsHeight - spacing * expandFraction);
-            break;
-        case OverviewControls.ControlsState.APP_GRID:
-            workspaceBox.set_origin(startX, offLimitsY);
-            workspaceBox.set_size(
-                width,
-                Math.round(height * SMALL_WORKSPACE_RATIO));
-            break;
+        if (SHELL_VERSION >= 42) {
+            const [box, workAreaBox, searchHeight, dashHeight, thumbnailsHeight] = args;
+
+            workspaceBox = box.copy();
+
+            const [width, height] = workspaceBox.get_size();
+            const { y1: startY } = workAreaBox;
+            const { spacing } = this;
+            const { expandFraction } = this._workspacesThumbnails;
+            const offLimitsY = 0 - startY - height * SMALL_WORKSPACE_RATIO;
+
+            switch (state) {
+            case OverviewControls.ControlsState.HIDDEN:
+                workspaceBox.set_origin(...workAreaBox.get_origin());
+                workspaceBox.set_size(...workAreaBox.get_size());
+                break;
+            case OverviewControls.ControlsState.WINDOW_PICKER:
+                workspaceBox.set_origin(0,
+                    startY + searchHeight + spacing +
+                    thumbnailsHeight + spacing * expandFraction);
+                workspaceBox.set_size(width,
+                    height -
+                    dashHeight - spacing -
+                    searchHeight - spacing -
+                    thumbnailsHeight - spacing * expandFraction);
+                break;
+            case OverviewControls.ControlsState.APP_GRID:
+                workspaceBox.set_origin(0, offLimitsY);
+                workspaceBox.set_size(
+                    width,
+                    Math.round(height * SMALL_WORKSPACE_RATIO));
+                break;
+            }
+        } else {
+            // GNOME 40 and 41
+
+            const [workAreaBox, searchHeight, dashHeight, thumbnailsHeight] = args;
+
+            workspaceBox = workAreaBox.copy();
+
+            const [startX, startY] = workAreaBox.get_origin();
+            const [width, height] = workspaceBox.get_size();
+            const { spacing } = this;
+            const { expandFraction } = this._workspacesThumbnails;
+            const offLimitsY = 0 - startY - height * SMALL_WORKSPACE_RATIO;
+
+            switch (state) {
+            case OverviewControls.ControlsState.HIDDEN:
+                break;
+            case OverviewControls.ControlsState.WINDOW_PICKER:
+                workspaceBox.set_origin(startX,
+                    startY + searchHeight + spacing +
+                    thumbnailsHeight + spacing * expandFraction);
+                workspaceBox.set_size(width,
+                    height -
+                    dashHeight - spacing -
+                    searchHeight - spacing -
+                    thumbnailsHeight - spacing * expandFraction);
+                break;
+            case OverviewControls.ControlsState.APP_GRID:
+                workspaceBox.set_origin(startX, offLimitsY);
+                workspaceBox.set_size(
+                    width,
+                    Math.round(height * SMALL_WORKSPACE_RATIO));
+                break;
+            }
         }
 
         return workspaceBox;
     }
 
-    _getAppDisplayBoxForState(state, workAreaBox, searchHeight, dashHeight) {
-        const [startX, startY] = workAreaBox.get_origin();
-        const [width, height] = workAreaBox.get_size();
+    _getAppDisplayBoxForState(state, ...args) {
         const appDisplayBox = new Clutter.ActorBox();
+        let width, height, workAreaBox, startX, startY, searchHeight, dashHeight;
         const { spacing } = this;
+
+        if (SHELL_VERSION >= 42) {
+            let box;
+
+            [box, workAreaBox, searchHeight, dashHeight] = args;
+            [startX, startY] = workAreaBox.get_origin();
+            [width, height] = box.get_size();
+        } else {
+            // GNOME 40 and 41
+
+            [workAreaBox, searchHeight, dashHeight] = args;
+            [startX, startY] = workAreaBox.get_origin();
+            [width, height] = workAreaBox.get_size();
+
+        }
 
         switch (state) {
         case OverviewControls.ControlsState.HIDDEN:
