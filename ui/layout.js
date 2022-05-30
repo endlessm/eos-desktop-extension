@@ -28,7 +28,10 @@ class AppDisplayClone extends Clutter.Actor {
     _init() {
         const { appDisplay } = Main.overview._overview.controls;
 
-        super._init();
+        super._init({
+            x_expand: true,
+            y_expand: true,
+        });
 
         this._clone = new Clutter.Clone({
             x_expand: true,
