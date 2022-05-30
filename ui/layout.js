@@ -18,10 +18,6 @@
 
 const { Clutter, GObject, Shell, St } = imports.gi;
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const DesktopExtension = ExtensionUtils.getCurrentExtension();
-
-const AppDisplay = imports.ui.appDisplay;
 const LayoutManager = imports.ui.layout;
 const Main = imports.ui.main;
 
@@ -48,7 +44,7 @@ class AppDisplayClone extends Clutter.Actor {
         // HACK!!! I genuinely do not understand why AppDisplay reports
         // different sizes when outside of the overview, and when there
         // is only one page.
-        if (appDisplay._grid.nPages == 1 && !Main.overview.visible)
+        if (appDisplay._grid.nPages === 1 && !Main.overview.visible)
             return appDisplay._pageIndicators.height;
 
         return 0;
