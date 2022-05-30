@@ -16,7 +16,7 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-const { Clutter, GObject, Graphene, Meta, Shell, St } = imports.gi;
+const { Clutter, GObject, Shell } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
@@ -110,7 +110,7 @@ function restoreOverviewLayoutManager() {
 }
 
 function getAppDisplayOpacityForState(state) {
-    switch(state) {
+    switch (state) {
     case OverviewControls.ControlsState.HIDDEN:
         return LayoutOverrides.EOS_INACTIVE_GRID_OPACITY;
     case OverviewControls.ControlsState.WINDOW_PICKER:
@@ -121,7 +121,7 @@ function getAppDisplayOpacityForState(state) {
 }
 
 function getSearchEntryOpacityForState(state) {
-    switch(state) {
+    switch (state) {
     case OverviewControls.ControlsState.HIDDEN:
         return LayoutOverrides.EOS_INACTIVE_GRID_OPACITY;
     case OverviewControls.ControlsState.WINDOW_PICKER:
@@ -141,7 +141,7 @@ function setDashAboveWorkspaces(above) {
 }
 
 function enable() {
-    Utils.override(OverviewControls.ControlsManager, '_updateAppDisplayVisibility', function(params) {
+    Utils.override(OverviewControls.ControlsManager, '_updateAppDisplayVisibility', function (params) {
         if (!params)
             params = this._stateAdjustment.getStateTransitionParams();
 
@@ -164,8 +164,8 @@ function enable() {
 
         // Update search entry visibility
         this._searchEntryBin.opacity = searchActive ? 255 : ShellUtils.lerp(
-                getSearchEntryOpacityForState(initialState),
-                getSearchEntryOpacityForState(finalState),
+            getSearchEntryOpacityForState(initialState),
+            getSearchEntryOpacityForState(finalState),
             progress);
         Shell.util_set_hidden_from_pick(
             this._searchEntryBin,
@@ -179,12 +179,12 @@ function enable() {
                 const getVignetteForState = state => {
                     switch (state) {
                     case OverviewControls.ControlsState.HIDDEN:
-                         return [1.0, 0.0];
+                        return [1.0, 0.0];
                     case OverviewControls.ControlsState.WINDOW_PICKER:
                     case OverviewControls.ControlsState.APP_GRID:
                         return [0.7, 0.5];
                     }
-                }
+                };
 
                 const initial = getVignetteForState(initialState);
                 const final = getVignetteForState(finalState);
@@ -197,7 +197,7 @@ function enable() {
         }
     });
 
-    Utils.override(OverviewControls.ControlsManager, 'runStartupAnimation', async function(callback) {
+    Utils.override(OverviewControls.ControlsManager, 'runStartupAnimation', async function (callback) {
         this._ignoreShowAppsButtonToggle = true;
 
         this._searchController.prepareToEnterOverview();
