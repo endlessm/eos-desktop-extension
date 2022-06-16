@@ -21,7 +21,7 @@ const { Gio, GLib, Shell } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
-const _ = DesktopExtension.imports.utils.gettext;
+const GS_ = DesktopExtension.imports.utils.GS_;
 
 const AppDisplay = imports.ui.appDisplay;
 const IconGridLayout = DesktopExtension.imports.ui.iconGridLayout;
@@ -152,7 +152,7 @@ function _migrateToV1(migrationSettings, _extensionSettings) {
                 Shell.util_get_translated_folder_name(itemId);
 
             if (!translatedName)
-                translatedName = _('Unnamed Folder');
+                translatedName = GS_('Unnamed Folder');
 
             id = _createFolder(folderSettings, translatedName, folderIcons);
         } else if (!installedAppsSet.has(itemId)) {

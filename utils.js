@@ -8,6 +8,8 @@ const Gettext = imports.gettext.domain('eos-desktop-extension');
 
 var gettext = Gettext.gettext;
 
+var GS_ = imports.gettext.domain('gnome-shell').gettext;
+
 function override(object, methodName, callback) {
     if (!object._desktopFnOverrides)
         object._desktopFnOverrides = {};

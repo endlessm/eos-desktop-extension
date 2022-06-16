@@ -28,7 +28,7 @@ const Panel = imports.ui.panel;
 const PanelMenu = imports.ui.panelMenu;
 const Utils = DesktopExtension.imports.utils;
 
-const _ = Utils.gettext;
+const GS_ = Utils.GS_;
 
 const EosPanelButton = GObject.registerClass(
 class EosPanelButton extends PanelMenu.Button {
@@ -136,7 +136,7 @@ const ApplicationsButton = GObject.registerClass(
 class ApplicationsButton extends EosPanelButton {
     _init() {
         super._init({
-            text: _('Applications'),
+            text: GS_('Applications'),
             state: OverviewControls.ControlsState.APP_GRID,
             callback: () => {
                 if (!Main.overview.visible)
@@ -154,7 +154,7 @@ const WorkspacesButton = GObject.registerClass(
 class WorkspacesButton extends EosPanelButton {
     _init() {
         super._init({
-            text: _('Activities'),
+            text: GS_('Activities'),
             state: OverviewControls.ControlsState.WINDOW_PICKER,
             callback: () => {
                 if (!Main.overview.visible)
