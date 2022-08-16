@@ -29,7 +29,8 @@ const OverviewControls = imports.ui.overviewControls;
 const ShellUtils = imports.misc.util;
 const Utils = DesktopExtension.imports.utils;
 
-const [SHELL_VERSION] = Config.PACKAGE_VERSION.split('.').map(s => Number(s));
+/* Beware: SHELL_MINOR_VERSION will be NaN for pre-releases */
+const [SHELL_MAJOR_VERSION, SHELL_MINOR_VERSION] = Config.PACKAGE_VERSION.split('.').map(s => Number(s));
 const SMALL_WORKSPACE_RATIO = 0.55;
 
 var EndlessControlsManagerLayout = GObject.registerClass(
@@ -37,8 +38,15 @@ class EndlessControlsManagerLayout extends OverviewControls.ControlsManagerLayou
     _computeWorkspacesBoxForState(state, ...args) {
         let workspaceBox;
 
-        if (SHELL_VERSION >= 42) {
-            const [box, workAreaBox, searchHeight, dashHeight, thumbnailsHeight] = args;
+        if (SHELL_MAJOR_VERSION >= 42) {
+            let box, workAreaBox, searchHeight, dashHeight, thumbnailsHeight;
+
+            if (SHELL_MAJOR_VERSION > 42 || SHELL_MINOR_VERSION >= 4) {
+                workAreaBox = this._workAreaBox;
+                [box, searchHeight, dashHeight, thumbnailsHeight] = args;
+            } else {
+                [box, workAreaBox, searchHeight, dashHeight, thumbnailsHeight] = args;
+            }
 
             workspaceBox = box.copy();
 
@@ -113,10 +121,15 @@ class EndlessControlsManagerLayout extends OverviewControls.ControlsManagerLayou
         let width, height, workAreaBox, startX, startY, searchHeight, dashHeight;
         const { spacing } = this;
 
-        if (SHELL_VERSION >= 42) {
+        if (SHELL_MAJOR_VERSION >= 42) {
             let box;
 
-            [box, workAreaBox, searchHeight, dashHeight] = args;
+            if (SHELL_MAJOR_VERSION > 42 || SHELL_MINOR_VERSION >= 4) {
+                workAreaBox = this._workAreaBox;
+                [box, searchHeight, dashHeight] = args;
+            } else {
+                [box, workAreaBox, searchHeight, dashHeight] = args;
+            }
             [startX, startY] = workAreaBox.get_origin();
             [width, height] = box.get_size();
         } else {
