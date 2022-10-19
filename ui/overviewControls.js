@@ -202,6 +202,17 @@ function getSearchEntryOpacityForState(state) {
     }
 }
 
+function getWorkspaceThumbnailOpacityForState(state) {
+    switch (state) {
+    case OverviewControls.ControlsState.HIDDEN:
+        return 0;
+    case OverviewControls.ControlsState.WINDOW_PICKER:
+        return 255;
+    case OverviewControls.ControlsState.APP_GRID:
+        return 0;
+    }
+}
+
 function setDashAboveWorkspaces(above) {
     const { controls } = Main.overview._overview;
 
@@ -241,6 +252,11 @@ function enable() {
         Shell.util_set_hidden_from_pick(
             this._searchEntryBin,
             this._searchEntryBin.opacity < 195);
+
+        this._thumbnailsBox.opacity = ShellUtils.lerp(
+            getWorkspaceThumbnailOpacityForState(initialState),
+            getWorkspaceThumbnailOpacityForState(finalState),
+            progress);
     });
 
     Utils.override(OverviewControls.ControlsManager, 'runStartupAnimation', async function (callback) {
