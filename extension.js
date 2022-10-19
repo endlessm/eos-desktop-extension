@@ -32,13 +32,14 @@ const WorkspaceMonitor = DesktopExtension.imports.ui.workspaceMonitor;
 
 class Extension {
     constructor() {
-        this._workspaceMonitor = new WorkspaceMonitor.WorkspaceMonitor();
         this._enabled = false;
     }
 
     async enable() {
         if (this._enabled)
             return;
+
+        this._workspaceMonitor = new WorkspaceMonitor.WorkspaceMonitor();
 
         AppSystem.enable();
         await Settings.migrate();
@@ -70,6 +71,8 @@ class Extension {
         Panel.disable();
         Search.disable();
         Workspace.disable();
+
+        delete this._workspaceMonitor;
 
         this._enabled = false;
     }
