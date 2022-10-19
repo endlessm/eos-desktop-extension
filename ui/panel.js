@@ -70,6 +70,11 @@ class EosPanelButton extends PanelMenu.Button {
             controls._stateAdjustment.disconnect(this._signalId);
             delete this._signalId;
         }
+
+        if (this._xdndTimeOut !== 0) {
+            GLib.source_remove(this._xdndTimeOut);
+            delete this._xdndTimeOut;
+        }
     }
 
     handleDragOver(source, _actor, _x, _y, _time) {
