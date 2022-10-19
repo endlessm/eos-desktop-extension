@@ -217,9 +217,10 @@ var OverviewCloneController = class OverviewCloneController {
     }
 };
 
-const cloneController = new OverviewCloneController();
+let cloneController;
 
 function enable() {
+    cloneController = new OverviewCloneController();
     cloneController.enable();
 }
 
