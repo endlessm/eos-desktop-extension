@@ -16,12 +16,9 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-const { Clutter, Graphene, St } = imports.gi;
-
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
-const Main = imports.ui.main;
 const OverviewControls = imports.ui.overviewControls;
 const ShellUtils = imports.misc.util;
 const Utils = DesktopExtension.imports.utils;
@@ -74,7 +71,7 @@ function enable() {
         this._background.hide();
 
         this._overviewStateChangedId = overviewAdjustment.connect('notify::value', () => {
-            const { currentState, initialState, finalState, progress } =
+            const { initialState, finalState, progress } =
                 overviewAdjustment.getStateTransitionParams();
 
             const shadowOpacity = ShellUtils.lerp(
