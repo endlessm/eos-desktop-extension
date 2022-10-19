@@ -23,7 +23,6 @@ const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
 const Config = imports.misc.config;
 const Layout = imports.ui.layout;
-const LayoutOverrides = DesktopExtension.imports.ui.layout;
 const Main = imports.ui.main;
 const OverviewControls = imports.ui.overviewControls;
 const ShellUtils = imports.misc.util;
@@ -183,7 +182,6 @@ function restoreOverviewLayoutManager() {
 function getAppDisplayOpacityForState(state) {
     switch (state) {
     case OverviewControls.ControlsState.HIDDEN:
-        return LayoutOverrides.EOS_INACTIVE_GRID_OPACITY;
     case OverviewControls.ControlsState.WINDOW_PICKER:
         return 0;
     case OverviewControls.ControlsState.APP_GRID:
@@ -194,7 +192,6 @@ function getAppDisplayOpacityForState(state) {
 function getSearchEntryOpacityForState(state) {
     switch (state) {
     case OverviewControls.ControlsState.HIDDEN:
-        return LayoutOverrides.EOS_INACTIVE_GRID_OPACITY;
     case OverviewControls.ControlsState.WINDOW_PICKER:
         return 0;
     case OverviewControls.ControlsState.APP_GRID:
