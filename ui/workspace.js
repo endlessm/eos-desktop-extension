@@ -32,7 +32,7 @@ function getBorderRadiusForState(state) {
     case OverviewControls.ControlsState.HIDDEN:
         return 0;
     case OverviewControls.ControlsState.WINDOW_PICKER:
-        return 18;
+        return 16;
     case OverviewControls.ControlsState.APP_GRID:
         return 0;
     }
@@ -41,6 +41,19 @@ function getBorderRadiusForState(state) {
 }
 
 function getOpacityForState(state) {
+    switch (state) {
+    case OverviewControls.ControlsState.HIDDEN:
+        return 0.0;
+    case OverviewControls.ControlsState.WINDOW_PICKER:
+        return 0.1;
+    case OverviewControls.ControlsState.APP_GRID:
+        return 0.0;
+    }
+
+    return 0.0;
+}
+
+function getShadowOpacityForState(state) {
     switch (state) {
     case OverviewControls.ControlsState.HIDDEN:
         return 0.0;
@@ -64,6 +77,10 @@ function enable() {
             const { currentState, initialState, finalState, progress } =
                 overviewAdjustment.getStateTransitionParams();
 
+            const shadowOpacity = ShellUtils.lerp(
+                getShadowOpacityForState(initialState),
+                getShadowOpacityForState(finalState),
+                progress);
             const opacity = ShellUtils.lerp(
                 getOpacityForState(initialState),
                 getOpacityForState(finalState),
@@ -74,7 +91,8 @@ function enable() {
                 progress);
 
             this.style = `
-                background-color: rgba(0, 0, 0, ${opacity});
+                background-color: rgba(255, 255, 255, ${opacity});
+                box-shadow: 0 4px 30px rgba(0, 0, 0, ${shadowOpacity});
                 border-radius: ${radius}px;
             `;
         });
