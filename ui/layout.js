@@ -226,4 +226,5 @@ function enable() {
 
 function disable() {
     cloneController.disable();
+    cloneController = null;
 }
