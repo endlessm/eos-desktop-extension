@@ -202,6 +202,17 @@ function getSearchEntryOpacityForState(state) {
     }
 }
 
+function getWorkspaceThumbnailOpacityForState(state) {
+    switch (state) {
+    case OverviewControls.ControlsState.HIDDEN:
+        return 0;
+    case OverviewControls.ControlsState.WINDOW_PICKER:
+        return 255;
+    case OverviewControls.ControlsState.APP_GRID:
+        return 0;
+    }
+}
+
 function setDashAboveWorkspaces(above) {
     const { controls } = Main.overview._overview;
 
@@ -242,30 +253,10 @@ function enable() {
             this._searchEntryBin,
             this._searchEntryBin.opacity < 195);
 
-        // Update the vignette effect
-        if (Main.overview._backgroundGroup) {
-            for (const background of Main.overview._backgroundGroup) {
-                const { content } = background;
-
-                const getVignetteForState = state => {
-                    switch (state) {
-                    case OverviewControls.ControlsState.HIDDEN:
-                        return [1.0, 0.0];
-                    case OverviewControls.ControlsState.WINDOW_PICKER:
-                    case OverviewControls.ControlsState.APP_GRID:
-                        return [0.7, 0.5];
-                    }
-                };
-
-                const initial = getVignetteForState(initialState);
-                const final = getVignetteForState(finalState);
-
-                content.set_vignette(true, ...[
-                    ShellUtils.lerp(initial[0], final[0], progress),
-                    ShellUtils.lerp(initial[1], final[1], progress),
-                ]);
-            }
-        }
+        this._thumbnailsBox.opacity = ShellUtils.lerp(
+            getWorkspaceThumbnailOpacityForState(initialState),
+            getWorkspaceThumbnailOpacityForState(finalState),
+            progress);
     });
 
     Utils.override(OverviewControls.ControlsManager, 'runStartupAnimation', async function (callback) {

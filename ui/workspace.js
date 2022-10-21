@@ -16,12 +16,9 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-const { Clutter, Graphene, St } = imports.gi;
-
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
-const Main = imports.ui.main;
 const OverviewControls = imports.ui.overviewControls;
 const ShellUtils = imports.misc.util;
 const Utils = DesktopExtension.imports.utils;
@@ -32,7 +29,7 @@ function getBorderRadiusForState(state) {
     case OverviewControls.ControlsState.HIDDEN:
         return 0;
     case OverviewControls.ControlsState.WINDOW_PICKER:
-        return 18;
+        return 16;
     case OverviewControls.ControlsState.APP_GRID:
         return 0;
     }
@@ -41,6 +38,19 @@ function getBorderRadiusForState(state) {
 }
 
 function getOpacityForState(state) {
+    switch (state) {
+    case OverviewControls.ControlsState.HIDDEN:
+        return 0.0;
+    case OverviewControls.ControlsState.WINDOW_PICKER:
+        return 0.1;
+    case OverviewControls.ControlsState.APP_GRID:
+        return 0.0;
+    }
+
+    return 0.0;
+}
+
+function getShadowOpacityForState(state) {
     switch (state) {
     case OverviewControls.ControlsState.HIDDEN:
         return 0.0;
@@ -61,9 +71,13 @@ function enable() {
         this._background.hide();
 
         this._overviewStateChangedId = overviewAdjustment.connect('notify::value', () => {
-            const { currentState, initialState, finalState, progress } =
+            const { initialState, finalState, progress } =
                 overviewAdjustment.getStateTransitionParams();
 
+            const shadowOpacity = ShellUtils.lerp(
+                getShadowOpacityForState(initialState),
+                getShadowOpacityForState(finalState),
+                progress);
             const opacity = ShellUtils.lerp(
                 getOpacityForState(initialState),
                 getOpacityForState(finalState),
@@ -74,7 +88,8 @@ function enable() {
                 progress);
 
             this.style = `
-                background-color: rgba(0, 0, 0, ${opacity});
+                background-color: rgba(255, 255, 255, ${opacity});
+                box-shadow: 0 4px 30px rgba(0, 0, 0, ${shadowOpacity});
                 border-radius: ${radius}px;
             `;
         });
