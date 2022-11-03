@@ -3,6 +3,7 @@
   border-width: solid 1px black;
 }
 
-.overview-icon-with-label StLabel {
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+.panel-button StLabel,
+.app-well-app .overview-icon-with-label StLabel {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
