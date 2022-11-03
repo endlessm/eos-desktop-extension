@@ -254,6 +254,7 @@ function enable() {
             getWorkspaceThumbnailOpacityForState(initialState),
             getWorkspaceThumbnailOpacityForState(finalState),
             progress);
+        this._thumbnailsBox.visible = !searchActive;
     });
 
     Utils.override(OverviewControls.ControlsManager, 'runStartupAnimation', async function (callback) {
