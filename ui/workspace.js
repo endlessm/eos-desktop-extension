@@ -50,18 +50,6 @@ function getOpacityForState(state) {
     return 0.0;
 }
 
-function getShadowOpacityForState(state) {
-    switch (state) {
-    case OverviewControls.ControlsState.HIDDEN:
-        return 0.0;
-    case OverviewControls.ControlsState.WINDOW_PICKER:
-        return 0.5;
-    case OverviewControls.ControlsState.APP_GRID:
-        return 0.0;
-    }
-
-    return 0.0;
-}
 
 function enable() {
     Utils.override(Workspace.Workspace, '_init', function(metaWorkspace, monitorIndex, overviewAdjustment) {
@@ -74,14 +62,11 @@ function enable() {
             const { initialState, finalState, progress } =
                 overviewAdjustment.getStateTransitionParams();
 
-            const shadowOpacity = ShellUtils.lerp(
-                getShadowOpacityForState(initialState),
-                getShadowOpacityForState(finalState),
-                progress);
             const opacity = ShellUtils.lerp(
                 getOpacityForState(initialState),
                 getOpacityForState(finalState),
                 progress);
+            const borderOpacity = opacity * 5;
             const radius = ShellUtils.lerp(
                 getBorderRadiusForState(initialState),
                 getBorderRadiusForState(finalState),
@@ -89,7 +74,7 @@ function enable() {
 
             this.style = `
                 background-color: rgba(255, 255, 255, ${opacity});
-                box-shadow: 0 4px 30px rgba(0, 0, 0, ${shadowOpacity});
+                border: 1px solid rgba(127, 127, 127, ${borderOpacity});
                 border-radius: ${radius}px;
             `;
         });
