@@ -255,6 +255,33 @@ function enable() {
             getWorkspaceThumbnailOpacityForState(finalState),
             progress);
         this._thumbnailsBox.visible = !searchActive;
+
+        // Update the vignette effect
+        if (Main.overview._backgroundGroup) {
+            for (const background of Main.overview._backgroundGroup) {
+                const { content } = background;
+
+                const getVignetteForState = state => {
+                    switch (state) {
+                    case OverviewControls.ControlsState.HIDDEN:
+                        return [1.0, 0.0];
+                    case OverviewControls.ControlsState.WINDOW_PICKER:
+                        return [0.7, 0.5];
+                    case OverviewControls.ControlsState.APP_GRID:
+                        return [1.0, 0.0];
+                    }
+                };
+
+                const initial = getVignetteForState(initialState);
+                const final = getVignetteForState(finalState);
+
+                content.set_vignette(true, ...[
+                    ShellUtils.lerp(initial[0], final[0], progress),
+                    ShellUtils.lerp(initial[1], final[1], progress),
+                ]);
+            }
+        }
+
     });
 
     Utils.override(OverviewControls.ControlsManager, 'runStartupAnimation', async function (callback) {
