@@ -42,7 +42,7 @@ function getOpacityForState(state) {
     case OverviewControls.ControlsState.HIDDEN:
         return 0.0;
     case OverviewControls.ControlsState.WINDOW_PICKER:
-        return 0.1;
+        return 0.2;
     case OverviewControls.ControlsState.APP_GRID:
         return 0.0;
     }
@@ -50,6 +50,18 @@ function getOpacityForState(state) {
     return 0.0;
 }
 
+function getBorderOpacityForState(state) {
+    switch (state) {
+    case OverviewControls.ControlsState.HIDDEN:
+        return 0.0;
+    case OverviewControls.ControlsState.WINDOW_PICKER:
+        return 0.3;
+    case OverviewControls.ControlsState.APP_GRID:
+        return 0.0;
+    }
+
+    return 0.0;
+}
 
 function enable() {
     Utils.override(Workspace.Workspace, '_init', function(metaWorkspace, monitorIndex, overviewAdjustment) {
@@ -66,7 +78,10 @@ function enable() {
                 getOpacityForState(initialState),
                 getOpacityForState(finalState),
                 progress);
-            const borderOpacity = opacity * 5;
+            const borderOpacity = ShellUtils.lerp(
+                getBorderOpacityForState(initialState),
+                getBorderOpacityForState(finalState),
+                progress);
             const radius = ShellUtils.lerp(
                 getBorderRadiusForState(initialState),
                 getBorderRadiusForState(finalState),
@@ -74,7 +89,7 @@ function enable() {
 
             this.style = `
                 background-color: rgba(255, 255, 255, ${opacity});
-                border: 1px solid rgba(127, 127, 127, ${borderOpacity});
+                border: 1px solid rgba(0, 0, 0, ${borderOpacity});
                 border-radius: ${radius}px;
             `;
         });

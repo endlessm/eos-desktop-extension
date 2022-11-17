@@ -266,7 +266,7 @@ function enable() {
                     case OverviewControls.ControlsState.HIDDEN:
                         return [1.0, 0.0];
                     case OverviewControls.ControlsState.WINDOW_PICKER:
-                        return [0.7, 0.5];
+                        return [1.0, 0.5];
                     case OverviewControls.ControlsState.APP_GRID:
                         return [1.0, 0.0];
                     }
