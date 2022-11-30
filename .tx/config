@@ -1,7 +1,7 @@
 [main]
 host = https://www.transifex.com
 
-[eos-desktop-extension.all]
+[o:endless-os:p:eos-desktop-extension:r:all]
 source_file = po/eos-desktop-extension.pot
 source_lang = en
 file_filter = po/<lang>.po
