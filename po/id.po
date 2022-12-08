@@ -5,7 +5,6 @@
 # 
 # Translators:
 # Andre Magalhaes <andre@endlessm.com>, 2020
-# Will Thompson <wjt@endlessos.org>, 2020
 # Kukuh Syafaat <syafaatkukuh@gmail.com>, 2021
 # 
 #, fuzzy
@@ -13,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-30 20:01+0000\n"
+"POT-Creation-Date: 2022-12-08 16:33+0000\n"
 "PO-Revision-Date: 2020-10-26 16:37+0000\n"
 "Last-Translator: Kukuh Syafaat <syafaatkukuh@gmail.com>, 2021\n"
 "Language-Team: Indonesian (https://www.transifex.com/endless-os/teams/9016/id/)\n"
@@ -46,7 +45,3 @@ msgstr "Cari %1$s untuk \"%2$s\""
 #, javascript-format
 msgid "Search the internet for \"%s\""
 msgstr "Cari di internet untuk \"%s\""
-
-#: settings.js:160
-msgid "Unnamed Folder"
-msgstr "Folder Tanpa Nama"

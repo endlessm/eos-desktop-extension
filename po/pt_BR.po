@@ -5,7 +5,6 @@
 # 
 # Translators:
 # Andre Magalhaes <andre@endlessm.com>, 2020
-# Leandro Stanger <leandrostanger@hotmail.com>, 2020
 # Will Thompson <wjt@endlessos.org>, 2021
 # 
 #, fuzzy
@@ -13,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-30 20:01+0000\n"
+"POT-Creation-Date: 2022-12-08 16:33+0000\n"
 "PO-Revision-Date: 2020-10-26 16:37+0000\n"
 "Last-Translator: Will Thompson <wjt@endlessos.org>, 2021\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/endless-os/teams/9016/pt_BR/)\n"
@@ -21,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: pt_BR\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. * Translators: this is the name of the search engine that shows in the
 #. * Shell's desktop search entry.
@@ -46,7 +45,3 @@ msgstr "Buscar no %1$s por \"%2$s\""
 #, javascript-format
 msgid "Search the internet for \"%s\""
 msgstr "Buscar na internet por \"%s\""
-
-#: settings.js:160
-msgid "Unnamed Folder"
-msgstr "Pasta sem nome"
