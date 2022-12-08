@@ -5,7 +5,6 @@ ui/appSystem.js
 ui/dash.js
 ui/iconGridLayout.js
 ui/internetSearch.js
-ui/layout.js
 ui/overviewControls.js
 ui/overview.js
 ui/panel.js
