@@ -8,6 +8,14 @@
   text-shadow: black 0px 2px 2px;
 }
 
+.search-entry {
+  margin-top: 32px;
+}
+
+.workspace-thumbnails {
+  margin-bottom: 18px;
+}
+
 // Force opaque panel
 #panel {
   &.login-screen,

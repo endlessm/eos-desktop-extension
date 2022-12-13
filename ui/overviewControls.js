@@ -27,10 +27,12 @@ const Main = imports.ui.main;
 const OverviewControls = imports.ui.overviewControls;
 const ShellUtils = imports.misc.util;
 const Utils = DesktopExtension.imports.utils;
+const WorkspaceThumbnail = imports.ui.workspaceThumbnail;
 
 /* Beware: SHELL_MINOR_VERSION will be NaN for pre-releases */
 const [SHELL_MAJOR_VERSION, SHELL_MINOR_VERSION] = Config.PACKAGE_VERSION.split('.').map(s => Number(s));
 const SMALL_WORKSPACE_RATIO = 0.55;
+const DASH_MAX_HEIGHT_RATIO = 0.15;
 
 var EndlessControlsManagerLayout = GObject.registerClass(
 class EndlessControlsManagerLayout extends OverviewControls.ControlsManagerLayout {
@@ -95,13 +97,13 @@ class EndlessControlsManagerLayout extends OverviewControls.ControlsManagerLayou
                 break;
             case OverviewControls.ControlsState.WINDOW_PICKER:
                 workspaceBox.set_origin(startX,
-                    startY + searchHeight + spacing +
-                    thumbnailsHeight + spacing * expandFraction);
+                    startY + Math.max(searchHeight + spacing,
+                        thumbnailsHeight + spacing * expandFraction));
                 workspaceBox.set_size(width,
                     height -
                     dashHeight - spacing -
-                    searchHeight - spacing -
-                    thumbnailsHeight - spacing * expandFraction);
+                    Math.max(searchHeight + spacing,
+                        thumbnailsHeight + spacing * expandFraction));
                 break;
             case OverviewControls.ControlsState.APP_GRID:
                 workspaceBox.set_origin(startX, offLimitsY);
@@ -155,6 +157,109 @@ class EndlessControlsManagerLayout extends OverviewControls.ControlsManagerLayou
             dashHeight);
 
         return appDisplayBox;
+    }
+
+    vfunc_allocate(_container, _box) {
+        const childBox = new Clutter.ActorBox();
+
+        const { spacing } = this;
+
+        const monitor = Main.layoutManager.findMonitorForActor(this._container);
+        const workArea = Main.layoutManager.getWorkAreaForMonitor(monitor.index);
+        const startX = workArea.x - monitor.x;
+        const startY = workArea.y - monitor.y;
+        const workAreaBox = new Clutter.ActorBox();
+        workAreaBox.set_origin(startX, startY);
+        workAreaBox.set_size(workArea.width, workArea.height);
+        const [width, height] = workAreaBox.get_size();
+        let availableHeight = height;
+        const availableWidth = width;
+
+        // Search entry
+        let [searchHeight] = this._searchEntry.get_preferred_height(width);
+        childBox.set_origin(startX, startY);
+        childBox.set_size(width, searchHeight);
+        this._searchEntry.allocate(childBox);
+
+        // Workspace Thumbnails
+        let thumbnailsHeight = 0;
+        if (this._workspacesThumbnails.visible) {
+            const { expandFraction } = this._workspacesThumbnails;
+            [, thumbnailsHeight] =
+                this._workspacesThumbnails.get_preferred_height(width);
+            thumbnailsHeight = Math.min(
+                thumbnailsHeight * expandFraction,
+                height * WorkspaceThumbnail.MAX_THUMBNAIL_SCALE);
+            const yOffset = Math.abs(thumbnailsHeight - spacing - searchHeight) / 2;
+            childBox.set_origin(startX, startY + yOffset);
+            childBox.set_size(width, Math.max(thumbnailsHeight - spacing, searchHeight));
+            this._workspacesThumbnails.allocate(childBox);
+        }
+
+        availableHeight -= Math.max(searchHeight, thumbnailsHeight) + spacing;
+
+        // Dash
+        const maxDashHeight = Math.round(workAreaBox.get_height() * DASH_MAX_HEIGHT_RATIO);
+        this._dash.setMaxSize(width, maxDashHeight);
+
+        let [, dashHeight] = this._dash.get_preferred_height(width);
+        dashHeight = Math.min(dashHeight, maxDashHeight);
+        childBox.set_origin(startX, startY + height - dashHeight);
+        childBox.set_size(width, dashHeight);
+        this._dash.allocate(childBox);
+
+        availableHeight -= dashHeight + spacing;
+
+        // Workspaces
+        let params = [workAreaBox, searchHeight, dashHeight, thumbnailsHeight];
+        const transitionParams = this._stateAdjustment.getStateTransitionParams();
+
+        // Update cached boxes
+        for (const state of Object.values(OverviewControls.ControlsState)) {
+            this._cachedWorkspaceBoxes.set(
+                state, this._computeWorkspacesBoxForState(state, ...params));
+        }
+
+        let workspacesBox;
+        if (!transitionParams.transitioning) {
+            workspacesBox = this._cachedWorkspaceBoxes.get(transitionParams.currentState);
+        } else {
+            const initialBox = this._cachedWorkspaceBoxes.get(transitionParams.initialState);
+            const finalBox = this._cachedWorkspaceBoxes.get(transitionParams.finalState);
+            workspacesBox = initialBox.interpolate(finalBox, transitionParams.progress);
+        }
+
+        this._workspacesDisplay.allocate(workspacesBox);
+
+        // AppDisplay
+        if (this._appDisplay.visible) {
+            const workspaceAppGridBox =
+                this._cachedWorkspaceBoxes.get(OverviewControls.ControlsState.APP_GRID);
+
+            params = [workAreaBox, searchHeight, dashHeight, workspaceAppGridBox];
+            let appDisplayBox;
+            if (!transitionParams.transitioning) {
+                appDisplayBox =
+                    this._getAppDisplayBoxForState(transitionParams.currentState, ...params);
+            } else {
+                const initialBox =
+                    this._getAppDisplayBoxForState(transitionParams.initialState, ...params);
+                const finalBox =
+                    this._getAppDisplayBoxForState(transitionParams.finalState, ...params);
+
+                appDisplayBox = initialBox.interpolate(finalBox, transitionParams.progress);
+            }
+
+            this._appDisplay.allocate(appDisplayBox);
+        }
+
+        // Search
+        childBox.set_origin(startX, startY + searchHeight + spacing);
+        childBox.set_size(availableWidth, availableHeight);
+
+        this._searchController.allocate(childBox);
+
+        this._runPostAllocation();
     }
 });
 
