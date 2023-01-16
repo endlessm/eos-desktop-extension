@@ -26,8 +26,8 @@ const LayoutManager = imports.ui.layout;
 const Main = imports.ui.main;
 const Utils = DesktopExtension.imports.utils;
 
-const DEFAULT_BARRIER_TRAVEL_THRESHOLD = 150;
-const DEFAULT_BARRIER_TRAVEL_TIMEOUT = 1000;
+const DEFAULT_BARRIER_TRAVEL_THRESHOLD = 100;
+const DEFAULT_BARRIER_TRAVEL_TIMEOUT = 250;
 
 const WINDOW_OVERLAP_POLL_TIMEOUT = 200;
 
