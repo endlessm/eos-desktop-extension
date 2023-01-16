@@ -260,7 +260,12 @@ const Intellihide = GObject.registerClass({
                 break;
         }
 
-        this._setDashVisible(!hasOverlaps);
+        const showDash = !hasOverlaps;
+
+        if (!showDash && !this._barrier)
+            this._updateBarrier();
+
+        this._setDashVisible(showDash);
     }
 
     _removeBarrier() {
@@ -270,6 +275,22 @@ const Intellihide = GObject.registerClass({
         this._pressureBarrier.removeBarrier(this._barrier);
         this._barrier.destroy();
         delete this._barrier;
+    }
+
+    _removeBarrierAfterTimeout() {
+        if (this._removeBarrierTimeoutId) {
+            GLib.source_remove(this._removeBarrierTimeoutId);
+            delete this._removeBarrierTimeoutId;
+        }
+
+        this._removeBarrierTimeoutId = GLib.timeout_add(
+            GLib.PRIORITY_LOW,
+            100,
+            () => {
+                this._removeBarrier();
+                delete this._removeBarrierTimeoutId;
+                return GLib.SOURCE_REMOVE;
+            });
     }
 
     _updateBarrier() {
@@ -306,6 +327,7 @@ const Intellihide = GObject.registerClass({
         this._pressureBarrier.connect('trigger', () => {
             this._setDashVisible(true);
             this._armTriggerTimeout();
+            this._removeBarrierAfterTimeout();
         });
         this._updateBarrier();
 
@@ -319,6 +341,11 @@ const Intellihide = GObject.registerClass({
     }
 
     disable() {
+        if (this._removeBarrierTimeoutId) {
+            GLib.source_remove(this._removeBarrierTimeoutId);
+            delete this._removeBarrierTimeoutId;
+        }
+
         GLib.source_remove(this._timeoutId);
         delete this._timeoutId;
 
