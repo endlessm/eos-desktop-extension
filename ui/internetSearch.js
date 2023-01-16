@@ -155,7 +155,7 @@ function getURIForSearch(terms) {
     // Make sure search contains only a uri
     // Avoid cases like "what is github.com"
     if (searchedUris.length === 1 && terms.length === 1) {
-        const uri = searchedUris[0];
+        let uri = searchedUris[0];
         // Ensure all uri has a scheme name
         if (!GLib.uri_parse_scheme(uri))
             uri = 'http://'.format(uri);
@@ -265,8 +265,7 @@ var InternetSearchProvider = class {
 
     activateResult(metaId) {
         if (metaId.startsWith('uri:')) {
-            const uri = metaId.slice('uri:'.length);
-            uri = getURIForSearch([uri]);
+            const uri = getURIForSearch([metaId.slice('uri:'.length)]);
             this._launchURI(uri);
         } else if (metaId.startsWith('search:')) {
             const query = metaId.slice('search:'.length);
