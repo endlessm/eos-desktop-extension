@@ -245,8 +245,6 @@ var InternetSearchProvider = class {
     getInitialResultSet(terms, callback, _cancellable) {
         const results = [];
 
-        log(`Internet search, terms: ${terms}`);
-
         if (this._networkMonitor.network_available) {
             const uri = getURIForSearch(terms);
             const query = terms.join(' ');
