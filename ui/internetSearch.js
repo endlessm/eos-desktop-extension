@@ -83,10 +83,10 @@ function _getBrowserApp() {
     return appSystem.lookup_app(id);
 }
 
-function _getJsonSearchEngine(config_dir, folder) {
+function _getJsonSearchEngine(configDir, folder) {
     const parser = new Json.Parser();
     const path = GLib.build_filenamev([
-        config_dir,
+        configDir,
         folder,
         'Default',
         'Preferences',
@@ -137,9 +137,9 @@ function getSearchEngineName() {
     const browser = _getBrowserId();
 
     if (browser === FALLBACK_BROWSER_ID) {
-        const config_dir = GLib.build_filenamev([GLib.get_home_dir(),
+        const configDir = GLib.build_filenamev([GLib.get_home_dir(),
             '.var', 'app', 'org.chromium.Chromium', 'config']);
-        return _getJsonSearchEngine(config_dir, 'chromium');
+        return _getJsonSearchEngine(configDir, 'chromium');
     }
 
     if (browser === GOOGLE_CHROME_ID)
