@@ -19,9 +19,80 @@
 const ExtensionUtils = imports.misc.extensionUtils;
 const DesktopExtension = ExtensionUtils.getCurrentExtension();
 
+const InternetSearch = DesktopExtension.imports.ui.internetSearch;
 const Main = imports.ui.main;
 const Search = imports.ui.search;
+const ParentalControlsManager = imports.misc.parentalControlsManager;
 const Utils = DesktopExtension.imports.utils;
+
+let parentalControlsSignalId = 0;
+let internetSearchProvider = null;
+
+function registerInternetSearchProvider() {
+    if (internetSearchProvider)
+        return;
+
+    const parentalControls = ParentalControlsManager.getDefault();
+    if (!parentalControls.initialized)
+        return;
+
+    const provider = InternetSearch.getInternetSearchProvider();
+
+    if (provider) {
+        // Don't register if parental controls doesn't allow us to
+        if (!parentalControls.shouldShowApp(provider.appInfo))
+            return;
+
+        const overviewControls = Main.overview._overview.controls;
+        const searchResults = overviewControls._searchController._searchResults;
+
+        searchResults._registerProvider(provider);
+        internetSearchProvider = provider;
+
+        searchResults._reloadRemoteProviders();
+    }
+}
+
+function unregisterInternetSearchProvider() {
+    if (!internetSearchProvider)
+        return;
+
+    const overviewControls = Main.overview._overview.controls;
+    const searchResults = overviewControls._searchController._searchResults;
+    searchResults._unregisterProvider(internetSearchProvider);
+    internetSearchProvider = null;
+
+    searchResults._reloadRemoteProviders();
+}
+
+function setInternetSearchProviderEnable(enabled) {
+    const parentalControls = ParentalControlsManager.getDefault();
+    if (parentalControlsSignalId > 0) {
+        parentalControls.disconnect(parentalControlsSignalId);
+        parentalControlsSignalId = 0;
+    }
+
+    if (enabled) {
+        registerInternetSearchProvider();
+
+        // Monitor parental controls to either retry adding the search
+        // provider, or remove if it the browser is filtered out
+        parentalControlsSignalId =
+            parentalControls.connect('app-filter-changed', () => {
+                if (!parentalControls.initialized)
+                    return;
+
+                if (internetSearchProvider &&
+                    !parentalControls.shouldShowApp(internetSearchProvider.appInfo))
+                    unregisterInternetSearchProvider();
+                else
+                    registerInternetSearchProvider();
+            });
+    } else {
+        // Simplest case: disabling only removes the search provider period
+        unregisterInternetSearchProvider();
+    }
+}
 
 function enable() {
     Utils.override(Search.SearchResult, 'hide', function () {
@@ -30,8 +101,11 @@ function enable() {
 
         Main.overview.hide(true);
     });
+
+    setInternetSearchProviderEnable(true);
 }
 
 function disable() {
     Utils.restore(Search.SearchResult);
+    setInternetSearchProviderEnable(false);
 }
