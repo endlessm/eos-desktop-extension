@@ -328,6 +328,12 @@ const Intellihide = GObject.registerClass({
             this._setDashVisible(true);
             this._armTriggerTimeout();
             this._removeBarrierAfterTimeout();
+
+            // HACK!!! We put an actor above the barrier before it has
+            // a chance to detect the cursor leaving it, so fake that
+            // leave event here
+            if (this._barrier)
+                this._pressureBarrier._onBarrierLeft(this._barrier, null);
         });
         this._updateBarrier();
 
