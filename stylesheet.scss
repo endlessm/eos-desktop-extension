@@ -28,3 +28,21 @@
     }
   }
 }
+
+/* Copied from GNOME Shell */
+$base_padding: 6px;
+$dash_padding: $base_padding + 4px; // 10px
+/* Modified here */
+$dash_bottom_margin: 8px;
+
+.dash-background {
+  margin-bottom: $dash_bottom_margin;
+}
+
+.dash-item-container .app-well-app, .show-apps {
+  padding-bottom: $dash_padding + $dash_bottom_margin;
+}
+
+.dash-separator {
+  margin-bottom: $dash_bottom_margin;
+}
