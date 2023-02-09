@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eos-desktop-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-26 09:25+0000\n"
+"POT-Creation-Date: 2023-02-09 09:25+0000\n"
 "PO-Revision-Date: 2020-10-26 16:37+0000\n"
 "Last-Translator: Waldemar Stoczkowski, 2023\n"
 "Language-Team: Polish (https://www.transifex.com/endless-os/teams/9016/pl/)\n"
@@ -39,7 +39,7 @@ msgstr "Otwórz \"%s\" w przeglądarce"
 #: ui/internetSearch.js:222
 #, javascript-format
 msgid "Search %1$s for \"%2$s\""
-msgstr ""
+msgstr "Szukaj %1$s w \"%2$s\""
 
 #: ui/internetSearch.js:224
 #, javascript-format
