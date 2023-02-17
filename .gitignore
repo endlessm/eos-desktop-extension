@@ -1,3 +1,8 @@
+/debian/.debhelper
+/debian/debhelper-build-stamp
+/debian/eos-desktop-extension.substvars
+/debian/eos-desktop-extension
+/debian/files
 *.tar.xz
 *.zip
 Makefile
