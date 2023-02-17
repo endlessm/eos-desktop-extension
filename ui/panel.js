@@ -194,5 +194,6 @@ function enable() {
 function disable() {
     for (const indicator of indicators)
         indicator.destroy();
+    indicators.splice(0, indicators.length);
     setActivitiesButtonVisible(true);
 }
