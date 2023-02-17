@@ -17,3 +17,4 @@ metadata.json
 **/*.valid
 _build/
 *.css
+*.pot
