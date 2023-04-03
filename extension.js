@@ -34,7 +34,7 @@ class Extension {
         this._enabled = false;
     }
 
-    async enable() {
+    async _enable() {
         if (this._enabled)
             return;
 
@@ -53,6 +53,12 @@ class Extension {
         this._workspaceMonitor.enable();
 
         this._enabled = true;
+    }
+
+    enable() {
+        this._enable().catch((error) => {
+            logError(error);
+        });
     }
 
     disable() {
