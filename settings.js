@@ -29,7 +29,6 @@ const Main = imports.ui.main;
 const ParentalControlsManager = imports.misc.parentalControlsManager;
 
 const CURRENT_VERSION = 1;
-const APP_CENTER_ID = 'org.gnome.Software.desktop';
 
 function _getMigrationSettings() {
     const dir = DesktopExtension.dir.get_child('migration').get_path();
@@ -159,21 +158,8 @@ function _migrateToV1(migrationSettings, _extensionSettings) {
             continue;
         }
 
-        // If we have more than 24 icons, make sure that the app center icon
-        // appended to the first page
-        if (index === itemsPerPage - 1) {
-            _addIcon(pages, APP_CENTER_ID, index++, itemsPerPage);
-            addedItems.add(APP_CENTER_ID);
-        }
-
         _addIcon(pages, id, index++, itemsPerPage);
         addedItems.add(itemId);
-    }
-
-    // Append the app center icon if it wasn't added in the loop above
-    if (!addedItems.has(APP_CENTER_ID)) {
-        _addIcon(pages, APP_CENTER_ID, index++, itemsPerPage);
-        addedItems.add(APP_CENTER_ID);
     }
 
     // Switch to the next page
