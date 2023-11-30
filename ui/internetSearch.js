@@ -205,7 +205,7 @@ var InternetSearchProvider = class {
         }
     }
 
-    getResultMetas(results, callback) {
+    async getResultMetas(results) {
         const metas = results.map(resultId => {
             let name;
             if (resultId.startsWith('uri:')) {
@@ -235,14 +235,14 @@ var InternetSearchProvider = class {
                 },
             };
         });
-        callback(metas);
+        return metas;
     }
 
     filterResults(results, maxNumber) {
         return results.slice(0, maxNumber);
     }
 
-    getInitialResultSet(terms, callback, _cancellable) {
+    async getInitialResultSet(terms, _cancellable) {
         const results = [];
 
         if (this._networkMonitor.network_available) {
@@ -254,11 +254,11 @@ var InternetSearchProvider = class {
                 results.push('search:%s'.format(query));
         }
 
-        callback(results);
+        return results;
     }
 
-    getSubsearchResultSet(previousResults, terms, callback, cancellable) {
-        this.getInitialResultSet(terms, callback, cancellable);
+    async getSubsearchResultSet(previousResults, terms, cancellable) {
+        return this.getInitialResultSet(terms, cancellable);
     }
 
     activateResult(metaId) {
