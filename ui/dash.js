@@ -498,6 +498,10 @@ const EosDashController = class EosDashController {
         // Show the overview when the toggling the apps button in session
         // mode
         const { showAppsButton } = Main.overview.dash;
+        this._showAppsButtonClickedId = showAppsButton.connect('clicked', () => {
+            if (!showAppsButton.checked)
+                Main.overview._eosHideOrShowOverview();
+        });
         this._showOverviewId = showAppsButton.connect('notify::checked', () => {
             const { controls } = Main.overview._overview;
 
@@ -526,6 +530,9 @@ const EosDashController = class EosDashController {
         delete this._overviewSignals;
 
         this._intellihide.disable();
+
+        Main.overview.dash.showAppsButton.disconnect(this._showAppsButtonClickedId);
+        delete this._showAppsButtonClickedId;
 
         Main.overview.dash.showAppsButton.disconnect(this._showOverviewId);
         delete this._showOverviewId;

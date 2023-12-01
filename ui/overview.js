@@ -68,11 +68,27 @@ function removeBackgroundFromOverview() {
 
 function enable(workspaceMonitor) {
     Utils.override(Overview.Overview, 'hide', function(bypassVisibleWindowCheck = false) {
-        if (!bypassVisibleWindowCheck && !workspaceMonitor.hasVisibleWindows)
+        if (!bypassVisibleWindowCheck && !workspaceMonitor.hasVisibleWindows) {
+            Main.overview.dash.showAppsButton.checked = true;
             return;
+        }
 
         const original = Utils.original(Overview.Overview, 'hide');
         original.bind(this)();
+    });
+
+    Utils.override(Overview.Overview, '_eosHideOrShowApps', function() {
+        if (workspaceMonitor.hasVisibleWindows)
+            this.hide();
+        else
+            Main.overview.dash.showAppsButton.checked = true;
+    });
+
+    Utils.override(Overview.Overview, '_eosHideOrShowOverview', function() {
+        if (workspaceMonitor.hasVisibleWindows)
+            this.hide();
+        else
+            Main.overview.dash.showAppsButton.checked = false;
     });
 
     Utils.override(Overview.Overview, 'runStartupAnimation', async function(callback) {
