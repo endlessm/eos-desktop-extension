@@ -48,22 +48,12 @@ let hidingOverview = false;
 function enable() {
     Utils.override(AppDisplay.AppDisplay, 'goToPage',
         function (pageNumber, animate = true) {
+            const original = Utils.original(AppDisplay.AppDisplay, 'goToPage');
+
             if (hidingOverview)
                 return;
 
-            pageNumber = Math.clamp(pageNumber, 0, this._grid.nPages - 1);
-
-            if (this._grid.currentPage === pageNumber &&
-                this._displayingDialog &&
-                this._currentDialog)
-                return;
-            if (this._displayingDialog && this._currentDialog)
-                this._currentDialog.popdown();
-
-            if (this._grid.currentPage === pageNumber)
-                return;
-
-            this._grid.goToPage(pageNumber, animate);
+            original.bind(this)(pageNumber, animate);
         });
 
     Utils.override(AppDisplay.AppIcon, 'activate', function (button) {
