@@ -48,7 +48,6 @@ class EndlessControlsManagerLayout extends OverviewControls.ControlsManagerLayou
             } else {
                 [box, workAreaBox, searchHeight, dashHeight, thumbnailsHeight] = args;
             }
-
             workspaceBox = box.copy();
 
             const [width, height] = workspaceBox.get_size();
@@ -63,14 +62,16 @@ class EndlessControlsManagerLayout extends OverviewControls.ControlsManagerLayou
                 workspaceBox.set_size(...workAreaBox.get_size());
                 break;
             case OverviewControls.ControlsState.WINDOW_PICKER:
+                // We are using searchHeight here because it is related to the
+                // size of this._workspacesThumbnails in vfunc_allocate.
                 workspaceBox.set_origin(0,
-                    startY + searchHeight + spacing +
-                    thumbnailsHeight + spacing * expandFraction);
+                    startY + Math.max(searchHeight + spacing,
+                        thumbnailsHeight + spacing * expandFraction));
                 workspaceBox.set_size(width,
                     height -
                     dashHeight - spacing -
-                    searchHeight - spacing -
-                    thumbnailsHeight - spacing * expandFraction);
+                    Math.max(searchHeight + spacing,
+                        thumbnailsHeight + spacing * expandFraction));
                 break;
             case OverviewControls.ControlsState.APP_GRID:
                 workspaceBox.set_origin(0, offLimitsY);
