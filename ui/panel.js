@@ -144,12 +144,9 @@ class ApplicationsButton extends EosPanelButton {
             text: GS_('Applications'),
             state: OverviewControls.ControlsState.APP_GRID,
             callback: () => {
-                if (!Main.overview.visible)
-                    Main.overview.showApps();
-                else if (!Main.overview.dash.showAppsButton.checked)
-                    Main.overview.dash.showAppsButton.checked = true;
-                else
-                    Main.overview.hide();
+                Main.overview.dash.showAppsButton.checked = !Main.overview.dash.showAppsButton.checked;
+                if (!Main.overview.dash.showAppsButton.checked)
+                    Main.overview._eosHideOrShowOverview();
             },
         });
     }
@@ -167,7 +164,7 @@ class WorkspacesButton extends EosPanelButton {
                 else if (Main.overview.dash.showAppsButton.checked)
                     Main.overview.dash.showAppsButton.checked = false;
                 else
-                    Main.overview.hide();
+                    Main.overview._eosHideOrShowApps();
             },
         });
     }
