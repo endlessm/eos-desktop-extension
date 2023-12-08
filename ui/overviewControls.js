@@ -29,118 +29,55 @@ const ShellUtils = imports.misc.util;
 const Utils = DesktopExtension.imports.utils;
 const WorkspaceThumbnail = imports.ui.workspaceThumbnail;
 
-/* Beware: SHELL_MINOR_VERSION will be NaN for pre-releases */
-const [SHELL_MAJOR_VERSION, SHELL_MINOR_VERSION] = Config.PACKAGE_VERSION.split('.').map(s => Number(s));
 const SMALL_WORKSPACE_RATIO = 0.55;
 const DASH_MAX_HEIGHT_RATIO = 0.15;
 
 var EndlessControlsManagerLayout = GObject.registerClass(
 class EndlessControlsManagerLayout extends OverviewControls.ControlsManagerLayout {
-    _computeWorkspacesBoxForState(state, ...args) {
-        let workspaceBox;
+    _computeWorkspacesBoxForState(state, box, searchHeight, dashHeight, thumbnailsHeight) {
+        let workAreaBox = this._workAreaBox;
+        let workspaceBox = box.copy();
 
-        if (SHELL_MAJOR_VERSION >= 42) {
-            let box, workAreaBox, searchHeight, dashHeight, thumbnailsHeight;
+        const [width, height] = workspaceBox.get_size();
+        const { y1: startY } = workAreaBox;
+        const { spacing } = this;
+        const { expandFraction } = this._workspacesThumbnails;
+        const offLimitsY = 0 - startY - height * SMALL_WORKSPACE_RATIO;
 
-            if (SHELL_MAJOR_VERSION > 42 || SHELL_MINOR_VERSION >= 4) {
-                workAreaBox = this._workAreaBox;
-                [box, searchHeight, dashHeight, thumbnailsHeight] = args;
-            } else {
-                [box, workAreaBox, searchHeight, dashHeight, thumbnailsHeight] = args;
-            }
-
-            workspaceBox = box.copy();
-
-            const [width, height] = workspaceBox.get_size();
-            const { y1: startY } = workAreaBox;
-            const { spacing } = this;
-            const { expandFraction } = this._workspacesThumbnails;
-            const offLimitsY = 0 - startY - height * SMALL_WORKSPACE_RATIO;
-
-            switch (state) {
-            case OverviewControls.ControlsState.HIDDEN:
-                workspaceBox.set_origin(...workAreaBox.get_origin());
-                workspaceBox.set_size(...workAreaBox.get_size());
-                break;
-            case OverviewControls.ControlsState.WINDOW_PICKER:
-                workspaceBox.set_origin(0,
-                    startY + searchHeight + spacing +
-                    thumbnailsHeight + spacing * expandFraction);
-                workspaceBox.set_size(width,
-                    height -
-                    dashHeight - spacing -
-                    searchHeight - spacing -
-                    thumbnailsHeight - spacing * expandFraction);
-                break;
-            case OverviewControls.ControlsState.APP_GRID:
-                workspaceBox.set_origin(0, offLimitsY);
-                workspaceBox.set_size(
-                    width,
-                    Math.round(height * SMALL_WORKSPACE_RATIO));
-                break;
-            }
-        } else {
-            // GNOME 40 and 41
-
-            const [workAreaBox, searchHeight, dashHeight, thumbnailsHeight] = args;
-
-            workspaceBox = workAreaBox.copy();
-
-            const [startX, startY] = workAreaBox.get_origin();
-            const [width, height] = workspaceBox.get_size();
-            const { spacing } = this;
-            const { expandFraction } = this._workspacesThumbnails;
-            const offLimitsY = 0 - startY - height * SMALL_WORKSPACE_RATIO;
-
-            switch (state) {
-            case OverviewControls.ControlsState.HIDDEN:
-                break;
-            case OverviewControls.ControlsState.WINDOW_PICKER:
-                workspaceBox.set_origin(startX,
-                    startY + Math.max(searchHeight + spacing,
-                        thumbnailsHeight + spacing * expandFraction));
-                workspaceBox.set_size(width,
-                    height -
-                    dashHeight - spacing -
-                    Math.max(searchHeight + spacing,
-                        thumbnailsHeight + spacing * expandFraction));
-                break;
-            case OverviewControls.ControlsState.APP_GRID:
-                workspaceBox.set_origin(startX, offLimitsY);
-                workspaceBox.set_size(
-                    width,
-                    Math.round(height * SMALL_WORKSPACE_RATIO));
-                break;
-            }
+        switch (state) {
+        case OverviewControls.ControlsState.HIDDEN:
+            workspaceBox.set_origin(...workAreaBox.get_origin());
+            workspaceBox.set_size(...workAreaBox.get_size());
+            break;
+        case OverviewControls.ControlsState.WINDOW_PICKER:
+            // We are using searchHeight here because it is related to the
+            // size of this._workspacesThumbnails in vfunc_allocate.
+            workspaceBox.set_origin(0,
+                startY + Math.max(searchHeight + spacing,
+                    thumbnailsHeight + spacing * expandFraction));
+            workspaceBox.set_size(width,
+                height -
+                dashHeight - spacing -
+                Math.max(searchHeight + spacing,
+                    thumbnailsHeight + spacing * expandFraction));
+            break;
+        case OverviewControls.ControlsState.APP_GRID:
+            workspaceBox.set_origin(0, offLimitsY);
+            workspaceBox.set_size(
+                width,
+                Math.round(height * SMALL_WORKSPACE_RATIO));
+            break;
         }
 
         return workspaceBox;
     }
 
-    _getAppDisplayBoxForState(state, ...args) {
+    _getAppDisplayBoxForState(state, box, searchHeight, dashHeight) {
         const appDisplayBox = new Clutter.ActorBox();
-        let width, height, workAreaBox, startX, startY, searchHeight, dashHeight;
+        let workAreaBox = this._workAreaBox;
+        let [width, height] = box.get_size();
+        let [startX, startY] = workAreaBox.get_origin();
         const { spacing } = this;
-
-        if (SHELL_MAJOR_VERSION >= 42) {
-            let box;
-
-            if (SHELL_MAJOR_VERSION > 42 || SHELL_MINOR_VERSION >= 4) {
-                workAreaBox = this._workAreaBox;
-                [box, searchHeight, dashHeight] = args;
-            } else {
-                [box, workAreaBox, searchHeight, dashHeight] = args;
-            }
-            [startX, startY] = workAreaBox.get_origin();
-            [width, height] = box.get_size();
-        } else {
-            // GNOME 40 and 41
-
-            [workAreaBox, searchHeight, dashHeight] = args;
-            [startX, startY] = workAreaBox.get_origin();
-            [width, height] = workAreaBox.get_size();
-
-        }
 
         switch (state) {
         case OverviewControls.ControlsState.HIDDEN:
@@ -181,23 +118,6 @@ class EndlessControlsManagerLayout extends OverviewControls.ControlsManagerLayou
         childBox.set_size(width, searchHeight);
         this._searchEntry.allocate(childBox);
 
-        // Workspace Thumbnails
-        let thumbnailsHeight = 0;
-        if (this._workspacesThumbnails.visible) {
-            const { expandFraction } = this._workspacesThumbnails;
-            [, thumbnailsHeight] =
-                this._workspacesThumbnails.get_preferred_height(width);
-            thumbnailsHeight = Math.min(
-                thumbnailsHeight * expandFraction,
-                height * WorkspaceThumbnail.MAX_THUMBNAIL_SCALE);
-            const yOffset = Math.abs(thumbnailsHeight - spacing - searchHeight) / 2;
-            childBox.set_origin(startX, startY + yOffset);
-            childBox.set_size(width, Math.max(thumbnailsHeight - spacing, searchHeight));
-            this._workspacesThumbnails.allocate(childBox);
-        }
-
-        availableHeight -= Math.max(searchHeight, thumbnailsHeight) + spacing;
-
         // Dash
         const maxDashHeight = Math.round(workAreaBox.get_height() * DASH_MAX_HEIGHT_RATIO);
         this._dash.setMaxSize(width, maxDashHeight);
@@ -209,6 +129,23 @@ class EndlessControlsManagerLayout extends OverviewControls.ControlsManagerLayou
         this._dash.allocate(childBox);
 
         availableHeight -= dashHeight + spacing;
+
+        // Workspace Thumbnails
+        let thumbnailsHeight = 0;
+        if (this._workspacesThumbnails.visible) {
+            const { expandFraction } = this._workspacesThumbnails;
+            [thumbnailsHeight] =
+                this._workspacesThumbnails.get_preferred_height(width);
+            thumbnailsHeight = Math.min(
+                thumbnailsHeight * expandFraction,
+                height * WorkspaceThumbnail.MAX_THUMBNAIL_SCALE);
+            const yOffset = Math.abs(thumbnailsHeight - spacing - searchHeight) / 2;
+            childBox.set_origin(startX, startY + yOffset);
+            childBox.set_size(width, Math.max(thumbnailsHeight - spacing, searchHeight));
+            this._workspacesThumbnails.allocate(childBox);
+        }
+
+        availableHeight -= Math.max(searchHeight, thumbnailsHeight) + spacing;
 
         // Workspaces
         let params = [workAreaBox, searchHeight, dashHeight, thumbnailsHeight];
