@@ -95,11 +95,22 @@ function setInternetSearchProviderEnable(enabled) {
 }
 
 function enable() {
-    Utils.override(Search.SearchResult, 'hide', function () {
+    Utils.override(Search.SearchResult, 'activate', function () {
         const original = Utils.original(Search.SearchResult, 'activate');
         original.bind(this)();
-
+        // The original activate() calls Main.overview.toggle(), which hides
+        // the overview, but (due to our customizations in overview.js) only if
+        // windows are visible. We expect a window to appear whenever a search
+        // result is activated, so we will force the overview to hide.
         Main.overview.hide(true);
+    });
+
+    Utils.override(Search.ListSearchResults, '_init', function (provider, resultsView) {
+        const original = Utils.original(Search.ListSearchResults, '_init');
+        original.bind(this)(provider, resultsView);
+        this.providerInfo.connect('clicked', () => {
+            Main.overview.hide(true);
+        });
     });
 
     setInternetSearchProviderEnable(true);
