@@ -118,5 +118,6 @@ function enable() {
 
 function disable() {
     Utils.restore(Search.SearchResult);
+    Utils.restore(Search.ListSearchResults);
     setInternetSearchProviderEnable(false);
 }
