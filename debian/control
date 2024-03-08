@@ -1,8 +1,7 @@
 Source: eos-desktop-extension
 Section: gnome
 Priority: optional
-Maintainer: Georges Basile Stavracas Neto <georges@endlessm.com>
-Uploaders: Georges Basile Stavracas Neto <georges@endlessm.com>
+Maintainer: Endless OS Maintainers <maintainers@endlessos.org>
 Build-Depends:
  libglib2.0-bin (>= 2.62),
  debhelper-compat (= 12),

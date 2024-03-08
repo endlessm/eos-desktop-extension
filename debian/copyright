@@ -1,13 +1,13 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Endless OS Watermark Extension
-Source: https://github.com/endlessm/eos-watermark-extension
+Upstream-Name: Endless OS Desktop Extension
+Source: https://github.com/endlessm/eos-desktop-extension
 
 Files: *
-Copyright: 2020 Georges Basile Stavracas Neto <georges@endlessm.com>
+Copyright: 2020–2024 Endless OS Foundation LLC
 License: GPL-2+
 
 Files: debian/*
-Copyright: 2020 Georges Basile Stavracas Neto <georges@endlessm.com>
+Copyright: 2020–2024 Endless OS Foundation LLC
 License: GPL-2+
 
 License: GPL-2+
