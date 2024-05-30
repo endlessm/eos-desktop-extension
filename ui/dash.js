@@ -34,6 +34,14 @@ const WINDOW_OVERLAP_POLL_TIMEOUT = 200;
 // Note: must be kept in sync with js/ui/overviewControls.js
 const DASH_MAX_HEIGHT_RATIO = 0.15;
 
+/**
+ * EosDashIcon:
+ * @app: a ShellApp
+ *
+ * Overrides DashIcon in order to notify the app's windows of where they should
+ * minimize to. (In vanilla Shell, windows minimize to the top-left corner of
+ * the screen because minimize is alleged not to exist.)
+ */
 const EosDashIcon = GObject.registerClass({
     GTypeName: 'EosDashIcon',
 }, class EosDashIcon extends Dash.DashIcon {
@@ -545,6 +553,9 @@ const EosDashController = class EosDashController {
 
 let dashController = null;
 function enable() {
+    /* Copy-pasted from Shell's dash.js, in order to replace 'new DashIcon'
+     * with 'new EosDashIcon'.
+     */
     Utils.override(Dash.Dash, '_createAppItem', function(app) {
         const appIcon = new EosDashIcon(app);
 
@@ -566,6 +577,11 @@ function enable() {
         return item;
     });
 
+    /* Not used by Shell itself. Intended for use in Looking Glass to experiment
+     * with different parameters:
+     *
+     * Main.overview.dash.setBarrierParams(..., ...)
+     */
     Utils.override(Dash.Dash, 'setBarrierParams', function(distance, time) {
         if (!dashController)
             return;
