@@ -372,7 +372,12 @@ function enable() {
             delay: STARTUP_ANIMATION_TIME,
             duration: STARTUP_ANIMATION_TIME,
             mode: Clutter.AnimationMode.EASE_OUT_QUAD,
-            onComplete: () => callback(),
+            onStopped: (isFinished) => {
+                if (!isFinished)
+                    this.dash.translation_y = 0;
+
+                callback();
+            }
         });
     });
 
