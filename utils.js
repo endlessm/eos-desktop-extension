@@ -10,7 +10,9 @@ var gettext = Gettext.gettext;
 
 var GS_ = imports.gettext.domain('gnome-shell').gettext;
 
-function override(object, methodName, callback) {
+function override(object, callback) {
+    const methodName = callback.name;
+
     if (!object._desktopFnOverrides)
         object._desktopFnOverrides = {};
 

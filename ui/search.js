@@ -95,7 +95,7 @@ function setInternetSearchProviderEnable(enabled) {
 }
 
 function enable() {
-    Utils.override(Search.SearchResult, 'activate', function () {
+    Utils.override(Search.SearchResult, function activate() {
         const original = Utils.original(Search.SearchResult, 'activate');
         original.call(this);
         // The original activate() calls Main.overview.toggle(), which hides
@@ -105,7 +105,7 @@ function enable() {
         Main.overview.hide(true);
     });
 
-    Utils.override(Search.ListSearchResults, '_init', function (provider, resultsView) {
+    Utils.override(Search.ListSearchResults, function _init(provider, resultsView) {
         const original = Utils.original(Search.ListSearchResults, '_init');
         original.call(this, provider, resultsView);
         this.providerInfo.connect('clicked', () => {

@@ -262,7 +262,7 @@ function setDashAboveWorkspaces(above) {
 }
 
 function enable() {
-    Utils.override(OverviewControls.ControlsManager, '_updateAppDisplayVisibility', function (params) {
+    Utils.override(OverviewControls.ControlsManager, function _updateAppDisplayVisibility(params) {
         if (!params)
             params = this._stateAdjustment.getStateTransitionParams();
 
@@ -326,7 +326,7 @@ function enable() {
 
     });
 
-    Utils.override(OverviewControls.ControlsManager, 'runStartupAnimation', async function (callback) {
+    Utils.override(OverviewControls.ControlsManager, async function runStartupAnimation(callback) {
         this._ignoreShowAppsButtonToggle = true;
 
         this._searchController.prepareToEnterOverview();

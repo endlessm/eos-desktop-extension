@@ -46,8 +46,8 @@ let overviewHiddenId = 0;
 let hidingOverview = false;
 
 function enable() {
-    Utils.override(AppDisplay.AppDisplay, 'goToPage',
-        function (pageNumber, animate = true) {
+    Utils.override(AppDisplay.AppDisplay,
+        function goToPage(pageNumber, animate = true) {
             const original = Utils.original(AppDisplay.AppDisplay, 'goToPage');
 
             if (hidingOverview)
@@ -56,14 +56,14 @@ function enable() {
             original.call(this, pageNumber, animate);
         });
 
-    Utils.override(AppDisplay.AppIcon, 'activate', function (button) {
+    Utils.override(AppDisplay.AppIcon, function activate(button) {
         const original = Utils.original(AppDisplay.AppIcon, 'activate');
         original.call(this, button);
 
         Main.overview.hide(true);
     });
 
-    Utils.override(AppDisplay.PageManager, 'getAppPosition', function(appId) {
+    Utils.override(AppDisplay.PageManager, function getAppPosition(appId) {
         const original = Utils.original(AppDisplay.PageManager, 'getAppPosition');
         let [page, position] = original.call(this, appId);
         if (page != -1 || position != -1)
