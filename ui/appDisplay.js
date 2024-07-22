@@ -53,19 +53,19 @@ function enable() {
             if (hidingOverview)
                 return;
 
-            original.bind(this)(pageNumber, animate);
+            original.call(this, pageNumber, animate);
         });
 
     Utils.override(AppDisplay.AppIcon, 'activate', function (button) {
         const original = Utils.original(AppDisplay.AppIcon, 'activate');
-        original.bind(this)(button);
+        original.call(this, button);
 
         Main.overview.hide(true);
     });
 
     Utils.override(AppDisplay.PageManager, 'getAppPosition', function(appId) {
         const original = Utils.original(AppDisplay.PageManager, 'getAppPosition');
-        let [page, position] = original.bind(this)(appId);
+        let [page, position] = original.call(this, appId);
         if (page != -1 || position != -1)
             return [page, position];
 
@@ -94,7 +94,7 @@ function enable() {
                 // is renamed from AppB which is renamed from AppC... we would stop
                 // searching at AppB (as the AppSystem.lookup_alias() impl
                 // currently does)
-                [page, position] = original.bind(this)(renamedFromId);
+                [page, position] = original.call(this, renamedFromId);
                 if (page != -1 || position != -1)
                     break;
             }

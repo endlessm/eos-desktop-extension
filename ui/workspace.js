@@ -66,7 +66,7 @@ function getBorderOpacityForState(state) {
 function enable() {
     Utils.override(Workspace.Workspace, '_init', function(metaWorkspace, monitorIndex, overviewAdjustment) {
         const original = Utils.original(Workspace.Workspace, '_init');
-        original.bind(this)(metaWorkspace, monitorIndex, overviewAdjustment);
+        original.call(this, metaWorkspace, monitorIndex, overviewAdjustment);
 
         this._background.hide();
 
@@ -102,7 +102,7 @@ function enable() {
         }
 
         const original = Utils.original(Workspace.Workspace, '_onDestroy');
-        original.bind(this)();
+        original.call(this);
     });
 }
 

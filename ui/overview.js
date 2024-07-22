@@ -74,7 +74,7 @@ function enable(workspaceMonitor) {
         }
 
         const original = Utils.original(Overview.Overview, 'hide');
-        original.bind(this)();
+        original.call(this);
     });
 
     Utils.override(Overview.Overview, '_eosHideOrShowApps', function() {
@@ -93,7 +93,7 @@ function enable(workspaceMonitor) {
 
     Utils.override(Overview.Overview, 'runStartupAnimation', async function(callback) {
         const original = Utils.original(Overview.Overview, 'runStartupAnimation');
-        original.bind(this)(() => {
+        original.call(this, () => {
             callback();
             this._startupAnimationDone = true;
         });
