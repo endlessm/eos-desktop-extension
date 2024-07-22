@@ -91,12 +91,10 @@ function enable(workspaceMonitor) {
             Main.overview.dash.showAppsButton.checked = false;
     });
 
-    Utils.override(Overview.Overview, async function runStartupAnimation(callback) {
+    Utils.override(Overview.Overview, async function runStartupAnimation() {
         const original = Utils.original(Overview.Overview, 'runStartupAnimation');
-        original.call(this, () => {
-            callback();
-            this._startupAnimationDone = true;
-        });
+        await original.call(this);
+        this._startupAnimationDone = true;
     });
 
     addBackgroundToOverview();
