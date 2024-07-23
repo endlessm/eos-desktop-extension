@@ -68,7 +68,9 @@ function removeBackgroundFromOverview() {
 
 function enable(workspaceMonitor) {
     Utils.override(Overview.Overview, function hide(bypassVisibleWindowCheck = false) {
-        if (!bypassVisibleWindowCheck && !workspaceMonitor.hasVisibleWindows) {
+        if (!bypassVisibleWindowCheck &&
+            !workspaceMonitor.hasVisibleWindows &&
+            this._startupAnimationDone) {
             Main.overview.dash.showAppsButton.checked = true;
             return;
         }
