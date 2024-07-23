@@ -262,7 +262,7 @@ function setDashAboveWorkspaces(above) {
 }
 
 function enable() {
-    Utils.override(OverviewControls.ControlsManager, '_updateAppDisplayVisibility', function (params) {
+    Utils.override(OverviewControls.ControlsManager, function _updateAppDisplayVisibility(params) {
         if (!params)
             params = this._stateAdjustment.getStateTransitionParams();
 
@@ -326,7 +326,7 @@ function enable() {
 
     });
 
-    Utils.override(OverviewControls.ControlsManager, 'runStartupAnimation', async function (callback) {
+    Utils.override(OverviewControls.ControlsManager, async function runStartupAnimation() {
         this._ignoreShowAppsButtonToggle = true;
 
         this._searchController.prepareToEnterOverview();
@@ -367,17 +367,19 @@ function enable() {
         // The Dash rises from the bottom. This is the last animation to finish,
         // so run the callback there.
         this.dash.translation_y = this.dash.height;
-        this.dash.ease({
-            translation_y: 0,
-            delay: STARTUP_ANIMATION_TIME,
-            duration: STARTUP_ANIMATION_TIME,
-            mode: Clutter.AnimationMode.EASE_OUT_QUAD,
-            onStopped: (isFinished) => {
-                if (!isFinished)
-                    this.dash.translation_y = 0;
+        return new Promise(resolve => {
+            this.dash.ease({
+                translation_y: 0,
+                delay: STARTUP_ANIMATION_TIME,
+                duration: STARTUP_ANIMATION_TIME,
+                mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+                onStopped: (isFinished) => {
+                    if (!isFinished)
+                        this.dash.translation_y = 0;
 
-                callback();
-            }
+                    resolve();
+                }
+            });
         });
     });
 

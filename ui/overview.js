@@ -67,36 +67,36 @@ function removeBackgroundFromOverview() {
 }
 
 function enable(workspaceMonitor) {
-    Utils.override(Overview.Overview, 'hide', function(bypassVisibleWindowCheck = false) {
-        if (!bypassVisibleWindowCheck && !workspaceMonitor.hasVisibleWindows) {
+    Utils.override(Overview.Overview, function hide(bypassVisibleWindowCheck = false) {
+        if (!bypassVisibleWindowCheck &&
+            !workspaceMonitor.hasVisibleWindows &&
+            this._startupAnimationDone) {
             Main.overview.dash.showAppsButton.checked = true;
             return;
         }
 
         const original = Utils.original(Overview.Overview, 'hide');
-        original.bind(this)();
+        original.call(this);
     });
 
-    Utils.override(Overview.Overview, '_eosHideOrShowApps', function() {
+    Utils.override(Overview.Overview, function _eosHideOrShowApps() {
         if (workspaceMonitor.hasVisibleWindows)
             this.hide();
         else
             Main.overview.dash.showAppsButton.checked = true;
     });
 
-    Utils.override(Overview.Overview, '_eosHideOrShowOverview', function() {
+    Utils.override(Overview.Overview, function _eosHideOrShowOverview() {
         if (workspaceMonitor.hasVisibleWindows)
             this.hide();
         else
             Main.overview.dash.showAppsButton.checked = false;
     });
 
-    Utils.override(Overview.Overview, 'runStartupAnimation', async function(callback) {
+    Utils.override(Overview.Overview, async function runStartupAnimation() {
         const original = Utils.original(Overview.Overview, 'runStartupAnimation');
-        original.bind(this)(() => {
-            callback();
-            this._startupAnimationDone = true;
-        });
+        await original.call(this);
+        this._startupAnimationDone = true;
     });
 
     addBackgroundToOverview();

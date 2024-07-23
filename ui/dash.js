@@ -556,7 +556,7 @@ function enable() {
     /* Copy-pasted from Shell's dash.js, in order to replace 'new DashIcon'
      * with 'new EosDashIcon'.
      */
-    Utils.override(Dash.Dash, '_createAppItem', function(app) {
+    Utils.override(Dash.Dash, function _createAppItem(app) {
         const appIcon = new EosDashIcon(app);
 
         appIcon.connect('menu-state-changed', (o, opened) => {
@@ -582,7 +582,7 @@ function enable() {
      *
      * Main.overview.dash.setBarrierParams(..., ...)
      */
-    Utils.override(Dash.Dash, 'setBarrierParams', function(distance, time) {
+    Utils.override(Dash.Dash, function setBarrierParams(distance, time) {
         if (!dashController)
             return;
 
