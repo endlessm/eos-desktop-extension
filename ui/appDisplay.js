@@ -41,21 +41,7 @@ function rebuildAppGrid() {
     appDisplay._redisplay();
 }
 
-let overviewHidingId = 0;
-let overviewHiddenId = 0;
-let hidingOverview = false;
-
 function enable() {
-    Utils.override(AppDisplay.AppDisplay,
-        function goToPage(pageNumber, animate = true) {
-            const original = Utils.original(AppDisplay.AppDisplay, 'goToPage');
-
-            if (hidingOverview)
-                return;
-
-            original.call(this, pageNumber, animate);
-        });
-
     Utils.override(AppDisplay.AppIcon, function activate(button) {
         const original = Utils.original(AppDisplay.AppIcon, 'activate');
         original.call(this, button);
@@ -103,20 +89,6 @@ function enable() {
         return [page, position];
     });
 
-    // This relies on the fact that signals are emitted in the
-    // order they are connected. Which means, AppDisplay will
-    // receive the 'hidden' signal first, then we will receive
-    // after, which guarantees that 'hidingOverview' is set to
-    // true during the precise time we want
-    overviewHidingId =
-        Main.overview.connect('hiding', () => {
-            hidingOverview = true;
-        });
-    overviewHiddenId =
-        Main.overview.connect('hidden', () => {
-            hidingOverview = false;
-        });
-
     rebuildAppGrid();
 }
 
@@ -124,9 +96,6 @@ function disable() {
     Utils.restore(AppDisplay.AppDisplay);
     Utils.restore(AppDisplay.AppIcon);
     Utils.restore(AppDisplay.PageManager);
-
-    Main.overview.disconnect(overviewHidingId);
-    Main.overview.disconnect(overviewHiddenId);
 
     rebuildAppGrid();
 }
