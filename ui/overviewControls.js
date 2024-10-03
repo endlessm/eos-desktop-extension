@@ -261,6 +261,18 @@ function setDashAboveWorkspaces(above) {
         controls.set_child_below_sibling(controls.dash, controls._searchController);
 }
 
+function restoreAppDisplay() {
+    let { controls } = Main.overview._overview;
+
+    /* In vanilla Shell, _appDisplay.opacity depends only on whether search is
+     * active, while this extension also uses it to fade the grid in and out
+     * when you enter and leave the APP_GRID state. Restore it to the value it
+     * would have had in vanilla Shell.
+     */
+    let { searchActive } = controls._searchController;
+    controls._appDisplay.opacity = searchActive ? 0 : 255;
+}
+
 function enable() {
     Utils.override(OverviewControls.ControlsManager, function _updateAppDisplayVisibility(params) {
         if (!params)
@@ -386,5 +398,7 @@ function enable() {
 
 function disable() {
     Utils.restore(OverviewControls.ControlsManager);
+
     restoreOverviewLayoutManager();
+    restoreAppDisplay();
 }
