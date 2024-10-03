@@ -268,17 +268,15 @@ function enable() {
 
         const { searchActive } = this._searchController;
         const { currentState, initialState, finalState, progress } = params;
+        const state = Math.max(initialState, finalState);
 
         if (!searchActive) {
-            this._appDisplay.visible = true;
+            this._appDisplay.visible =
+                state > OverviewControls.ControlsState.WINDOW_PICKER;
             this._appDisplay.opacity = ShellUtils.lerp(
                 getAppDisplayOpacityForState(initialState),
                 getAppDisplayOpacityForState(finalState),
                 progress);
-
-            Shell.util_set_hidden_from_pick(
-                this._appDisplay,
-                currentState <= OverviewControls.ControlsState.WINDOW_PICKER);
         }
 
         setDashAboveWorkspaces(currentState < OverviewControls.ControlsState.WINDOW_PICKER);
