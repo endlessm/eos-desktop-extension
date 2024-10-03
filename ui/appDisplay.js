@@ -25,22 +25,6 @@ const AppDisplay = imports.ui.appDisplay;
 const Main = imports.ui.main;
 const Utils = DesktopExtension.imports.utils;
 
-function rebuildAppGrid() {
-    const { appDisplay } = Main.overview._overview.controls;
-
-    appDisplay._items.clear();
-    appDisplay._orderedItems.splice(0, appDisplay._orderedItems.length);
-
-    const grid = appDisplay._grid;
-    while (grid.nPages > 0) {
-        const items = appDisplay._grid.getItemsAtPage(grid.nPages - 1);
-        for (const item of items)
-            appDisplay._grid.removeItem(item);
-    }
-
-    appDisplay._redisplay();
-}
-
 function enable() {
     Utils.override(AppDisplay.AppIcon, function activate(button) {
         const original = Utils.original(AppDisplay.AppIcon, 'activate');
@@ -88,14 +72,10 @@ function enable() {
 
         return [page, position];
     });
-
-    rebuildAppGrid();
 }
 
 function disable() {
     Utils.restore(AppDisplay.AppDisplay);
     Utils.restore(AppDisplay.AppIcon);
     Utils.restore(AppDisplay.PageManager);
-
-    rebuildAppGrid();
 }
