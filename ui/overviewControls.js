@@ -261,6 +261,18 @@ function setDashAboveWorkspaces(above) {
         controls.set_child_below_sibling(controls.dash, controls._searchController);
 }
 
+function restoreAppDisplay() {
+    let { controls } = Main.overview._overview;
+
+    /* In vanilla Shell, _appDisplay.opacity depends only on whether search is
+     * active, while this extension also uses it to fade the grid in and out
+     * when you enter and leave the APP_GRID state. Restore it to the value it
+     * would have had in vanilla Shell.
+     */
+    let { searchActive } = controls._searchController;
+    controls._appDisplay.opacity = searchActive ? 0 : 255;
+}
+
 function enable() {
     Utils.override(OverviewControls.ControlsManager, function _updateAppDisplayVisibility(params) {
         if (!params)
@@ -268,17 +280,15 @@ function enable() {
 
         const { searchActive } = this._searchController;
         const { currentState, initialState, finalState, progress } = params;
+        const state = Math.max(initialState, finalState);
 
         if (!searchActive) {
-            this._appDisplay.visible = true;
+            this._appDisplay.visible =
+                state > OverviewControls.ControlsState.WINDOW_PICKER;
             this._appDisplay.opacity = ShellUtils.lerp(
                 getAppDisplayOpacityForState(initialState),
                 getAppDisplayOpacityForState(finalState),
                 progress);
-
-            Shell.util_set_hidden_from_pick(
-                this._appDisplay,
-                currentState <= OverviewControls.ControlsState.WINDOW_PICKER);
         }
 
         setDashAboveWorkspaces(currentState < OverviewControls.ControlsState.WINDOW_PICKER);
@@ -388,5 +398,7 @@ function enable() {
 
 function disable() {
     Utils.restore(OverviewControls.ControlsManager);
+
     restoreOverviewLayoutManager();
+    restoreAppDisplay();
 }
