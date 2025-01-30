@@ -119,10 +119,49 @@ function _addIcon(pages, itemId, index, itemsPerPage) {
     };
 }
 
+// AppDisplay._ensureDefaultFolders() adds two hard-coded folders before this
+// extension has a chance to override it. Remove them so they do not interfere
+// with our icon grid defaults mechanism.
+function _removeDefaultFolders(folderSettings) {
+    let folderChildren = folderSettings.get_strv('folder-children');
+    log(`folderChildren: ${folderChildren}`);
+
+    // Sadly imports.ui.appDisplay's DEFAULT_FOLDERS constant is not exported
+    for (let id of ["Utilities", "YaST"]) {
+        var ix = folderChildren.indexOf(id);
+        if (ix === -1) {
+            log(`Folder ${id} not found`);
+            continue;
+        }
+
+        const path = `${folderSettings.path}folders/${id}/`;
+        const folder = new Gio.Settings({
+            schema_id: 'org.gnome.desktop.app-folders.folder',
+            path,
+        });
+
+        log(`Cleaning up ${path}`);
+        // There is no “delete” operation for relocatable schemas
+        // https://gitlab.gnome.org/GNOME/glib/-/issues/993
+        folder.delay();
+        for (let key of ['name', 'translate', 'categories', 'apps'])
+            folder.reset(key);
+        folder.apply();
+
+        folderChildren.splice(ix, 1);
+    }
+
+    log(`Remaining folder-children: ${folderChildren}`)
+    folderSettings.set_strv('folder-children', folderChildren);
+}
+
 function _migrateToV1(migrationSettings, _extensionSettings) {
+    log("I AM THE WALRUS");
     const folderSettings = new Gio.Settings({
         schema_id: 'org.gnome.desktop.app-folders',
     });
+
+    _removeDefaultFolders(folderSettings);
 
     const itemsPerPage =
         Main.overview._overview.controls.appDisplay._grid.itemsPerPage;
