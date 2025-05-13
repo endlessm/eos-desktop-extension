@@ -119,36 +119,29 @@ function _addIcon(pages, itemId, index, itemsPerPage) {
     };
 }
 
-// AppDisplay._ensureDefaultFolders() adds two hard-coded folders before this
-// extension has a chance to override it. Remove them so they do not interfere
-// with our icon grid defaults mechanism.
-//
 // Refer to https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/43.9/js/ui/appDisplay.js?ref_type=tags#L2266-2282
-function _removeDefaultFolders(folderSettings) {
+function _removeFolder(folderSettings, folderId) {
     let folderChildren = folderSettings.get_strv('folder-children');
     log(`folderChildren: ${folderChildren}`);
 
-    // Sadly imports.ui.appDisplay's DEFAULT_FOLDERS constant is not exported
-    for (let id of ["Utilities", "YaST"]) {
-        var ix = folderChildren.indexOf(id);
-        if (ix === -1) {
-            log(`Folder ${id} not found`);
-            continue;
-        }
-
-        const path = `${folderSettings.path}folders/${id}/`;
-        const folder = new Gio.Settings({
-            schema_id: 'org.gnome.desktop.app-folders.folder',
-            path,
-        });
-
-        log(`Cleaning up the default ${path}`);
-        let keys = folder.settings_schema.list_keys();
-        for (let key of keys)
-            folder.reset(key);
-
-        folderChildren.splice(ix, 1);
+    var ix = folderChildren.indexOf(folderId);
+    if (ix === -1) {
+        log(`Folder ${folderId} not found`);
+        return;
     }
+
+    const path = `${folderSettings.path}folders/${folderId}/`;
+    const folder = new Gio.Settings({
+        schema_id: 'org.gnome.desktop.app-folders.folder',
+        path,
+    });
+
+    log(`Cleaning up ${path}`);
+    let keys = folder.settings_schema.list_keys();
+    for (let key of keys)
+        folder.reset(key);
+
+    folderChildren.splice(ix, 1);
 
     log(`Remaining folder-children: ${folderChildren}`)
     folderSettings.set_strv('folder-children', folderChildren);
@@ -158,8 +151,6 @@ function _migrateToV1(migrationSettings, _extensionSettings) {
     const folderSettings = new Gio.Settings({
         schema_id: 'org.gnome.desktop.app-folders',
     });
-
-    _removeDefaultFolders(folderSettings);
 
     const itemsPerPage =
         Main.overview._overview.controls.appDisplay._grid.itemsPerPage;
@@ -175,6 +166,15 @@ function _migrateToV1(migrationSettings, _extensionSettings) {
     const desktopIcons =
         iconGridLayout.getIcons(IconGridLayout.DESKTOP_GRID_ID);
 
+    // AppDisplay._ensureDefaultFolders() adds two hard-coded folders before
+    // this extension has a chance to override it. However,
+    // imports.ui.appDisplay's DEFAULT_FOLDERS constant is not exported.
+    const DEFAULT_FOLDERS = {
+        "X-GNOME-Utilities.directory": "Utilities",
+        "suse-yast.directory": "YaST",
+    };
+    let DEFAULT_FOLDERS_KEYS = Object.keys(DEFAULT_FOLDERS);
+
     let index = 0;
     const addedItems = new Set();
 
@@ -183,6 +183,12 @@ function _migrateToV1(migrationSettings, _extensionSettings) {
 
         let id = itemId;
         if (isFolder) {
+            // Remove duplicated default folder. So, it does not interfere with
+            // EOS icon grid defaults mechanism.
+            if (DEFAULT_FOLDERS_KEYS.indexOf(itemId) != -1) {
+                _removeFolder(folderSettings, DEFAULT_FOLDERS[itemId]);
+            }
+
             const folderIcons = iconGridLayout.getIcons(itemId);
             let translatedName =
                 Shell.util_get_translated_folder_name(itemId);
